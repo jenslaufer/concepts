@@ -157,9 +157,11 @@
     <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
     <form id="captureForm" onsubmit="return false">
       <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <button type="submit">Send it to me</button>
     </form>
-    <small id="captureNote">Built collect-first. Wiring to come.</small>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
   </div>
 </section>
 
@@ -283,11 +285,30 @@
     e.preventDefault(); active = null; renderFilters(); renderCards();
   });
 
-  // email capture placeholder — collect-first; provider wiring to come
-  document.getElementById('captureForm').addEventListener('submit', e=>{
+  // email capture — wired to Launch Kit (auth.solytics.de) public lead-capture
+  const CAPTURE_URL = 'https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+  const capForm = document.getElementById('captureForm');
+  const capNote = document.getElementById('captureNote');
+  capForm.addEventListener('submit', async e=>{
     e.preventDefault();
-    document.getElementById('captureNote').textContent =
-      'Thanks — capture isn’t wired yet, but you’re early. Check back soon.';
+    const email = capForm.email.value.trim();
+    if(!email) return;
+    const btn = capForm.querySelector('button');
+    btn.disabled = true;
+    capNote.textContent = 'Sending…';
+    try{
+      const res = await fetch(CAPTURE_URL, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ email, name:'', segment:'waitlist', hp: capForm.hp.value })
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      capForm.reset();
+      capNote.textContent = 'You’re on the list — talk soon.';
+    }catch(err){
+      btn.disabled = false;
+      capNote.textContent = 'Something went wrong — please try again.';
+    }
   });
 })();
 </script>
