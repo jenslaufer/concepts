@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just an Experiment — tiny experiments, growth loops, and why it's almost impossible to fail</title>
+<meta name="description" content="Three interactive games on Anne-Laure Le Cunff's Tiny Experiments: why a drifting world rewards loops over ladders, why a PACT is almost impossible to fail, and why many small reversible bets beat one big plan." />
+<meta property="og:title" content="It's Just an Experiment" />
+<meta property="og:description" content="An interactive note on tiny experiments, growth loops, and optionality — after Anne-Laure Le Cunff." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--teal)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:618px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--teal)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* PACT sentence builder */
+  .pact{font-family:var(--serif);font-size:24px;line-height:1.5;color:var(--ink-soft);
+    background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:6px 0 16px}
+  .pact .fill{color:var(--teal);font-weight:600;font-style:italic;border-bottom:2px solid var(--green-soft)}
+  /* triple check */
+  .triple{display:flex;gap:10px;flex-wrap:wrap;margin:4px 0 14px}
+  .chk{flex:1 1 150px;border:1px solid var(--line-2);border-radius:11px;padding:12px 14px;cursor:pointer;
+    background:var(--paper);transition:all .15s ease;user-select:none}
+  .chk:hover{border-color:var(--ink-faint)}
+  .chk[aria-pressed="true"]{background:var(--green-soft);border-color:var(--green)}
+  .chk .t{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:3px}
+  .chk[aria-pressed="true"] .t{color:var(--green)}
+  .chk .q{font-family:var(--sans);font-size:13.5px;color:var(--ink-soft)}
+  .aligned{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-faint);text-align:center;margin:2px 0 10px;transition:color .2s}
+  .aligned.on{color:var(--green)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+    .pact{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><b>It's Just an Experiment</b><span class="sub"> &nbsp;·&nbsp; tiny experiments &amp; growth loops</span></div>
+    <a class="sibling" href="/convex/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just Math →</b></a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on tiny experiments</div>
+    <h1>It's Just an Experiment</h1>
+    <p class="lede">Three games that show why a <em>drifting</em> world rewards loops over ladders, why a small, repeatable promise is almost impossible to fail, and why many tiny reversible bets quietly beat one big plan — after Anne-Laure Le Cunff's <em>Tiny Experiments</em>.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> Ladders &amp; loops</div>
+    <h2>The goal you set is for a world that won't stay still</h2>
+
+    <p>Pick a five-year goal and march straight at it — that's a <strong>ladder</strong>. But what you'll want, and where the reward actually sits, keeps drifting while you climb. A <strong>loop</strong> takes one small step, looks at where things moved, and re-aims. Same effort, two very different places to land.</p>
+
+    <p class="sub">Below, the faint line is <em>where the reward actually is</em> — it wanders, because the world and you both change. The ladder commits at the start. The loop re-aims every step. Press play, then <strong>shift the world</strong> and watch which one copes.</p>
+
+    <div class="card wide">
+      <div class="readouts">
+        <div class="stat red"><div class="k">Ladder · gap at the end</div><div class="v" id="a1-ladder">—</div></div>
+        <div class="stat green"><div class="k">Loop · gap at the end</div><div class="v" id="a1-loop">—</div></div>
+        <div class="stat teal"><div class="k">Loop · re-aims</div><div class="v" id="a1-reaims">0</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--ink-faint)"><i style="background:var(--ink-faint);opacity:.5"></i> where the reward actually is</span>
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> the ladder (fixed at the start)</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> the loop (re-aims each step)</span>
+      </div>
+      <div class="canvas-box"><canvas id="a1" height="320"></canvas></div>
+      <div class="btnrow">
+        <button class="act-btn primary" id="a1-play">Play the years</button>
+        <button class="act-btn" id="a1-shift">Shift the world</button>
+        <button class="act-btn" id="a1-reset">Reset</button>
+      </div>
+      <div class="caption">Time runs left to right. The ladder is a straight bet on a prediction; the loop is a short conversation with reality, repeated.</div>
+    </div>
+
+    <p>The ladder isn't lazy or foolish — it's <em>committed</em>. That's the problem. Commitment to a fixed target is only as good as the prediction underneath it, and we are famously bad at predicting what we'll want. The loop never predicts very far. It just keeps a tight, honest contact with the present and lets the destination emerge.</p>
+
+    <blockquote>
+      <p>“We don't go in circles; we grow in circles.”</p>
+      <cite><b>Anne-Laure Le Cunff</b> · Tiny Experiments</cite>
+    </blockquote>
+
+    <p class="sub">The loop has a shape: <strong>Pact → Act → React</strong>, then you decide — <strong>persist, pause, or pivot</strong> — and go round again. Each turn is cheap, so you can afford a lot of them. Which raises the obvious worry: doesn't running this many little trials mean failing constantly? That's Game Two.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> The PACT</div>
+    <h2>How to make a promise that's almost impossible to fail</h2>
+
+    <p>A SMART goal grades you on the <strong>outcome</strong>: lose 10 kg, hit 10k subscribers, ship the launch. But the outcome leans on a hundred things you don't control. A <strong>PACT</strong> grades you on the <strong>output</strong> — the action you actually take — which is entirely yours. Le Cunff's four words: <strong>Purposeful, Actionable, Continuous, Trackable</strong>. Written as one sentence: <em>“I will [action] for [duration].”</em></p>
+
+    <div class="card">
+      <div class="pact" id="a2-sentence">I will <span class="fill" id="a2-act">write 100 words</span> <span class="fill" id="a2-dur">every morning for two weeks</span>.</div>
+      <div class="controls">
+        <div class="ctrl">
+          <label>Scope of the action <b id="a2-scope-lab">tiny</b></label>
+          <input type="range" id="a2-scope" min="0" max="3" value="0" step="1">
+        </div>
+        <div class="ctrl">
+          <label>How much rides on the world <b id="a2-ext-lab">35%</b></label>
+          <input type="range" id="a2-ext" min="0" max="95" value="35" step="1">
+        </div>
+        <div class="ctrl">
+          <label>You grade yourself on <b id="a2-mode-lab"></b></label>
+          <div class="seg" id="a2-mode" role="group" aria-label="Grading mode">
+            <button data-mode="outcome" aria-pressed="false">The outcome (SMART)</button>
+            <button data-mode="output" aria-pressed="true">The output (PACT)</button>
+          </div>
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat green"><div class="k">Chance you can call it a success</div><div class="v" id="a2-succ">—</div></div>
+        <div class="stat"><div class="k">Of the result, the share you control</div><div class="v" id="a2-ctrl">—</div></div>
+      </div>
+      <div class="canvas-box"><canvas id="a2" height="260"></canvas></div>
+      <div class="caption">Success vs. how much rides on the world. Grade on the outcome (red) and luck decides; grade on the output (green) and you do.</div>
+    </div>
+
+    <p>So the trick isn't grit. It's <em>moving the finish line onto ground you own.</em> A small, repeatable, binary action — did I show up, yes or no — is something you can almost always honour, whatever the world does. Failure all but disappears, and what's left is data.</p>
+
+    <p class="sub">Which is why the resistance you feel before starting isn't a verdict — it's a <strong>signal</strong>. Le Cunff borrows a three-part check: <strong>Head</strong> (is this the right thing?), <strong>Heart</strong> (does it pull me?), <strong>Hand</strong> (can I actually do it?). When all three light up, she calls it <em>aligned aliveness</em> — and the procrastination melts. Tap the ones that are true:</p>
+
+    <div class="card">
+      <div class="triple" id="a2-triple">
+        <div class="chk" data-k="head" aria-pressed="true"><div class="t">Head</div><div class="q">Is this the right thing to do?</div></div>
+        <div class="chk" data-k="heart" aria-pressed="true"><div class="t">Heart</div><div class="q">Does it genuinely pull me?</div></div>
+        <div class="chk" data-k="hand" aria-pressed="true"><div class="t">Hand</div><div class="q">Can I actually do it now?</div></div>
+      </div>
+      <div class="aligned on" id="a2-aligned">Aligned aliveness — go</div>
+      <div class="caption">Procrastination isn't a flaw to crush; it's a reading on which of the three is missing.</div>
+    </div>
+
+    <blockquote>
+      <p>“It's almost impossible to fail when you see everything as an experiment.”</p>
+      <cite><b>Anne-Laure Le Cunff</b> · Tiny Experiments</cite>
+    </blockquote>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> Optionality</div>
+    <h2>Why many small bets beat one big one</h2>
+
+    <p>Here's the punchline the first two games were built for — and it's the same one the <a href="/convex/" style="color:var(--ink);border-bottom:1px solid var(--line-2);text-decoration:none">sibling essay</a> makes about markets. A tiny experiment has a <strong>capped downside</strong> (it's small and reversible — you can stop) and an <strong>open upside</strong> (it might just work, or open a door you couldn't have planned). Run a lot of them and the math turns <em>convex</em>: your worst case stays flat while your best cases pile up.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>How you spend your year <b id="a3-mode-lab"></b></label>
+          <div class="seg" id="a3-mode" role="group" aria-label="Strategy">
+            <button data-mode="many" aria-pressed="true">Many tiny experiments</button>
+            <button data-mode="one" aria-pressed="false">One big plan</button>
+          </div>
+        </div>
+        <div class="ctrl" id="a3-nwrap">
+          <label>Experiments you actually run <b id="a3-n-lab">12</b></label>
+          <input type="range" id="a3-n" min="0" max="36" value="12" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Worst case (the most you can lose)</div><div class="v" id="a3-loss">—</div></div>
+        <div class="stat"><div class="k">Typical year (median outcome)</div><div class="v" id="a3-med">—</div></div>
+        <div class="stat green"><div class="k">A lucky year (top 5%)</div><div class="v" id="a3-top">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--ink-faint)"><i class="dot" style="background:var(--ink-faint);opacity:.4"></i> 1,000 simulated years</span>
+        <span style="color:var(--green)"><i class="dot" style="background:var(--green)"></i> median</span>
+        <span style="color:var(--red)"><i class="dash" style="color:var(--red)"></i> worst case</span>
+      </div>
+      <div class="canvas-box"><canvas id="a3" height="330"></canvas></div>
+      <div class="btnrow"><button class="act-btn" id="a3-rerun">Re-run the year</button></div>
+      <div class="caption">Each dot is one possible year. The big plan is a single coin flip with your whole stack; the many-experiments year floors the loss and keeps the tail.</div>
+    </div>
+
+    <p>Notice the slider's left edge. Run <strong>zero</strong> experiments and the downside is perfectly safe — and nothing ever happens. Le Cunff's warning about hoarding options: it's <em>“like spending your whole life filling up the gas tank without ever driving.”</em> Optionality only pays if you spend it. The convexity isn't in <em>having</em> the experiments. It's in <strong>running</strong> them.</p>
+
+    <blockquote>
+      <p>“When we fixate on finding one singular purpose, we rule out the side quests that help us grow the most.”</p>
+      <cite><b>Anne-Laure Le Cunff</b> · Tiny Experiments</cite>
+    </blockquote>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>Stop predicting the path. Run it.</h2>
+    <p>The world drifts, so loops beat ladders. The finish line you own can't make you fail. And a pocketful of small, reversible bets compounds into the one big thing you could never have planned for. Three games, one conclusion — and, as the neuroscientist says, it's almost impossible to fail when you see everything as an experiment.</p>
+    <blockquote>
+      <p>“Understanding is a poor substitute for convexity.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+    <p class="credits">
+      The ideas here are Anne-Laure Le Cunff's, from <em>Tiny Experiments: How to Live Freely in a Goal-Obsessed World</em> (2025) and her writing at <a href="https://nesslabs.com" rel="noopener">Ness Labs</a> — the PACT (“<a href="https://nesslabs.com/smart-goals-pact" rel="noopener">make a PACT instead</a>”), the growth loop, the Triple Check (after Hugo Kehr), and the bridge to optionality she draws in “<a href="https://nesslabs.com/optionality-fallacy" rel="noopener">The optionality fallacy</a>,” where she meets Taleb's antifragility head-on. The interactive games are my own toy models — deliberately simple, directionally honest. Its sibling, <a href="/convex/" rel="noopener">It's Just Math</a>, makes the same convexity argument for money.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b',
+    grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  // ---------- canvas helper (shared with the sibling essay) ----------
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.58)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+  function grid(ctx,f,rows){
+    ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath();
+    for(let i=0;i<=rows;i++){ const y=f.t+f.H*i/rows; ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); }
+    ctx.stroke();
+  }
+  // seeded PRNG so a "year" is reproducible until re-rolled
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+  /* =====================================================================
+     GAME ONE — ladders & loops: tracking a drifting target
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('a1'); if(!cv) return;
+    const T=40;                    // years
+    let drift=null, ladder=null, loop=null, anim=0, raf=0, seed=7;
+    const elL=document.getElementById('a1-ladder'),
+          elP=document.getElementById('a1-loop'),
+          elR=document.getElementById('a1-reaims');
+
+    function buildWorld(s){
+      const r=mulberry32(s);
+      // smooth wandering target in [0,1] via a few random sinusoids + a mid regime shift
+      const a=[], n=4, amp=[], frq=[], phs=[];
+      for(let k=0;k<n;k++){ amp.push(0.12+0.12*r()); frq.push(0.4+1.8*r()); phs.push(r()*6.283); }
+      const shiftAt=Math.floor(T*(0.45+0.15*r())), shiftBy=(r()<0.5?-1:1)*(0.22+0.14*r());
+      drift=[];
+      for(let t=0;t<=T;t++){
+        let y=0.5; const u=t/T*6.283;
+        for(let k=0;k<n;k++) y+=amp[k]*Math.sin(frq[k]*u+phs[k]);
+        if(t>=shiftAt) y+=shiftBy;     // the world shifts partway through
+        drift.push(clamp(y,0.05,0.95));
+      }
+      // ladder: predict from the first two years' trend, then commit to a straight line
+      const slope=drift[2]-drift[0];
+      ladder=[]; for(let t=0;t<=T;t++) ladder.push(clamp(drift[0]+slope*0.5*t,-0.4,1.4));
+      // loop: each step, move a fraction toward the currently observed target
+      loop=[drift[0]]; const alpha=0.45;
+      for(let t=1;t<=T;t++) loop.push(loop[t-1]+alpha*(drift[t-1]-loop[t-1]));
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:18,r:18,t:18,b:24});
+      grid(ctx,f,4);
+      const X=t=>f.l+f.W*t/T, Y=v=>f.t+f.H*(1-clamp((v+0.4)/1.8,0,1)); // map value [-0.4,1.4] → pixels
+      const show=Math.round(anim*T);
+      // target band (faint, with a soft halo)
+      ctx.strokeStyle='rgba(138,130,117,.55)'; ctx.lineWidth=7; ctx.lineCap='round';
+      ctx.globalAlpha=.18; line(ctx,drift,X,Y,show); ctx.globalAlpha=1;
+      ctx.strokeStyle='rgba(138,130,117,.9)'; ctx.lineWidth=2; line(ctx,drift,X,Y,show);
+      // ladder
+      ctx.strokeStyle=C.red; ctx.lineWidth=2.5; line(ctx,ladder,X,Y,show);
+      // loop
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.5; line(ctx,loop,X,Y,show);
+      // end dots + gap markers
+      if(show>0){
+        dot(ctx,X(show),Y(drift[show]),C.faint);
+        dot(ctx,X(show),Y(ladder[show]),C.red);
+        dot(ctx,X(show),Y(loop[show]),C.green);
+      }
+      // readouts
+      const gL=Math.abs(ladder[show]-drift[show]), gP=Math.abs(loop[show]-drift[show]);
+      elL.textContent=gL.toFixed(2); elP.textContent=gP.toFixed(2); elR.textContent=show;
+    }
+    function line(ctx,arr,X,Y,upto){
+      ctx.beginPath();
+      for(let t=0;t<=upto;t++){ const x=X(t),y=Y(arr[t]); t?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+      ctx.stroke();
+    }
+    function dot(ctx,x,y,col){ ctx.fillStyle=col; ctx.beginPath(); ctx.arc(x,y,4.5,0,6.283); ctx.fill();
+      ctx.strokeStyle='#fffdf8'; ctx.lineWidth=2; ctx.stroke(); }
+    function play(){ cancelAnimationFrame(raf); anim=0; const step=()=>{ anim=Math.min(1,anim+1/(T*1.1)); draw(); if(anim<1) raf=requestAnimationFrame(step); }; step(); }
+    function reset(seedKeep){ if(!seedKeep) seed=7; buildWorld(seed); anim=1; draw(); }
+
+    document.getElementById('a1-play').onclick=()=>{ buildWorld(seed); play(); };
+    document.getElementById('a1-shift').onclick=()=>{ seed=(seed*1664525+1013904223)>>>0%100000; buildWorld(seed); play(); };
+    document.getElementById('a1-reset').onclick=()=>reset(false);
+    reset(false);
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* =====================================================================
+     GAME TWO — the PACT: outcome vs output, and the failure curve
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('a2'); if(!cv) return;
+    const scopes=[
+      {lab:'tiny',  act:'write 100 words',           dur:'every morning for two weeks', you:0.97},
+      {lab:'small', act:'sketch one idea',            dur:'every day for a month',       you:0.9},
+      {lab:'medium',act:'publish a short essay',      dur:'every week for two months',   you:0.72},
+      {lab:'big',   act:'finish and launch the book', dur:'by the end of the year',      you:0.5}
+    ];
+    let scope=0, ext=0.35, mode='output';
+    const elSucc=document.getElementById('a2-succ'), elCtrl=document.getElementById('a2-ctrl'),
+          elAct=document.getElementById('a2-act'), elDur=document.getElementById('a2-dur'),
+          elScopeLab=document.getElementById('a2-scope-lab'), elExtLab=document.getElementById('a2-ext-lab'),
+          elModeLab=document.getElementById('a2-mode-lab');
+
+    // success prob you can claim:
+    //  output (PACT): depends almost only on you, lightly on scope. world barely matters.
+    //  outcome (SMART): you must do your part AND the world must cooperate (1-ext).
+    function pSuccess(m,s,e){ const you=scopes[s].you; return m==='output' ? clamp(0.6+0.4*you,0,1) : clamp(you*(1-e),0,1); }
+    function pControl(m,e){ return m==='output' ? 1 : (1-e); }
+
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:42,r:14,t:14,b:30});
+      grid(ctx,f,4);
+      // axes labels
+      ctx.fillStyle=C.faint; ctx.font='11px IBM Plex Mono'; ctx.textAlign='left';
+      ctx.fillText('100%',2,f.t+4); ctx.fillText('0%',2,f.b);
+      ctx.textAlign='center'; ctx.fillText('how much rides on the world  →',(f.l+f.r)/2,h-8);
+      const X=e=>f.l+f.W*e, Y=p=>f.t+f.H*(1-p);
+      // output curve (flat, high) — green
+      curve(ctx,e=>pSuccess('output',scope,e),X,Y,C.green,2.5);
+      // outcome curve (you*(1-e)) — red
+      curve(ctx,e=>pSuccess('outcome',scope,e),X,Y,C.red,2.5);
+      // current marker on the active curve
+      const py=pSuccess(mode,scope,ext);
+      ctx.strokeStyle=C.line2; ctx.setLineDash([3,4]); ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(X(ext),f.t); ctx.lineTo(X(ext),f.b); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=mode==='output'?C.green:C.red; ctx.beginPath(); ctx.arc(X(ext),Y(py),5.5,0,6.283); ctx.fill();
+      ctx.strokeStyle='#fffdf8'; ctx.lineWidth=2; ctx.stroke();
+    }
+    function curve(ctx,fn,X,Y,col,lw){
+      ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.beginPath();
+      for(let i=0;i<=60;i++){ const e=i/60, x=X(e), y=Y(fn(e)); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+      ctx.stroke();
+    }
+    function render(){
+      const sc=scopes[scope];
+      elAct.textContent=sc.act; elDur.textContent=sc.dur; elScopeLab.textContent=sc.lab;
+      elExtLab.textContent=Math.round(ext*100)+'%';
+      elModeLab.textContent= mode==='output'?'the output':'the outcome';
+      elSucc.textContent=Math.round(pSuccess(mode,scope,ext)*100)+'%';
+      elCtrl.textContent=Math.round(pControl(mode,ext)*100)+'%';
+      const ssucc=document.getElementById('a2-succ').parentElement;
+      ssucc.classList.toggle('green',mode==='output'); ssucc.classList.toggle('red',mode==='outcome');
+      draw();
+    }
+    document.getElementById('a2-scope').oninput=e=>{ scope=+e.target.value; render(); };
+    document.getElementById('a2-ext').oninput=e=>{ ext=+e.target.value/100; render(); };
+    document.querySelectorAll('#a2-mode button').forEach(b=>b.onclick=()=>{
+      mode=b.dataset.mode;
+      document.querySelectorAll('#a2-mode button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      render();
+    });
+    render();
+    window.addEventListener('resize',draw);
+
+    // triple check
+    const state={head:true,heart:true,hand:true};
+    const al=document.getElementById('a2-aligned');
+    document.querySelectorAll('#a2-triple .chk').forEach(c=>c.onclick=()=>{
+      const k=c.dataset.k; state[k]=!state[k]; c.setAttribute('aria-pressed',state[k]);
+      const on=state.head&&state.heart&&state.hand;
+      al.classList.toggle('on',on);
+      al.textContent= on ? 'Aligned aliveness — go'
+        : !state.head  ? 'Head is missing — is this even the right thing?'
+        : !state.heart ? 'Heart is missing — where’s the pull? shrink it or change it'
+        :                'Hand is missing — too big or no tools yet; cut it smaller';
+    });
+  })();
+
+  /* =====================================================================
+     GAME THREE — optionality: many capped-downside bets vs one big bet
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('a3'); if(!cv) return;
+    let mode='many', N=12, seed=42;
+    const elLoss=document.getElementById('a3-loss'), elMed=document.getElementById('a3-med'),
+          elTop=document.getElementById('a3-top'), elNlab=document.getElementById('a3-n-lab'),
+          elModeLab=document.getElementById('a3-mode-lab'), nwrap=document.getElementById('a3-nwrap');
+    const SIMS=1000;
+    // tiny experiment: cost 1 (capped, reversible), with prob p pays a fat-tailed jackpot
+    const COST=1, P_HIT=0.18;
+    function jackpot(r){ // heavy-tailed-ish payoff when it hits
+      return 3 + 22*Math.pow(r,3.2);   // mostly modest, rare large
+    }
+    function simMany(rng,n){
+      let v=0; for(let i=0;i<n;i++){ v-=COST; if(rng()<P_HIT) v+=jackpot(rng()); } return v;
+    }
+    function simOne(rng){ // one big irreversible plan: stake the equivalent of ~12 experiments
+      const stake=12; const r=rng();
+      if(r<0.32) return -stake;            // it fails, you lose it all
+      if(r<0.86) return -stake*0.15;       // limps, small loss
+      return -stake + 14*Math.pow((r-0.86)/0.14, .7) * stake/3 + stake; // pays off
+    }
+    function run(){
+      const rng=mulberry32(seed);
+      const out=[];
+      for(let i=0;i<SIMS;i++) out.push(mode==='many'?simMany(rng,N):simOne(rng));
+      out.sort((a,b)=>a-b);
+      const med=out[Math.floor(SIMS*0.5)], top=out[Math.floor(SIMS*0.95)], worst=out[0];
+      draw(out,med,top,worst);
+      elMed.textContent=fmt(med); elTop.textContent=fmt(top);
+      elLoss.textContent=fmt(mode==='many'?-N*COST:-12);
+    }
+    function fmt(v){ const s=v>=0?'+':'−'; return s+Math.abs(v).toFixed(1); }
+    function draw(out,med,top,worst){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:16,r:16,t:16,b:26});
+      const lo=Math.min(-14, worst-1), hi=Math.max(20, top+2);
+      const Y=v=>f.b - f.H*(v-lo)/(hi-lo);
+      // zero line
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,Y(0)); ctx.lineTo(f.r,Y(0)); ctx.stroke();
+      ctx.fillStyle=C.faint; ctx.font='11px IBM Plex Mono'; ctx.textAlign='left'; ctx.fillText('break even',f.l+2,Y(0)-5);
+      // scatter the 1000 years as faint dots, x = jittered rank density
+      const rng=mulberry32(seed^0x9e37);
+      for(let i=0;i<out.length;i++){
+        const x=f.l+4+(f.W-8)*((i+0.5)/out.length);
+        const v=out[i];
+        ctx.fillStyle = v<0 ? 'rgba(178,58,46,.30)' : 'rgba(31,122,90,.34)';
+        ctx.beginPath(); ctx.arc(x, Y(v)+(rng()-0.5)*4, 2.1, 0,6.283); ctx.fill();
+      }
+      // worst-case line
+      ctx.strokeStyle=C.red; ctx.setLineDash([5,4]); ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(worst)); ctx.lineTo(f.r,Y(worst)); ctx.stroke(); ctx.setLineDash([]);
+      // median line
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(med)); ctx.lineTo(f.r,Y(med)); ctx.stroke();
+    }
+    function render(){
+      elModeLab.textContent = mode==='many'?'in tiny experiments':'on one big plan';
+      elNlab.textContent=N; nwrap.style.opacity = mode==='many'?1:.35; nwrap.style.pointerEvents= mode==='many'?'auto':'none';
+      run();
+    }
+    document.getElementById('a3-n').oninput=e=>{ N=+e.target.value; render(); };
+    document.querySelectorAll('#a3-mode button').forEach(b=>b.onclick=()=>{
+      mode=b.dataset.mode;
+      document.querySelectorAll('#a3-mode button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      render();
+    });
+    document.getElementById('a3-rerun').onclick=()=>{ seed=(seed*1103515245+12345)>>>0; render(); };
+    render();
+    window.addEventListener('resize',run);
+  })();
+
+})();
+</script>
+</body>
+</html>

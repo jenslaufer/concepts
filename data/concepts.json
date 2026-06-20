@@ -1,0 +1,92 @@
+{
+  "site": {
+    "name": "Concept Simulator",
+    "tagline": "Concepts you play, not read.",
+    "intro": "Abstract ideas — optionality, convexity, luck — are hard to feel from prose. So here you don't read them. You play them. Each concept is a small, honestly-computed Monte-Carlo game: turn the parameters, watch the distribution move, and grow a gut feel that text never gives you.",
+    "byline": "Jens Laufer"
+  },
+  "people": {
+    "taleb": {
+      "name": "Nassim Nicholas Taleb",
+      "note": "Risk, antifragility, optionality. The spine of the whole family.",
+      "url": "https://en.wikipedia.org/wiki/Nassim_Nicholas_Taleb"
+    },
+    "dredge": {
+      "name": "David Dredge",
+      "note": "Convex tail hedging — turning the big loss into the source of compounding.",
+      "url": "https://www.convex-strategies.com/"
+    },
+    "lecunff": {
+      "name": "Anne-Laure Le Cunff",
+      "note": "Tiny Experiments — loops over ladders, the PACT, reversible bets.",
+      "url": "https://nesslabs.com"
+    },
+    "busch": {
+      "name": "Christian Busch",
+      "note": "The science of serendipity — manufacturing smart luck.",
+      "url": "https://www.theserendipitymindset.com/"
+    },
+    "knight": {
+      "name": "Frank Knight",
+      "note": "Risk vs. uncertainty — the measurable and the genuinely unknown.",
+      "url": "https://en.wikipedia.org/wiki/Frank_Knight"
+    }
+  },
+  "concepts": [
+    {
+      "slug": "convex",
+      "title": "It's Just Math",
+      "concept": "Convexity",
+      "url": "/convex/",
+      "status": "live",
+      "eyebrow": "An interactive note on convexity",
+      "blurb": "Why avoiding the big loss compounds better than chasing the average gain — and why the number that describes the crowd is not the number you will live.",
+      "people": ["dredge", "taleb"],
+      "tags": ["optionality", "convexity", "compounding", "tail-risk", "ergodicity"]
+    },
+    {
+      "slug": "tiny-experiments",
+      "title": "It's Just an Experiment",
+      "concept": "Action under uncertainty",
+      "url": "/tiny-experiments/",
+      "status": "live",
+      "eyebrow": "An interactive note on tiny experiments",
+      "blurb": "Why a drifting world rewards loops over ladders, why a small repeatable promise is almost impossible to fail, and why many tiny reversible bets quietly beat one big plan.",
+      "people": ["lecunff", "taleb"],
+      "tags": ["optionality", "experiments", "reversibility", "growth-loops"]
+    },
+    {
+      "slug": "serendipity",
+      "title": "It's Just Luck",
+      "concept": "Serendipity",
+      "url": "/serendipity/",
+      "status": "live",
+      "eyebrow": "An interactive note on manufacturing luck",
+      "blurb": "Why good luck scales with how much of the world you touch, why an unexpected find is worthless until it meets a question you already carry, and why many small leads beat one big break.",
+      "people": ["busch", "taleb"],
+      "tags": ["optionality", "serendipity", "surface-area", "prepared-mind"]
+    },
+    {
+      "slug": "uncertainty",
+      "title": "It's Just Unknown",
+      "concept": "Uncertainty",
+      "url": "/uncertainty/",
+      "status": "planned",
+      "eyebrow": "An interactive note on true uncertainty",
+      "blurb": "Measurable risk vs. genuine uncertainty — how you act when the odds themselves are unknown, and why a known die is the easy case.",
+      "people": ["taleb", "knight"],
+      "tags": ["optionality", "uncertainty", "risk", "decision"]
+    },
+    {
+      "slug": "barbell",
+      "title": "It's Just a Barbell",
+      "concept": "Barbell strategy",
+      "url": "/barbell/",
+      "status": "planned",
+      "eyebrow": "An interactive note on the barbell",
+      "blurb": "Why 90% maximally safe plus 10% convex beats 100% \"medium\" — combining a hard floor with uncapped upside.",
+      "people": ["taleb"],
+      "tags": ["optionality", "barbell", "convexity", "tail-risk", "decision"]
+    }
+  ]
+}

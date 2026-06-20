@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Concept Simulator — abstract concepts you play, not read</title>
+<meta name="description" content="Optionality, convexity, serendipity, uncertainty — abstract concepts made playable. Each is a small, honestly-computed Monte-Carlo game. Turn the parameters, watch the distribution move, grow a gut feel that prose never gives you." />
+<meta property="og:title" content="Concept Simulator — concepts you play, not read" />
+<meta property="og:description" content="Optionality, convexity, serendipity made playable. Turn the parameters, watch the distribution move." />
+<meta property="og:type" content="website" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1; --paper-2:#f3eee4;
+    --ink:#1d1a16; --ink-soft:#544e44; --ink-faint:#8a8275;
+    --line:#e2dac9; --line-2:#d4cab4;
+    --green:#1f7a5a; --green-soft:#e4efe7;
+    --red:#b23a2e; --red-soft:#f4e3df;
+    --amber:#bd8324; --blue:#2f5d86;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  .wrap{max-width:980px;margin:0 auto;padding:0 24px}
+  a{color:inherit}
+
+  /* ---------- top bar ---------- */
+  .topbar{position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:60px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
+  .brand b{color:var(--ink);font-weight:600}
+  .axis{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-shrink:0}
+  .axis button{font-family:var(--sans);font-size:13px;font-weight:500;letter-spacing:.01em;
+    border:0;background:transparent;color:var(--ink-soft);cursor:pointer;
+    padding:6px 14px;border-radius:999px;transition:all .18s ease;white-space:nowrap}
+  .axis button:hover{color:var(--ink)}
+  .axis button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+  @media(max-width:520px){ .brand{font-size:11px} .axis button{padding:6px 11px;font-size:12px} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:74px 0 24px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--amber);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8vw,76px);line-height:1.0;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:640px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+
+  /* ---------- filter bar ---------- */
+  .filterbar{border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    margin-top:42px;padding:18px 0;background:var(--paper-2)}
+  .filterbar .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 8px}
+  .flabel{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--ink-faint);margin-right:6px;align-self:center}
+  .chip{font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink-soft);
+    padding:5px 12px;border-radius:999px;transition:all .15s ease;line-height:1.2}
+  .chip:hover{border-color:var(--ink-faint);color:var(--ink)}
+  .chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+  .chip.person[aria-pressed="true"]{background:var(--blue);border-color:var(--blue)}
+  .chip.clear{background:transparent;border-style:dashed}
+  .chipcount{font-family:var(--mono);font-size:11px;opacity:.6;margin-left:5px}
+
+  /* ---------- card grid ---------- */
+  main{padding:34px 0 10px;min-height:40vh}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px}
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:24px 24px 20px;display:flex;flex-direction:column;transition:transform .18s ease,box-shadow .18s ease}
+  a.card{text-decoration:none}
+  a.card:hover{transform:translateY(-3px);box-shadow:0 2px 4px rgba(29,26,22,.05),0 16px 40px rgba(29,26,22,.10)}
+  .card.soon{opacity:.72}
+  .c-concept{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--amber);margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+  .badge{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+    padding:3px 8px;border-radius:999px}
+  .badge.live{background:var(--green-soft);color:var(--green)}
+  .badge.soon{background:var(--paper-2);color:var(--ink-faint);border:1px solid var(--line-2)}
+  .c-title{font-family:var(--serif);font-weight:600;font-size:27px;line-height:1.08;
+    letter-spacing:-.015em;margin:0 0 12px;color:var(--ink)}
+  .c-blurb{font-size:16.5px;color:var(--ink-soft);margin:0 0 18px;flex:1}
+  .c-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+  .minichip{font-family:var(--sans);font-size:11.5px;font-weight:500;padding:3px 9px;border-radius:999px;
+    border:1px solid var(--line-2);color:var(--ink-faint);cursor:pointer;background:var(--paper);transition:all .15s}
+  .minichip:hover{border-color:var(--ink-faint);color:var(--ink)}
+  .minichip.person{color:var(--blue);border-color:#cdd9e4}
+  .c-cta{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink);margin-top:18px;display:inline-flex;align-items:center;gap:7px}
+  a.card:hover .c-cta{color:var(--amber)}
+  .empty{text-align:center;color:var(--ink-faint);font-style:italic;padding:60px 0}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:56px;padding:56px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  footer{border-top:1px solid var(--line);padding:34px 0 50px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.04em;color:var(--ink-faint)}
+  .sig a{color:var(--ink-soft);text-decoration:none;border-bottom:1px solid var(--line-2)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><b>Concept Simulator</b> &nbsp;·&nbsp; play the idea</div>
+    <div class="axis" role="group" aria-label="Browse by">
+      <button data-axis="concept" aria-pressed="true">By concept</button>
+      <button data-axis="person" aria-pressed="false">By thinker</button>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow" id="heroEyebrow">Concepts you play, not read</div>
+    <h1>Don't read the&nbsp;idea.<br>Play&nbsp;it.</h1>
+    <p class="lede" id="heroLede"></p>
+  </div>
+</header>
+
+<div class="filterbar">
+  <div class="wrap" id="filterRow">
+    <span class="flabel" id="filterLabel">Filter</span>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="empty" hidden>Nothing matches that filter yet — <a href="#" id="resetLink">show everything</a>.</div>
+  </div>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">Built collect-first. Wiring to come.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+  const filterRow = document.getElementById('filterRow');
+  const filterLabel = document.getElementById('filterLabel');
+  let DATA = null;
+  let axis = 'concept';            // 'concept' (tags) | 'person'
+  let active = null;               // active filter value, or null = all
+
+  fetch('data/concepts.json').then(r=>r.json()).then(d=>{ DATA = d; init(d); })
+    .catch(()=>{ grid.innerHTML = '<p class="empty">Could not load concepts.</p>'; });
+
+  function init(d){
+    document.getElementById('heroLede').textContent = d.site.intro;
+    renderFilters();
+    renderCards();
+  }
+
+  // unique tags / people in stable, frequency-aware order
+  function tagList(){
+    const seen = {};
+    DATA.concepts.forEach(c => (c.tags||[]).forEach(t => seen[t] = (seen[t]||0)+1));
+    return Object.keys(seen).sort((a,b)=> seen[b]-seen[a] || a.localeCompare(b))
+      .map(t => ({key:t, label:t.replace(/-/g,' '), count:seen[t]}));
+  }
+  function personList(){
+    const seen = {};
+    DATA.concepts.forEach(c => (c.people||[]).forEach(p => seen[p] = (seen[p]||0)+1));
+    return Object.keys(seen).sort((a,b)=> seen[b]-seen[a] || a.localeCompare(b))
+      .map(p => ({key:p, label:(DATA.people[p]||{}).name || p, count:seen[p]}));
+  }
+
+  function renderFilters(){
+    filterRow.querySelectorAll('.chip').forEach(n=>n.remove());
+    filterLabel.textContent = axis === 'concept' ? 'Filter by tag' : 'Filter by thinker';
+    const items = axis === 'concept' ? tagList() : personList();
+    const frag = document.createDocumentFragment();
+    const all = chip('All', null, axis==='person');
+    all.classList.add('clear');
+    frag.appendChild(all);
+    items.forEach(it => frag.appendChild(
+      chip(it.label, it.key, axis==='person', it.count)));
+    filterRow.appendChild(frag);
+  }
+
+  function chip(label, value, isPerson, count){
+    const b = document.createElement('button');
+    b.className = 'chip' + (isPerson ? ' person' : '');
+    b.setAttribute('aria-pressed', String(active === value));
+    b.innerHTML = label + (count ? ' <span class="chipcount">'+count+'</span>' : '');
+    b.onclick = ()=>{ active = (active === value) ? null : value; renderFilters(); renderCards(); };
+    return b;
+  }
+
+  function matches(c){
+    if(active === null) return true;
+    return axis === 'concept' ? (c.tags||[]).includes(active)
+                              : (c.people||[]).includes(active);
+  }
+
+  function renderCards(){
+    const list = DATA.concepts.filter(matches);
+    grid.innerHTML = '';
+    empty.hidden = list.length > 0;
+    list.forEach(c => grid.appendChild(card(c)));
+  }
+
+  function card(c){
+    const live = c.status === 'live';
+    const el = document.createElement(live ? 'a' : 'div');
+    el.className = 'card' + (live ? '' : ' soon');
+    if(live) el.href = c.url;
+
+    const people = (c.people||[]).map(p =>
+      `<button class="minichip person" data-axis="person" data-val="${p}">${(DATA.people[p]||{}).name||p}</button>`).join('');
+    const tags = (c.tags||[]).slice(0,4).map(t =>
+      `<button class="minichip" data-axis="concept" data-val="${t}">${t.replace(/-/g,' ')}</button>`).join('');
+
+    el.innerHTML =
+      `<div class="c-concept"><span>${c.concept}</span>
+         <span class="badge ${live?'live':'soon'}">${live?'Play':'Coming'}</span></div>
+       <h3 class="c-title">${c.title}</h3>
+       <p class="c-blurb">${c.blurb}</p>
+       <div class="c-meta">${people}${tags}</div>
+       ${live ? '<span class="c-cta">Play the games →</span>' : ''}`;
+
+    // mini-chips jump axes / set filter without navigating into the card
+    el.querySelectorAll('.minichip').forEach(m => {
+      m.addEventListener('click', ev => {
+        ev.preventDefault(); ev.stopPropagation();
+        setAxis(m.dataset.axis);
+        active = m.dataset.val;
+        renderFilters(); renderCards();
+        window.scrollTo({top:0, behavior:'smooth'});
+      });
+    });
+    return el;
+  }
+
+  function setAxis(a){
+    if(axis === a) return;
+    axis = a; active = null;
+    document.querySelectorAll('.axis button').forEach(b =>
+      b.setAttribute('aria-pressed', String(b.dataset.axis === a)));
+  }
+
+  document.querySelectorAll('.axis button').forEach(b =>
+    b.addEventListener('click', ()=>{ setAxis(b.dataset.axis); renderFilters(); renderCards(); }));
+
+  document.getElementById('resetLink').addEventListener('click', e=>{
+    e.preventDefault(); active = null; renderFilters(); renderCards();
+  });
+
+  // email capture placeholder — collect-first; provider wiring to come
+  document.getElementById('captureForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    document.getElementById('captureNote').textContent =
+      'Thanks — capture isn’t wired yet, but you’re early. Check back soon.';
+  });
+})();
+</script>
+</body>
+</html>
