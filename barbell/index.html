@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just a Barbell — a hard floor plus a sliver of uncapped upside beats the sensible middle</title>
+<meta name="description" content="Three interactive games on Taleb's barbell strategy: why a hard floor plus a sliver of uncapped upside beats a sensible-looking middle, why the 'moderate' portfolio is the one with no floor, and why ten percent convex is all you need." />
+<meta property="og:title" content="It's Just a Barbell" />
+<meta property="og:description" content="An interactive note on the barbell — clip the downside, keep the lottery ticket. Why 90% maximally safe plus 10% convex beats 100% 'medium'. After Nassim Taleb." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --accent:#bd8324;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand"><b>It's Just a Barbell</b><span class="sub"> &nbsp;·&nbsp; safe + convex</span></div>
+    <a class="sibling" href="/uncertainty/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just Unknown →</b></a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on the barbell</div>
+    <h1>It's Just a Barbell</h1>
+    <p class="lede">Three games on Taleb's barbell — why a hard <em>floor</em> plus a sliver of uncapped upside beats a sensible-looking middle, why the “moderate” portfolio is the one with no floor at all, and why <em>ten percent</em> convex is all you ever need — after Nassim Taleb.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> The shape</div>
+    <h2>A floor and a lottery ticket beat a sensible middle</h2>
+
+    <p>A barbell is two extremes and nothing in between. You put most of your money somewhere <strong>maximally safe</strong> — a floor that simply cannot fall far — and a small slice somewhere <strong>wildly convex</strong>: bets that usually fizzle but can pay many times over. What you deliberately refuse is the comfortable middle: the single “moderate-risk” holding that feels prudent and quietly carries the worst of both worlds.</p>
+
+    <p class="sub">Below, a thousand parallel outcomes for two strategies, each starting at 100. The <strong>barbell</strong> holds a safe majority plus a convex sleeve; the slider sets how much you keep safe. The <strong>all-medium</strong> portfolio puts everything in one moderate asset. Flip between them. The barbell stacks against a hard red floor and still flings dots far up the right; the medium portfolio bunches in a tidy hump — with a left tail that reaches below the barbell's floor and a right tail that never goes anywhere exciting.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Which strategy <b id="g1-mode-lab"></b></label>
+          <div class="seg" id="g1-mode" role="group" aria-label="Strategy">
+            <button data-mode="bar" aria-pressed="true">Barbell: safe + convex</button>
+            <button data-mode="med" aria-pressed="false">All medium-risk</button>
+          </div>
+        </div>
+        <div class="ctrl" id="g1-swrap">
+          <label>Kept maximally safe <b id="g1-s-lab">90%</b></label>
+          <input type="range" id="g1-s" min="50" max="98" value="90" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Worst case</div><div class="v" id="g1-worst">—</div></div>
+        <div class="stat"><div class="k">Typical (median)</div><div class="v" id="g1-med">—</div></div>
+        <div class="stat green"><div class="k">Lucky (top 5%)</div><div class="v" id="g1-top">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--amber)"><i class="dot" style="background:var(--amber);opacity:.6"></i> one of 1,000 outcomes</span>
+        <span style="color:var(--green)"><i class="dash" style="color:var(--green)"></i> median</span>
+        <span style="color:var(--red)"><i class="dash" style="color:var(--red)"></i> floor / worst case</span>
+      </div>
+      <div class="canvas-box"><canvas id="g1" height="340"></canvas></div>
+      <div class="btnrow"><button class="act-btn" id="g1-rerun">Re-run the thousand</button></div>
+      <div class="caption">Final value, one dot per outcome. The barbell sacrifices the mediocre middle to buy two things the medium portfolio can't have at once: a floor it can't crash through, and a tail it can ride.</div>
+    </div>
+
+    <p>Read the numbers, not the vibe. The medium portfolio usually posts a slightly nicer <em>median</em> — that's the seduction. But its worst case dives below the barbell's floor, and its best case is dull. The barbell trades away the average outcome on purpose. In a world with fat tails, the average is not where the action is; the floor and the tail are. You give up the middle because the middle was never paying you for the risk it carried.</p>
+
+    <blockquote>
+      <p>“Antifragility is the combination aggressiveness plus paranoia — clip your downside, protect yourself from extreme harm, and let the upside take care of itself.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+
+    <p class="sub">One round hides the real danger, though. Money doesn't get played once — it compounds, period after period. And over time the missing floor stops being a cosmetic dent and starts being the whole story. That's Game Two.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> Over time</div>
+    <h2>The middle is the dangerous place</h2>
+
+    <p>Compounding is unforgiving in a way a single round never reveals. A portfolio that grows nicely on average can still be destroyed by an unlucky <em>order</em> of returns — one deep drawdown early, and you're multiplying every future gain by a number far below where you started. This is the volatility tax, and the “moderate” portfolio pays it precisely because it has no floor to stop the bleeding.</p>
+
+    <p class="sub">Below, sixty lives compounding wealth period after period. The <strong>barbell</strong> rebalances back to its safe floor each time, so a bad patch dents it and the floor catches it — then it keeps climbing, with the odd jump when the sleeve pays. The <strong>all-medium</strong> lives spread wide: many do fine, but a handful catch a bad sequence and sink toward the half-line and below, and compounding never lets them back. Drag the years out and watch the medium fan keep throwing off casualties the barbell simply doesn't have.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Which strategy <b id="g2-mode-lab"></b></label>
+          <div class="seg" id="g2-mode" role="group" aria-label="Strategy">
+            <button data-mode="bar" aria-pressed="true">Barbell (90 / 10)</button>
+            <button data-mode="med" aria-pressed="false">All medium-risk</button>
+          </div>
+        </div>
+        <div class="ctrl">
+          <label>Years compounded <b id="g2-t-lab">25</b></label>
+          <input type="range" id="g2-t" min="5" max="45" value="25" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat"><div class="k">Typical end (median)</div><div class="v" id="g2-med">—</div></div>
+        <div class="stat red"><div class="k">Worst life</div><div class="v" id="g2-worst">—</div></div>
+        <div class="stat amber"><div class="k">Fell below half</div><div class="v" id="g2-half">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--amber)"><i style="background:var(--amber);opacity:.5"></i> one life compounding</span>
+        <span style="color:var(--green)"><i style="color:var(--green)"></i> median life</span>
+        <span style="color:var(--red)"><i class="dash" style="color:var(--red)"></i> half of where you started</span>
+      </div>
+      <div class="canvas-box"><canvas id="g2" height="340"></canvas></div>
+      <div class="btnrow"><button class="act-btn" id="g2-rerun">A different sixty</button></div>
+      <div class="caption">Wealth over time, log scale. “Moderate risk” isn't safety — safety is the floor. Across enough periods, the unprotected middle is exactly where a bad sequence does its damage.</div>
+    </div>
+
+    <p>This is the trap dressed as prudence. “Don't be reckless, don't be timid, take a moderate amount of risk” sounds like wisdom and is, over a long enough horizon, the riskiest sentence in finance. The barbell refuses it. By bolting most of the money to a floor, it guarantees that no single bad stretch can take you out of the game — and staying in the game is the entire prerequisite for compounding to ever work in your favour.</p>
+
+    <blockquote>
+      <p>“Survival comes first; truth, understanding, and science later.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Skin in the Game</cite>
+    </blockquote>
+
+    <p class="sub">So the floor is non-negotiable. But how big should the wild sleeve be — five percent, ten, forty? Crank it up and surely you make more? Game Three says: far less than you'd think.</p>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> Sizing it</div>
+    <h2>Ten percent convex is all you need</h2>
+
+    <p>Because the sleeve's upside is <strong>uncapped</strong>, you don't need much of it. A tiny convex allocation already reaches into the fat tail; piling on more mostly just eats your floor. Here's the whole tradeoff in one picture: sweep the size of the wild sleeve from nothing to nearly half, and watch three numbers move at once.</p>
+
+    <p class="sub">The <strong>floor</strong> (red) slides straight down — every point you move out of safety is a point of protection gone. The <strong>typical</strong> outcome (grey) barely budges; the sleeve usually bleeds. But the <strong>lucky tail</strong> (green) climbs hard, because the rare jackpot scales with whatever you bet. The lesson is in the first few steps from zero: a small sleeve buys most of the upside while the floor is still nearly intact. Push past it and you're paying real floor for upside you'd mostly already bought.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Size of the wild sleeve <b id="g3-s-lab">10%</b></label>
+          <input type="range" id="g3-s" min="0" max="40" value="10" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Floor (worst case)</div><div class="v" id="g3-floor">—</div></div>
+        <div class="stat"><div class="k">Typical (median)</div><div class="v" id="g3-med">—</div></div>
+        <div class="stat green"><div class="k">Lucky (top 5%)</div><div class="v" id="g3-top">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> floor</span>
+        <span style="color:var(--ink-soft)"><i style="background:var(--ink-soft)"></i> typical</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> lucky tail</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> your sleeve size</span>
+      </div>
+      <div class="canvas-box"><canvas id="g3" height="330"></canvas></div>
+      <div class="caption">Three outcomes as the wild sleeve grows. The floor you lose is linear; the upside you gain is in the tail. The sweet spot isn't a kink in the curve — it's the moment the floor you'd sacrifice stops being worth the upside you've already secured.</div>
+    </div>
+
+    <p>This is why the canonical barbell is something like ninety / ten, not fifty / fifty. You are not trying to maximise the sleeve; you are trying to <em>own a claim on the upside</em> while keeping a floor you'll never have to think about. Convexity does the heavy lifting — a small exposure to an unbounded payoff is worth more than a large exposure to a bounded one. You don't have to be right often. You have to be convex, and you have to survive being wrong.</p>
+
+    <blockquote>
+      <p>“If you have optionality, you don't have much need for what is commonly called intelligence… You only have to be right rarely.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>Clip the downside. Keep the lottery ticket.</h2>
+    <p>The barbell isn't a compromise between safe and risky — it's a refusal to sit in the deceptive middle. Most of your weight on a floor where being wrong would be fatal; a small, cheap claim on the tail where being wrong costs almost nothing and being right pays out of all proportion. Bounded loss, open upside. It's the same shape as every other essay here — luck, action, money, uncertainty all turn out to be barbells in disguise. Build the floor first. Then go buy your tail.</p>
+    <blockquote>
+      <p>“Understanding is a poor substitute for convexity.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+    <p class="credits">
+      The <strong>barbell strategy</strong> and the antifragility frame around it are Nassim Taleb's, chiefly from <em>Antifragile</em> (2012) and across the <em>Incerto</em>; the “aggressiveness plus paranoia,” “survival comes first,” and optionality lines are his. The second game leans on the <strong>ergodicity</strong> point — that a strategy's average over many lives is not what happens to your one life compounding through time — sharpened by Ole Peters. The convex thread tying the barbell to its siblings is my own synthesis, the line through <a href="/uncertainty/" rel="noopener">It's Just Unknown</a> (uncertainty), <a href="/convex/" rel="noopener">It's Just Math</a> (money), <a href="/serendipity/" rel="noopener">It's Just Luck</a> (luck), and <a href="/tiny-experiments/" rel="noopener">It's Just an Experiment</a> (action). The games are deliberately simple toy models — directionally honest, not investment advice.
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b', blue:'#2f5d86',
+    grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.58)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  function gauss(rng){ let u=0,v=0; while(u===0)u=rng(); while(v===0)v=rng(); return Math.sqrt(-2*Math.log(u))*Math.cos(6.283185*v); }
+
+  // ----- shared one-period outcome models (start = 100) -----
+  function barbellOnce(rng, sleeveFrac){
+    const safe=(1-sleeveFrac)*100, sleeve=sleeveFrac*100;
+    let mult;
+    if(rng()<0.16){ const u=rng(); mult = 2.5 + 38*Math.pow(u,3.4); }  // rare jackpot
+    else { mult = 0.45*rng(); }                                        // usual: most of the sleeve bleeds away
+    return safe*1.02 + sleeve*mult;
+  }
+  function barbellFloor(sleeveFrac){ return (1-sleeveFrac)*100*1.02; } // mult -> 0
+  function mediumOnce(rng){
+    if(rng()<0.06){ return 100*(1 - (0.35+0.45*rng())); }             // crash: -35..-80%, no floor
+    return 100*(1 + 0.06 + 0.20*gauss(rng));
+  }
+  function quantile(sorted,q){ return sorted[clamp(Math.floor(sorted.length*q),0,sorted.length-1)]; }
+  function fmt(v){ if(v>=1000) return Math.round(v/1000*10)/10+'k'; return Math.round(v).toString(); }
+
+  /* =====================================================================
+     GAME ONE — the shape: barbell vs all-medium, one period, 1000 outcomes
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g1'); if(!cv) return;
+    const SIMS=1000;
+    let mode='bar', sFrac=0.10, seed=42;
+    const elWorst=document.getElementById('g1-worst'), elMed=document.getElementById('g1-med'),
+          elTop=document.getElementById('g1-top'), elSlab=document.getElementById('g1-s-lab'),
+          elModeLab=document.getElementById('g1-mode-lab'), swrap=document.getElementById('g1-swrap');
+
+    function run(){
+      const rng=mulberry32(seed); const out=new Array(SIMS);
+      for(let i=0;i<SIMS;i++) out[i] = mode==='bar' ? barbellOnce(rng,sFrac) : mediumOnce(rng);
+      const sorted=out.slice().sort((a,b)=>a-b);
+      const med=quantile(sorted,0.5), top=quantile(sorted,0.95);
+      const worst = mode==='bar' ? barbellFloor(sFrac) : sorted[0];
+      draw(out,med,worst);
+      elMed.textContent=fmt(med); elTop.textContent=fmt(top); elWorst.textContent=fmt(worst);
+    }
+    function draw(out,med,worst){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:16,r:16,t:16,b:26});
+      let hi=140; out.forEach(v=>{ if(v>hi)hi=v; }); hi=Math.min(hi,800); hi*=1.05;
+      const lo=0;
+      const Y=v=>f.b - f.H*clamp((v-lo)/(hi-lo),0,1);
+      // start line
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,Y(100)); ctx.lineTo(f.r,Y(100)); ctx.stroke();
+      ctx.fillStyle=C.faint; ctx.font='11px IBM Plex Mono'; ctx.textAlign='left'; ctx.fillText('start (100)',f.l+2,Y(100)-5);
+      // dots
+      const rng=mulberry32(seed^0x77);
+      for(let i=0;i<out.length;i++){
+        const x=f.l+4+(f.W-8)*((i+0.5)/out.length); const v=Math.min(out[i],hi);
+        ctx.fillStyle = out[i] < 100 ? 'rgba(178,58,46,.34)' : 'rgba(189,131,36,.45)';
+        ctx.beginPath(); ctx.arc(x, Y(v)+(rng()-0.5)*4, 2.0,0,6.283); ctx.fill();
+      }
+      // floor / worst
+      ctx.strokeStyle=C.red; ctx.setLineDash([5,4]); ctx.lineWidth=1.6;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(worst)); ctx.lineTo(f.r,Y(worst)); ctx.stroke(); ctx.setLineDash([]);
+      // median
+      ctx.strokeStyle=C.green; ctx.setLineDash([5,4]); ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(Math.min(med,hi))); ctx.lineTo(f.r,Y(Math.min(med,hi))); ctx.stroke(); ctx.setLineDash([]);
+    }
+    function render(){
+      elModeLab.textContent = mode==='bar' ? 'floor + convex sleeve' : 'one moderate holding';
+      elSlab.textContent=Math.round((1-sFrac)*100)+'%';   // label = "kept maximally safe"
+      swrap.style.opacity=mode==='bar'?1:.35; swrap.style.pointerEvents=mode==='bar'?'auto':'none';
+      run();
+    }
+    document.getElementById('g1-s').oninput=e=>{ sFrac=1-(+e.target.value)/100; elSlab.textContent=(+e.target.value)+'%'; run(); };
+    document.querySelectorAll('#g1-mode button').forEach(b=>b.onclick=()=>{
+      mode=b.dataset.mode;
+      document.querySelectorAll('#g1-mode button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      render();
+    });
+    document.getElementById('g1-rerun').onclick=()=>{ seed=(seed*1103515245+12345)>>>0; run(); };
+    // init: slider value is "kept safe" %, sleeve = 1 - that
+    sFrac = 1 - (+document.getElementById('g1-s').value)/100;
+    render();
+    window.addEventListener('resize',run);
+  })();
+
+  /* =====================================================================
+     GAME TWO — over time: compounding paths, barbell floor vs medium sequence risk
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g2'); if(!cv) return;
+    const NPATH=60;
+    let mode='bar', T=25, seed=9;
+
+    const elMed=document.getElementById('g2-med'), elWorst=document.getElementById('g2-worst'),
+          elHalf=document.getElementById('g2-half'), elTlab=document.getElementById('g2-t-lab'),
+          elModeLab=document.getElementById('g2-mode-lab');
+
+    function barStep(rng){ // gross factor on total wealth, rebalanced 85/15
+      let sleeve;
+      if(rng()<0.18){ const u=rng(); sleeve = 1.4 + 6*Math.pow(u,2.6); } // sleeve gains
+      else { sleeve = 0.5 + 0.5*rng(); }                                // sleeve bleeds (0.5..1.0)
+      return 0.85*1.015 + 0.15*sleeve;
+    }
+    function medStep(rng){
+      if(rng()<0.05) return 1 - (0.30+0.45*rng());  // crash
+      return Math.max(0.05, 1 + 0.06 + 0.20*gauss(rng));
+    }
+    function build(){
+      const base=mulberry32(seed); const paths=[];
+      for(let p=0;p<NPATH;p++){
+        const r=mulberry32((base()*4294967296)>>>0 ^ (p*2246822519));
+        const arr=new Float64Array(T+1); arr[0]=100;
+        for(let t=1;t<=T;t++){ arr[t]=Math.max(0.01, arr[t-1]*(mode==='bar'?barStep(r):medStep(r))); }
+        paths.push(arr);
+      }
+      return paths;
+    }
+    function draw(){
+      const paths=build();
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:40,r:14,t:16,b:24});
+      let hi=100, lo=100;
+      paths.forEach(a=>a.forEach(v=>{ if(v>hi)hi=v; if(v<lo)lo=v; }));
+      lo=Math.max(1,Math.min(lo,40)); hi*=1.1;
+      const loLog=Math.log(lo), hiLog=Math.log(hi);
+      const X=t=>f.l+f.W*(t/T);
+      const Y=v=>f.b-f.H*((Math.log(clamp(v,lo,hi))-loLog)/(hiLog-loLog));
+      // gridlines at powers of value
+      ctx.font='10px IBM Plex Mono'; ctx.fillStyle=C.faint; ctx.textAlign='right';
+      [50,100,200,500,1000,2000,5000].forEach(v=>{ if(v>=lo&&v<=hi){ const y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillText(v>=1000?(v/1000)+'k':v, f.l-6, y+3);
+      }});
+      // half-of-start line
+      ctx.strokeStyle=C.red; ctx.setLineDash([5,4]); ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(50)); ctx.lineTo(f.r,Y(50)); ctx.stroke(); ctx.setLineDash([]);
+      // paths
+      const finals=[];
+      paths.forEach(a=>{ finals.push(a[T]);
+        ctx.strokeStyle='rgba(189,131,36,.28)'; ctx.lineWidth=1; ctx.lineJoin='round'; ctx.beginPath();
+        for(let t=0;t<=T;t++){ const x=X(t),y=Y(a[t]); t?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke();
+      });
+      // median path (by final value)
+      const order=paths.map((a,i)=>[a[T],i]).sort((p,q)=>p[0]-q[0]);
+      const medPath=paths[order[Math.floor(NPATH*0.5)][1]];
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.4; ctx.beginPath();
+      for(let t=0;t<=T;t++){ const x=X(t),y=Y(medPath[t]); t?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke();
+      // stats
+      const sf=finals.slice().sort((a,b)=>a-b);
+      elMed.textContent=fmt(sf[Math.floor(NPATH*0.5)]); elWorst.textContent=fmt(sf[0]);
+      let below=0; finals.forEach(v=>{ if(v<50)below++; });
+      elHalf.textContent=Math.round(below/NPATH*100)+'%';
+      elTlab.textContent=T;
+    }
+    function render(){ elModeLab.textContent = mode==='bar'?'floor + convex sleeve':'one moderate holding'; draw(); }
+    document.getElementById('g2-t').oninput=e=>{ T=+e.target.value; draw(); };
+    document.querySelectorAll('#g2-mode button').forEach(b=>b.onclick=()=>{
+      mode=b.dataset.mode;
+      document.querySelectorAll('#g2-mode button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+      render();
+    });
+    document.getElementById('g2-rerun').onclick=()=>{ seed=(seed*1664525+1013904223)>>>0; draw(); };
+    render();
+    window.addEventListener('resize',draw);
+  })();
+
+  /* =====================================================================
+     GAME THREE — sizing it: floor / median / tail as the sleeve grows
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g3'); if(!cv) return;
+    const SIMS=800, STEPS=41; // sleeve 0..0.40
+    let sCur=0.10;
+    const elFloor=document.getElementById('g3-floor'), elMed=document.getElementById('g3-med'),
+          elTop=document.getElementById('g3-top'), elSlab=document.getElementById('g3-s-lab');
+    // precompute curves
+    let curveFloor=[], curveMed=[], curveTop=[], xs=[];
+    function compute(){
+      curveFloor=[]; curveMed=[]; curveTop=[]; xs=[];
+      for(let k=0;k<STEPS;k++){
+        const s=k/(STEPS-1)*0.40; xs.push(s);
+        const rng=mulberry32(1234+k*2654435761>>>0);
+        const out=new Array(SIMS);
+        for(let i=0;i<SIMS;i++) out[i]=barbellOnce(rng,s);
+        out.sort((a,b)=>a-b);
+        curveFloor.push(barbellFloor(s));
+        curveMed.push(quantile(out,0.5));
+        curveTop.push(quantile(out,0.95));
+      }
+    }
+    function at(s){ const k=clamp(Math.round(s/0.40*(STEPS-1)),0,STEPS-1); return k; }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:40,r:14,t:16,b:30});
+      let hi=0; curveTop.forEach(v=>{ if(v>hi)hi=v; }); hi*=1.08; const lo=0;
+      const X=s=>f.l+f.W*(s/0.40);
+      const Y=v=>f.b-f.H*clamp((v-lo)/(hi-lo),0,1);
+      // grid + start line
+      ctx.font='10px IBM Plex Mono'; ctx.fillStyle=C.faint; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const v=hi*g/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillText(fmt(v), f.l-6, y+3);
+      }
+      ctx.strokeStyle='rgba(29,26,22,.16)'; ctx.setLineDash([3,3]); ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(100)); ctx.lineTo(f.r,Y(100)); ctx.stroke(); ctx.setLineDash([]);
+      // x ticks
+      ctx.textAlign='center';
+      [0,0.1,0.2,0.3,0.4].forEach(s=>{ ctx.fillStyle=C.faint; ctx.fillText(Math.round(s*100)+'%', X(s), f.b+16); });
+      function line(curve,color,wd){ ctx.strokeStyle=color; ctx.lineWidth=wd; ctx.lineJoin='round'; ctx.beginPath();
+        for(let k=0;k<STEPS;k++){ const x=X(xs[k]),y=Y(curve[k]); k?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke(); }
+      line(curveTop,C.green,2.4);
+      line(curveMed,C.inkSoft,2.0);
+      line(curveFloor,C.red,2.4);
+      // current sleeve marker
+      const x=X(sCur);
+      ctx.strokeStyle='rgba(138,130,117,.7)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(x,f.t); ctx.lineTo(x,f.b); ctx.stroke(); ctx.setLineDash([]);
+      const k=at(sCur);
+      [[curveTop[k],C.green],[curveMed[k],C.inkSoft],[curveFloor[k],C.red]].forEach(([v,c])=>{
+        ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x,Y(v),3.4,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.5; ctx.stroke();
+      });
+    }
+    function render(){
+      const k=at(sCur);
+      elFloor.textContent=fmt(curveFloor[k]); elMed.textContent=fmt(curveMed[k]); elTop.textContent=fmt(curveTop[k]);
+      elSlab.textContent=Math.round(sCur*100)+'%';
+      draw();
+    }
+    document.getElementById('g3-s').oninput=e=>{ sCur=+e.target.value/100; render(); };
+    compute(); render();
+    window.addEventListener('resize',draw);
+  })();
+
+  /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+</body>
+</html>
