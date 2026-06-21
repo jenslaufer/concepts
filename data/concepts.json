@@ -30,6 +30,11 @@
       "name": "Frank Knight",
       "note": "Risk vs. uncertainty — the measurable and the genuinely unknown.",
       "url": "https://en.wikipedia.org/wiki/Frank_Knight"
+    },
+    "mandelbrot": {
+      "name": "Benoit Mandelbrot",
+      "note": "Power laws and the Lindy effect — life expectancy proportional to age.",
+      "url": "https://en.wikipedia.org/wiki/Benoit_Mandelbrot"
     }
   },
   "concepts": [
@@ -87,6 +92,17 @@
       "blurb": "Why 90% maximally safe plus 10% convex beats 100% \"medium\" — combining a hard floor with uncapped upside.",
       "people": ["taleb"],
       "tags": ["optionality", "barbell", "convexity", "tail-risk", "decision"]
+    },
+    {
+      "slug": "lindy",
+      "title": "It's Just Old",
+      "concept": "The Lindy effect",
+      "url": "/lindy/",
+      "status": "live",
+      "eyebrow": "An interactive note on the Lindy effect",
+      "blurb": "Why people age forward and ideas age in reverse — for the non-perishable, every year survived buys more expected future, not less. The oldest bet is the safest bet.",
+      "people": ["mandelbrot", "taleb"],
+      "tags": ["optionality", "lindy", "survival", "tail-risk", "decision"]
     }
   ]
 }
