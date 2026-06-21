@@ -347,8 +347,8 @@
     <h2>Stop predicting the path. Run it.</h2>
     <p>The world drifts, so loops beat ladders. The finish line you own can't make you fail. And a pocketful of small, reversible bets compounds into the one big thing you could never have planned for. Three games, one conclusion — and, as the neuroscientist says, it's almost impossible to fail when you see everything as an experiment.</p>
     <blockquote>
-      <p>“Understanding is a poor substitute for convexity.”</p>
-      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+      <p>“Replace the old linear model of success with a circular model of growth, in which goals are discovered, pursued, and adapted — not in a vacuum, but in conversation with the larger world.”</p>
+      <cite><b>Anne-Laure Le Cunff</b> · Tiny Experiments</cite>
     </blockquote>
     <p class="credits">
       The ideas here are Anne-Laure Le Cunff's, from <em>Tiny Experiments: How to Live Freely in a Goal-Obsessed World</em> (2025) and her writing at <a href="https://nesslabs.com" rel="noopener">Ness Labs</a> — the PACT (“<a href="https://nesslabs.com/smart-goals-pact" rel="noopener">make a PACT instead</a>”), the growth loop, the Triple Check (after Hugo Kehr), and the bridge to optionality she draws in “<a href="https://nesslabs.com/optionality-fallacy" rel="noopener">The optionality fallacy</a>,” where she meets Taleb's antifragility head-on. The interactive games are my own toy models — deliberately simple, directionally honest. Its sibling, <a href="/convex/" rel="noopener">It's Just Math</a>, makes the same convexity argument for money.
@@ -459,7 +459,7 @@
     function reset(seedKeep){ if(!seedKeep) seed=7; buildWorld(seed); anim=1; draw(); }
 
     document.getElementById('a1-play').onclick=()=>{ buildWorld(seed); play(); };
-    document.getElementById('a1-shift').onclick=()=>{ seed=(seed*1664525+1013904223)>>>0%100000; buildWorld(seed); play(); };
+    document.getElementById('a1-shift').onclick=()=>{ seed=(seed*1664525+1013904223)>>>0; buildWorld(seed); play(); };
     document.getElementById('a1-reset').onclick=()=>reset(false);
     reset(false);
     window.addEventListener('resize',()=>draw());
@@ -570,7 +570,7 @@
       const stake=12; const r=rng();
       if(r<0.32) return -stake;            // it fails, you lose it all
       if(r<0.86) return -stake*0.15;       // limps, small loss
-      return -stake + 14*Math.pow((r-0.86)/0.14, .7) * stake/3 + stake; // pays off
+      return 14*Math.pow((r-0.86)/0.14, .7) * stake/3; // pays off
     }
     function run(){
       const rng=mulberry32(seed);

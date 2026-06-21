@@ -340,7 +340,7 @@
     <h2>Clip the downside. Keep the lottery ticket.</h2>
     <p>The barbell isn't a compromise between safe and risky — it's a refusal to sit in the deceptive middle. Most of your weight on a floor where being wrong would be fatal; a small, cheap claim on the tail where being wrong costs almost nothing and being right pays out of all proportion. Bounded loss, open upside. It's the same shape as every other essay here — luck, action, money, uncertainty all turn out to be barbells in disguise. Build the floor first. Then go buy your tail.</p>
     <blockquote>
-      <p>“Understanding is a poor substitute for convexity.”</p>
+      <p>“I initially used the image of the barbell to describe a dual attitude of playing it safe in some areas (robust to negative Black Swans) and taking a lot of small risks in others (open to positive Black Swans), hence achieving antifragility.”</p>
       <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
     </blockquote>
     <p class="credits">
@@ -484,11 +484,11 @@
           elHalf=document.getElementById('g2-half'), elTlab=document.getElementById('g2-t-lab'),
           elModeLab=document.getElementById('g2-mode-lab');
 
-    function barStep(rng){ // gross factor on total wealth, rebalanced 85/15
+    function barStep(rng){ // gross factor on total wealth, rebalanced 90/10
       let sleeve;
       if(rng()<0.18){ const u=rng(); sleeve = 1.4 + 6*Math.pow(u,2.6); } // sleeve gains
       else { sleeve = 0.5 + 0.5*rng(); }                                // sleeve bleeds (0.5..1.0)
-      return 0.85*1.015 + 0.15*sleeve;
+      return 0.90*1.015 + 0.10*sleeve;
     }
     function medStep(rng){
       if(rng()<0.05) return 1 - (0.30+0.45*rng());  // crash
