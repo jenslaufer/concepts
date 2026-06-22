@@ -35,6 +35,11 @@
       "name": "Benoit Mandelbrot",
       "note": "Power laws and the Lindy effect — life expectancy proportional to age.",
       "url": "https://en.wikipedia.org/wiki/Benoit_Mandelbrot"
+    },
+    "meadows": {
+      "name": "Donella Meadows",
+      "note": "Systems thinking — stocks, flows, feedback loops, and why a system's behavior comes from its structure, not its parts.",
+      "url": "https://en.wikipedia.org/wiki/Donella_Meadows"
     }
   },
   "concepts": [
@@ -103,6 +108,17 @@
       "blurb": "Why people age forward and ideas age in reverse — for the non-perishable, every year survived buys more expected future, not less. The oldest bet is the safest bet.",
       "people": ["mandelbrot", "taleb"],
       "tags": ["optionality", "lindy", "survival", "tail-risk", "decision"]
+    },
+    {
+      "slug": "systems",
+      "title": "It's Just a Loop",
+      "concept": "Systems thinking",
+      "url": "/systems/",
+      "status": "live",
+      "eyebrow": "An interactive note on systems thinking",
+      "blurb": "Why a system's behavior comes from its structure, not its parts — how a stock hides what its flows are doing, how a delay turns a steady loop into wild oscillation, and why growth into a limit so often overshoots and collapses.",
+      "people": ["meadows"],
+      "tags": ["systems", "feedback-loops", "stocks-flows", "overshoot", "tail-risk", "decision"]
     }
   ]
 }

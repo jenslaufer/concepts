@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just a Loop — why a system's behavior comes from its structure, not its parts</title>
+<meta name="description" content="Three interactive games on systems thinking: why a stock hides what its flows are doing, why the same loop structure produces growth, balance, or wild oscillation once you add a delay, and why growth into a limit so often overshoots and collapses. After Donella Meadows." />
+<meta property="og:title" content="It's Just a Loop" />
+<meta property="og:description" content="An interactive note on systems thinking — stocks, flows, feedback loops, delay, and overshoot. After Donella Meadows, Thinking in Systems." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --accent:#4f4d8f;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.accent .v{color:var(--accent)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl.hidden{display:none}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+  .segwrap{margin:2px 0 16px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just a Loop</b><span class="sub"> &nbsp;·&nbsp; systems thinking</span></a>
+    <a class="sibling" href="/convex/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just Math →</b></a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on systems thinking</div>
+    <h1>It's Just a Loop</h1>
+    <p class="lede">Three games on systems thinking — why a <em>stock</em> hides what its flows are doing, why the same loop structure can <em>grow</em>, <em>settle</em>, or <em>swing wildly</em> the moment you add a delay, and why growth into a limit so often <em>overshoots and crashes</em> — after Donella Meadows.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> The bathtub</div>
+    <h2>You can't push a stock. You can only change its flows.</h2>
+
+    <p>We are wired to think in events: a price, a headline, a number that is too high today. But almost everything that matters is a <strong>stock</strong> — a quantity that has piled up over time. The water in a tub. Money in an account. Carbon in the air. Trust in a relationship. And a stock has one stubborn property that trips up almost everyone: <em>you cannot change it directly.</em> You can only open or close its <strong>flows</strong> — the faucet that fills it and the drain that empties it — and then wait while it integrates them.</p>
+
+    <p class="sub">Here is the part our event-brain refuses to believe. Set the faucet above the drain and the level rises. Now slowly <em>close</em> the faucet — turn the inflow down, year after year. As long as it is still even slightly above the drain, <strong>the level keeps climbing.</strong> The tub fills while the faucet is closing. It only stops rising the instant the two flows cross. Drag the flows below — and switch the faucet to <em>closing</em> — and watch where the level peaks.</p>
+
+    <div class="card wide">
+      <div class="segwrap">
+        <div class="seg" id="g1-mode" role="group" aria-label="Faucet behaviour">
+          <button data-m="steady" aria-pressed="true">Faucet held steady</button>
+          <button data-m="closing" aria-pressed="false">Faucet slowly closing</button>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="ctrl">
+          <label>Faucet — inflow <b id="g1-in-lab">6</b></label>
+          <input type="range" id="g1-in" min="0" max="12" value="6" step="0.5">
+        </div>
+        <div class="ctrl">
+          <label>Drain — outflow <b id="g1-out-lab">4</b></label>
+          <input type="range" id="g1-out" min="0" max="12" value="4" step="0.5">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat accent"><div class="k">Peak level reached</div><div class="v" id="g1-peak">—</div></div>
+        <div class="stat"><div class="k">Level at the end</div><div class="v" id="g1-final">—</div></div>
+        <div class="stat green"><div class="k">Still rising at the end?</div><div class="v" id="g1-rising" style="font-size:16px">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--accent)"><i style="background:var(--accent)"></i> the stock (water level)</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> inflow (faucet)</span>
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> outflow (drain)</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> where the flows cross</span>
+      </div>
+      <div class="canvas-box"><canvas id="g1" height="340"></canvas></div>
+      <div class="caption">The bold line is the stock — the running sum of every drop in minus every drop out. The thin lines are the two flows (right axis). Notice: the level rises for as long as green sits above red, and turns over only at the crossing — never when the faucet merely starts to close.</div>
+    </div>
+
+    <p>This is why a falling inflow is not the same as a falling stock. Emissions can drop for a decade and the carbon in the air still rises. Hiring can slow while headcount still grows. The deficit can shrink while the debt still climbs. The flow is the news; the stock is the reality — and they can move in opposite directions for a long, long time, because <strong>a stock takes time to change, because flows take time to flow.</strong></p>
+
+    <blockquote>
+      <p>“You can adjust the drain or faucet of a bathtub—the flows—abruptly, but it is much more difficult to change the level of water—the stock—quickly. A stock takes time to change, because flows take time to flow.”</p>
+      <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
+    </blockquote>
+
+    <p class="sub">A stock with one flow is just bookkeeping. It gets interesting when the stock reaches back and changes its own flows — when the level of the tub decides how hard the faucet runs. That bend-back is a <strong>feedback loop</strong>, and it is where a system stops being arithmetic and starts having a personality. That's Game Two.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> The loop</div>
+    <h2>Structure decides whether you grow, settle, or swing.</h2>
+
+    <p>A feedback loop is a stock that controls its own flows. There are only two kinds, and between them they draw almost every curve you have ever seen. A <strong>reinforcing</strong> loop feeds on itself — more makes more — and produces runaway growth: compound interest, a population, a rumour, a bank run. A <strong>balancing</strong> loop chases a goal — it pushes harder the further it is from where it wants to be — and produces the patient S-curve that settles down: a thermostat, a coffee cooling, a body holding its temperature.</p>
+
+    <p class="sub">Now add the one ingredient the real world never lacks: a <strong>delay</strong>. Make the loop act not on where the stock <em>is</em>, but on where it was a few steps ago — the lag between ordering stock and it arriving, between raising rates and the economy feeling it, between turning the shower knob and the water changing. A balancing loop with a delay no longer settles politely. It overshoots its goal, corrects too late, overshoots the other way, and <strong>oscillates</strong>. Same goal, same strength — only the delay changed. Switch the loop's structure below and watch the shape of its life change with it.</p>
+
+    <div class="card wide">
+      <div class="segwrap">
+        <div class="seg" id="g2-mode" role="group" aria-label="Loop type">
+          <button data-m="reinforce" aria-pressed="false">Reinforcing</button>
+          <button data-m="balance" aria-pressed="true">Balancing</button>
+          <button data-m="delay" aria-pressed="false">Balancing + delay</button>
+        </div>
+      </div>
+      <div class="controls">
+        <div class="ctrl" id="g2-rwrap">
+          <label>Growth per step <b id="g2-r-lab">4%</b></label>
+          <input type="range" id="g2-r" min="1" max="10" value="4" step="0.5">
+        </div>
+        <div class="ctrl" id="g2-kwrap">
+          <label>Response strength <b id="g2-k-lab">0.50</b></label>
+          <input type="range" id="g2-k" min="10" max="100" value="50" step="5">
+        </div>
+        <div class="ctrl" id="g2-dwrap">
+          <label>Perception delay <b id="g2-d-lab">6</b></label>
+          <input type="range" id="g2-d" min="1" max="12" value="6" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat accent"><div class="k">Behavior</div><div class="v" id="g2-regime" style="font-size:15px">—</div></div>
+        <div class="stat amber"><div class="k">Highest point</div><div class="v" id="g2-peak">—</div></div>
+        <div class="stat"><div class="k">Where it ends</div><div class="v" id="g2-final">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--accent)"><i style="background:var(--accent)"></i> the stock over time</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the goal it is chasing</span>
+      </div>
+      <div class="canvas-box"><canvas id="g2" height="340"></canvas></div>
+      <div class="caption">Reinforcing loops curve up forever. Balancing loops bend toward the goal and rest. Add a delay to a balancing loop and the very same goal-seeking turns into overshoot and oscillation — the loop keeps correcting for a gap that has already closed.</div>
+    </div>
+
+    <p>None of these curves live in the numbers — they live in the <em>wiring</em>. Reinforcing, balancing, delay: change the structure and you change the destiny, no matter what the loop is made of — atoms, money, or people. That is the whole claim of systems thinking, and it is why Meadows insisted that the delay is not a footnote but a lever:</p>
+
+    <blockquote>
+      <p>“Delays are pervasive in systems, and they are strong determinants of behavior. Changing the length of a delay may make a large change in the behavior of a system.”</p>
+      <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
+    </blockquote>
+
+    <p class="sub">Put a reinforcing loop and a balancing loop in the same system — growth pulling up, a limit pushing back, and a delay between them — and you get the most consequential shape of all. The shape of a boom that does not know how to stop. That's Game Three.</p>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> Overshoot</div>
+    <h2>Growth that ignores its limits doesn't stop. It overshoots.</h2>
+
+    <p>Here is a population living on a resource — a herd on a pasture, a town on an aquifer, an economy on a planet. The population grows (a reinforcing loop). The resource it lives on regenerates, but only so fast, and the more mouths there are the faster it is drawn down (a balancing loop, with a delay built in, because the damage shows up after the growth). Two loops, one limit. Push the <strong>growth drive</strong> and watch the population find one of three completely different fates.</p>
+
+    <p class="sub">Grow gently and the population glides up to the level the land can carry and stays there — the soft landing. Grow harder and it sails <em>past</em> that level before the shrinking resource can signal stop, then falls back and circles the limit — overshoot, then recovery. Push harder still and the overshoot draws the resource so low that the land's capacity itself begins to <strong>erode</strong> — and once carrying capacity is breaking down, there is no level to settle at. The population doesn't oscillate. It collapses. Same structure throughout; only how hard you pushed decides which story you get.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Growth drive <b id="g3-d-lab">1.0</b></label>
+          <input type="range" id="g3-d" min="40" max="300" value="100" step="5">
+        </div>
+        <div class="ctrl">
+          <label>Resource resilience <b id="g3-res-lab">0.09</b></label>
+          <input type="range" id="g3-res" min="4" max="14" value="9" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat accent"><div class="k">Outcome</div><div class="v" id="g3-regime" style="font-size:15px">—</div></div>
+        <div class="stat amber"><div class="k">Peak population</div><div class="v" id="g3-peak">—</div></div>
+        <div class="stat"><div class="k">Population at the end</div><div class="v" id="g3-final">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--accent)"><i style="background:var(--accent)"></i> population</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> resource</span>
+        <span style="color:var(--red)"><i class="dash" style="color:var(--red)"></i> carrying capacity (erodes if overdrawn)</span>
+      </div>
+      <div class="canvas-box"><canvas id="g3" height="360"></canvas></div>
+      <div class="caption">Population (indigo) growing on a resource (green) under a capacity (red) that degrades when pushed too low. The gap between a soft landing and a collapse is not a different system — it is the same system, driven a little too hard.</div>
+    </div>
+
+    <p>Overshoot needs only three things, and they are everywhere: <strong>growth</strong>, a <strong>limit</strong>, and a <strong>delay</strong> in seeing the limit. Whenever those three sit together — a fishery, a credit boom, a reservoir, a hype cycle — the default outcome is not a gentle stop at the ceiling. It is sailing through the ceiling and finding out late. The honest move is not to grow blindly and brake at the last second; by the time the signal arrives, the momentum is already spent. The move is to respect the limit <em>before</em> you can feel it.</p>
+
+    <blockquote>
+      <p>“A quantity growing exponentially toward a limit reaches that limit in a surprisingly short time.”</p>
+      <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
+    </blockquote>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>Find the loop, not the villain.</h2>
+    <p>A stock that integrates its flows; loops that grow or settle; a delay that turns settling into swinging; growth that overshoots a limit it sees too late. None of it is in the parts — it is in how the parts are wired together, and the wiring is the same whether the stock is water, money, fish, or trust. That is why blaming the actors so rarely fixes anything: the behavior was coming from the structure all along. It is the same lesson as the rest of this family — a system that can ruin you is one whose loops you didn't read. So when something keeps going wrong, don't hunt for who is at fault. Hunt for the loop. Then change the structure — and hold your map loosely, because it is only ever a map.</p>
+    <blockquote>
+      <p>“Remember, always, that everything you know, and everything everyone knows, is only a model. Get your model out there where it can be viewed. Invite others to challenge your assumptions and add their own.”</p>
+      <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
+    </blockquote>
+    <p class="credits">
+      <strong>Donella H. Meadows</strong> (1941–2001) was an environmental scientist and the lead author of <em>The Limits to Growth</em> (1972); her primer <em>Thinking in Systems</em> was published posthumously in 2008, edited by Diana Wright. All four quotations are verbatim from that book; the bathtub, the delay-driven oscillation, and the overshoot-and-collapse archetype are hers. The three games are deliberately simple toy models — a stock integrating its flows by Euler steps, a balancing loop acting on a lagged (smoothed) perception of its stock, and a logistic population on a regenerating, erodible resource. They are directionally honest illustrations of the archetypes, not a forecast of any particular fishery, economy, or planet. The staging, the prose, and the thread tying overshoot to the family's idea of ruin are my own. Part of a family with <a href="/convex/" rel="noopener">It's Just Math</a> (convexity), <a href="/barbell/" rel="noopener">It's Just a Barbell</a> (the barbell), <a href="/lindy/" rel="noopener">It's Just Old</a> (the Lindy effect), <a href="/uncertainty/" rel="noopener">It's Just Unknown</a> (uncertainty), <a href="/serendipity/" rel="noopener">It's Just Luck</a> (serendipity), and <a href="/tiny-experiments/" rel="noopener">It's Just an Experiment</a> (action). <a href="/" rel="noopener">See all concepts →</a>
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b', blue:'#2f5d86', accent:'#4f4d8f',
+    grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.62)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+  function fmt(v){ if(Math.abs(v)>=1000) return Math.round(v/1000*10)/10+'k'; return Math.round(v).toString(); }
+  // segmented control helper: calls cb(mode) on press
+  function seg(id,cb){
+    const box=document.getElementById(id); if(!box) return;
+    box.querySelectorAll('button').forEach(b=>{
+      b.onclick=()=>{ box.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false'));
+        cb(b.dataset.m); };
+    });
+  }
+  // line plotter for a numeric series across a fixed horizon
+  function plotSeries(ctx,f,arr,ymin,ymax,color,wd){
+    const n=arr.length;
+    const X=i=>f.l+f.W*(i/(n-1));
+    const Y=v=>f.b-f.H*clamp((v-ymin)/(ymax-ymin||1),0,1);
+    ctx.strokeStyle=color; ctx.lineWidth=wd; ctx.lineJoin='round'; ctx.beginPath();
+    for(let i=0;i<n;i++){ const x=X(i),y=Y(arr[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.stroke();
+  }
+  function yGrid(ctx,f,ymin,ymax,unit){
+    ctx.font='10px IBM Plex Mono'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    for(let g=0;g<=4;g++){ const v=ymin+(ymax-ymin)*g/4, y=f.b-f.H*g/4;
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+      ctx.fillStyle=C.faint; ctx.fillText(fmt(v)+(unit||''), f.l-6, y); }
+    ctx.textBaseline='alphabetic';
+  }
+
+  /* =====================================================================
+     GAME ONE — the bathtub: a stock integrates its flows.
+     stock[i+1] = max(0, stock[i] + (inflow[i] - outflow[i]))
+     "closing" makes inflow ramp down over the horizon; the stock keeps
+     rising until inflow crosses outflow, then turns over.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g1'); if(!cv) return;
+    const T=50, START=50;
+    let inflow=6, outflow=4, mode='steady';
+    const elIn=document.getElementById('g1-in-lab'), elOut=document.getElementById('g1-out-lab'),
+          elPk=document.getElementById('g1-peak'), elFin=document.getElementById('g1-final'),
+          elRise=document.getElementById('g1-rising');
+
+    function sim(){
+      const inF=new Array(T), outF=new Array(T), stock=new Array(T);
+      for(let i=0;i<T;i++){
+        const f = mode==='closing' ? inflow*(1-0.85*i/(T-1)) : inflow;
+        inF[i]=f; outF[i]=outflow;
+      }
+      stock[0]=START;
+      for(let i=1;i<T;i++){ stock[i]=Math.max(0, stock[i-1] + (inF[i-1]-outF[i-1])); }
+      return {inF,outF,stock};
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:40,r:44,t:18,b:30});
+      const {inF,outF,stock}=sim();
+      const smax=Math.max(START*1.1, ...stock)*1.06;
+      const fmax=Math.max(12.5, inflow+1, outflow+1);
+      yGrid(ctx,f,0,smax,'');
+      // crossing point (where inflow meets outflow) -> stock peak
+      let cross=-1; for(let i=1;i<T;i++){ if((inF[i-1]-outF[i-1])>=0 && (inF[i]-outF[i])<0){ cross=i; break; } }
+      const X=i=>f.l+f.W*(i/(T-1));
+      if(cross>=0){ const x=X(cross);
+        ctx.strokeStyle='rgba(138,130,117,.7)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.4;
+        ctx.beginPath(); ctx.moveTo(x,f.t); ctx.lineTo(x,f.b); ctx.stroke(); ctx.setLineDash([]); }
+      // flows on secondary (right) axis
+      const Yf=v=>f.b-f.H*clamp(v/fmax,0,1);
+      ctx.lineWidth=1.8; ctx.lineJoin='round';
+      ctx.strokeStyle=C.green; ctx.beginPath(); for(let i=0;i<T;i++){const x=X(i),y=Yf(inF[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke();
+      ctx.strokeStyle=C.red; ctx.beginPath(); for(let i=0;i<T;i++){const x=X(i),y=Yf(outF[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke();
+      // right axis ticks (flow)
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='left'; ctx.fillStyle=C.faint;
+      ctx.fillText('flow', f.r+6, f.t+4);
+      ctx.fillText(Math.round(fmax)+'', f.r+6, f.t+16);
+      ctx.fillText('0', f.r+6, f.b);
+      // stock (bold)
+      plotSeries(ctx,f,stock,0,smax,C.accent,2.8);
+      // x label
+      ctx.textAlign='center'; ctx.fillStyle=C.faint;
+      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
+      // readouts
+      const peak=Math.max(...stock), fin=stock[T-1];
+      const rising=(inF[T-2]-outF[T-2])>0.0001;
+      elPk.textContent=Math.round(peak); elFin.textContent=Math.round(fin);
+      elRise.textContent= rising ? 'yes — still climbing' : 'no — flows crossed';
+      elRise.parentElement.className='stat '+(rising?'green':'red');
+    }
+    function render(){ elIn.textContent=inflow; elOut.textContent=outflow; draw(); }
+    document.getElementById('g1-in').oninput=e=>{ inflow=+e.target.value; render(); };
+    document.getElementById('g1-out').oninput=e=>{ outflow=+e.target.value; render(); };
+    seg('g1-mode',m=>{ mode=m; draw(); });
+    render();
+    window.addEventListener('resize',draw);
+  })();
+
+  /* =====================================================================
+     GAME TWO — feedback loops: reinforcing (exponential), balancing
+     (goal-seeking), and balancing+delay (overshoot/oscillation).
+     Delay modeled as a lagging *perceived* stock (exponential smoothing,
+     time-constant tau) -> phase lag -> bounded overshoot that still settles.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g2'); if(!cv) return;
+    const T=72, G=100, START=40;
+    let mode='balance', r=0.04, k=0.50, tau=6;
+    const elR=document.getElementById('g2-r-lab'), elK=document.getElementById('g2-k-lab'),
+          elD=document.getElementById('g2-d-lab'), elReg=document.getElementById('g2-regime'),
+          elPk=document.getElementById('g2-peak'), elFin=document.getElementById('g2-final');
+    const rwrap=document.getElementById('g2-rwrap'), kwrap=document.getElementById('g2-kwrap'),
+          dwrap=document.getElementById('g2-dwrap');
+
+    function sim(){
+      const s=new Array(T); s[0]=START; let perc=START;
+      for(let i=1;i<T;i++){
+        if(mode==='reinforce'){ s[i]=s[i-1]*(1+r); }
+        else if(mode==='balance'){ s[i]=s[i-1]+k*(G-s[i-1]); }
+        else { perc += (s[i-1]-perc)/tau; s[i]=s[i-1]+k*(G-perc); }
+        if(!isFinite(s[i])) s[i]=s[i-1];
+      }
+      return s;
+    }
+    function classify(s){
+      if(mode==='reinforce') return 'exponential growth';
+      let turns=0,last=0;
+      for(let i=1;i<T;i++){ const d=Math.sign(s[i]-s[i-1]); if(d&&last&&d!==last)turns++; if(d)last=d; }
+      const tail=s.slice(Math.floor(T*0.6)); const amp=Math.max(...tail)-Math.min(...tail);
+      if(turns<=1 && amp<1.5) return 'settles to the goal';
+      if(turns>=2 && amp<3)   return 'overshoots, then settles';
+      return 'overshoots & oscillates';
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:40,r:16,t:18,b:30});
+      const s=sim();
+      let ymax=Math.max(G*1.15, ...s)*1.05, ymin=Math.min(0, ...s);
+      yGrid(ctx,f,ymin,ymax,'');
+      // goal line for balancing modes
+      if(mode!=='reinforce'){ const y=f.b-f.H*clamp((G-ymin)/(ymax-ymin),0,1);
+        ctx.strokeStyle='rgba(138,130,117,.7)'; ctx.setLineDash([5,4]); ctx.lineWidth=1.5;
+        ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle=C.faint; ctx.font='11px IBM Plex Mono'; ctx.textAlign='left'; ctx.fillText('goal', f.l+4, y-5); }
+      plotSeries(ctx,f,s,ymin,ymax,C.accent,2.8);
+      ctx.textAlign='center'; ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
+      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
+      elReg.textContent=classify(s);
+      elPk.textContent=fmt(Math.max(...s)); elFin.textContent=fmt(s[T-1]);
+    }
+    function syncControls(){
+      rwrap.classList.toggle('hidden', mode!=='reinforce');
+      kwrap.classList.toggle('hidden', mode==='reinforce');
+      dwrap.classList.toggle('hidden', mode!=='delay');
+    }
+    document.getElementById('g2-r').oninput=e=>{ r=(+e.target.value)/100; elR.textContent=(+e.target.value)+'%'; draw(); };
+    document.getElementById('g2-k').oninput=e=>{ k=(+e.target.value)/100; elK.textContent=k.toFixed(2); draw(); };
+    document.getElementById('g2-d').oninput=e=>{ tau=+e.target.value; elD.textContent=tau; draw(); };
+    seg('g2-mode',m=>{ mode=m; syncControls(); draw(); });
+    syncControls(); draw();
+    window.addEventListener('resize',draw);
+  })();
+
+  /* =====================================================================
+     GAME THREE — overshoot: a population on a regenerating, erodible
+     resource. Logistic growth toward a resource-set capacity; resource
+     regenerates logistically and is drawn down by the population; if the
+     resource is pushed below a threshold, the max capacity K itself erodes.
+     Validated offline: soft-landing / overshoot-recovery / collapse all
+     reachable across the slider range.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g3'); if(!cv) return;
+    const T=260, R0=1000, capP=320, eroThresh=0.28, eroRate=0.02, Kmin=140, hHalf=120;
+    let drive=1.0, res=0.09;
+    const elD=document.getElementById('g3-d-lab'), elRes=document.getElementById('g3-res-lab'),
+          elReg=document.getElementById('g3-regime'), elPk=document.getElementById('g3-peak'),
+          elFin=document.getElementById('g3-final');
+
+    function sim(){
+      const r=0.05+0.06*drive, c=0.10+0.16*drive, g=res;
+      let P=20, R=R0, K=R0;
+      const Ps=new Array(T), Rs=new Array(T), Ks=new Array(T);
+      for(let i=0;i<T;i++){
+        Ps[i]=P; Rs[i]=R; Ks[i]=K;
+        const Kp=Math.max(1, capP*(R/R0));
+        const dP=r*P*(1-P/Kp);
+        const consume=c*P*(R/(R+hHalf));
+        P=Math.max(0,P+dP);
+        R=Math.max(0,R+(g*R*(1-R/K)-consume));
+        if(R<eroThresh*K) K=Math.max(Kmin, K-eroRate*(eroThresh*K-R));
+      }
+      return {Ps,Rs,Ks};
+    }
+    function classify(Ps){
+      const peak=Math.max(...Ps), fin=Ps[T-1];
+      if(fin<0.4*peak && peak>80) return 'overshoot & collapse';
+      if(fin>=0.82*peak) return 'soft landing';        // ended near its peak = minimal overshoot
+      return 'overshoot, then recovery';
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:40,r:44,t:18,b:30});
+      const {Ps,Rs,Ks}=sim();
+      // left axis = population; right axis = resource/capacity (0..R0)
+      const pmax=Math.max(capP*0.9, ...Ps)*1.08;
+      yGrid(ctx,f,0,pmax,'');
+      const X=i=>f.l+f.W*(i/(T-1));
+      const Yr=v=>f.b-f.H*clamp(v/R0,0,1);
+      // resource (green) + capacity (red dashed) on right scale
+      ctx.lineWidth=2; ctx.lineJoin='round';
+      ctx.strokeStyle=C.green; ctx.beginPath(); for(let i=0;i<T;i++){const x=X(i),y=Yr(Rs[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke();
+      ctx.strokeStyle=C.red; ctx.setLineDash([5,4]); ctx.lineWidth=1.6; ctx.beginPath();
+      for(let i=0;i<T;i++){const x=X(i),y=Yr(Ks[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y);} ctx.stroke(); ctx.setLineDash([]);
+      // right ticks
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='left'; ctx.fillStyle=C.faint;
+      ctx.fillText('resource', f.r+6, f.t+4); ctx.fillText(fmt(R0), f.r+6, f.t+16); ctx.fillText('0', f.r+6, f.b);
+      // population (bold accent) on left scale
+      plotSeries(ctx,f,Ps,0,pmax,C.accent,2.8);
+      ctx.textAlign='center'; ctx.fillStyle=C.faint;
+      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
+      const reg=classify(Ps);
+      elReg.textContent=reg;
+      elReg.parentElement.className='stat '+(reg==='overshoot & collapse'?'red':(reg==='soft landing'?'green':'amber'));
+      elPk.textContent=fmt(Math.max(...Ps)); elFin.textContent=fmt(Ps[T-1]);
+    }
+    function render(){ elD.textContent=drive.toFixed(1); elRes.textContent=res.toFixed(2); draw(); }
+    document.getElementById('g3-d').oninput=e=>{ drive=(+e.target.value)/100; elD.textContent=drive.toFixed(1); draw(); };
+    document.getElementById('g3-res').oninput=e=>{ res=(+e.target.value)/100; elRes.textContent=res.toFixed(2); draw(); };
+    render();
+    window.addEventListener('resize',draw);
+  })();
+
+  /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+</body>
+</html>
