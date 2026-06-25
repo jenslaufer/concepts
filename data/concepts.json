@@ -40,6 +40,11 @@
       "name": "Donella Meadows",
       "note": "Systems thinking — stocks, flows, feedback loops, and why a system's behavior comes from its structure, not its parts.",
       "url": "https://en.wikipedia.org/wiki/Donella_Meadows"
+    },
+    "kunin": {
+      "name": "Daniel Kunin",
+      "note": "Seeing Theory — making probability and statistics visual instead of formal.",
+      "url": "https://seeing-theory.brown.edu"
     }
   },
   "concepts": [
@@ -119,6 +124,17 @@
       "blurb": "Why a system's behavior comes from its structure, not its parts — how a stock hides what its flows are doing, how a delay turns a steady loop into wild oscillation, and why growth into a limit so often overshoots and collapses.",
       "people": ["meadows"],
       "tags": ["systems", "feedback-loops", "stocks-flows", "overshoot", "tail-risk", "decision"]
+    },
+    {
+      "slug": "chance",
+      "title": "It's Just Chance",
+      "concept": "Probability & statistics",
+      "url": "/chance/",
+      "status": "live",
+      "eyebrow": "An interactive note on seeing probability",
+      "blurb": "Why one coin flip is unknowable but a thousand flips are a law, why the means of any distribution pile into the same bell, and why a positive test for a rare disease usually means you're fine — three classic results you watch happen instead of derive.",
+      "people": ["kunin"],
+      "tags": ["probability", "statistics", "bayes", "intuition", "randomness"]
     }
   ]
 }

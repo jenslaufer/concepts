@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just Chance — three classic results you watch happen instead of derive</title>
+<meta name="description" content="Three interactive games on probability and statistics: why single random events are unpredictable but their running average is a law, why means from any distribution pile into the same bell curve, and why a positive test for a rare disease usually means you're fine. In the spirit of Seeing Theory." />
+<meta property="og:title" content="It's Just Chance" />
+<meta property="og:description" content="An interactive note on seeing probability — the law of large numbers, the central limit theorem, and Bayes, watched instead of derived. In the spirit of Seeing Theory." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --accent:#2f5d86;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:640px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.accent .v{color:var(--accent)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 186px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just Chance</b><span class="sub"> &nbsp;·&nbsp; probability &amp; statistics</span></a>
+    <a class="sibling" href="/systems/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just a Loop →</b></a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on seeing probability</div>
+    <h1>It's Just Chance</h1>
+    <p class="lede">Three games on probability — why a single coin flip is unknowable but its <em>running average</em> is a law, why the means of <em>any</em> distribution pile into the same <em>bell</em>, and why a positive test for a rare disease usually means you're <em>fine</em>. Watch the results happen instead of deriving them — in the spirit of Seeing Theory.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<!-- ACT 1 -->
+<section class="act" id="act1">
+  <div class="wrap">
+    <div class="actnum">Game 01 &nbsp;<span class="dot">●</span>&nbsp; The law of large numbers</div>
+    <h2>One flip is random. A thousand flips are a&nbsp;law.</h2>
+    <p>A single coin flip is genuinely unpredictable — heads or tails, no way to call it. Yet the moment you <strong>repeat</strong>, structure appears. The share of heads lurches around at first, then quietly settles toward the true probability and stays there. Randomness doesn't disappear; it averages out.</p>
+    <p class="note">Flip a fair coin a few times — the line whips around. Flip it a thousand times — it presses flat against 0.50. That convergence is the engine under every average you've ever trusted.</p>
+
+    <div class="card wide">
+      <div class="canvas-box"><canvas id="lln" height="300"></canvas></div>
+      <p class="caption">Running share of heads after each flip. Dashed line = the true probability, 0.50.</p>
+      <div class="btnrow">
+        <button class="act-btn" id="lln1">Flip 1</button>
+        <button class="act-btn" id="lln100">Flip 100</button>
+        <button class="act-btn primary" id="lln1k">Flip 1,000</button>
+        <button class="act-btn" id="llnreset">Reset</button>
+      </div>
+      <div class="readouts">
+        <div class="stat"><div class="k">Flips</div><div class="v" id="lln-n">0</div></div>
+        <div class="stat"><div class="k">Heads</div><div class="v" id="lln-h">0</div></div>
+        <div class="stat blue"><div class="k">Share heads</div><div class="v" id="lln-p">–</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACT 2 -->
+<section class="act" id="act2">
+  <div class="wrap">
+    <div class="actnum">Game 02 &nbsp;<span class="dot">●</span>&nbsp; The central limit theorem</div>
+    <h2>Average anything enough times and you get a&nbsp;bell.</h2>
+    <p>Take the average of a sample — from <em>any</em> distribution, however lopsided. Collect many of those averages and they always shape themselves into the same curve: the normal bell. The underlying population can have two humps, a long tail, anything. The distribution of its <strong>means</strong> doesn't care.</p>
+    <p class="note">The population strip below has two peaks — nothing bell-shaped about it. Yet the averages of <b>n</b> draws from it land in a clean bell. Raise <b>n</b> and the bell tightens. This is why so much of the world looks normal even when its parts don't.</p>
+
+    <div class="card wide">
+      <div class="canvas-box"><canvas id="clt" height="330"></canvas></div>
+      <p class="caption">Top: histogram of collected sample means. Bottom: the two-humped population they're drawn from.</p>
+      <div class="controls">
+        <div class="ctrl"><label>Sample size <b>n = <span id="clt-nlabel">5</span></b></label>
+          <input type="range" id="clt-n" min="1" max="40" value="5"></div>
+      </div>
+      <div class="btnrow">
+        <button class="act-btn" id="clt-1">Draw 1 sample</button>
+        <button class="act-btn primary" id="clt-run">Auto-collect</button>
+        <button class="act-btn" id="clt-reset">Reset</button>
+      </div>
+      <div class="readouts">
+        <div class="stat"><div class="k">Means collected</div><div class="v" id="clt-count">0</div></div>
+        <div class="stat amber"><div class="k">Mean of means</div><div class="v" id="clt-mean">–</div></div>
+        <div class="stat"><div class="k">Spread</div><div class="v" id="clt-sd">–</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACT 3 -->
+<section class="act" id="act3">
+  <div class="wrap">
+    <div class="actnum">Game 03 &nbsp;<span class="dot">●</span>&nbsp; Bayes &amp; the rare disease</div>
+    <h2>A positive test usually means you're&nbsp;fine.</h2>
+    <p>The test came back positive. Are you sick? Surprisingly often: probably not. When a disease is rare, the few true cases are buried under a pile of false alarms — because even a small error rate, applied to the huge healthy majority, produces more wrong positives than there are sick people. The intuition is almost impossible to feel from the formula. So count the dots.</p>
+    <p class="note">1,000 people. Red = actually sick. The test splits them into <strong>negative</strong> and <strong>positive</strong>. Look at the positive column: at 1% prevalence with a good 90% test, most of those red-flagged dots are still <em>blue</em> — healthy people caught by a false alarm.</p>
+
+    <div class="card wide">
+      <div class="canvas-box"><canvas id="bayes" height="360"></canvas></div>
+      <div class="legend">
+        <span><i class="dot" style="background:#b23a2e"></i> Actually sick</span>
+        <span><i class="dot" style="background:#2f5d86"></i> Actually healthy</span>
+      </div>
+      <div class="controls">
+        <div class="ctrl"><label>Prevalence <b><span id="b-prev">1</span>%</b></label>
+          <input type="range" id="b-prev-i" min="1" max="50" value="1"></div>
+        <div class="ctrl"><label>Sensitivity <b><span id="b-sens">90</span>%</b></label>
+          <input type="range" id="b-sens-i" min="50" max="100" value="90"></div>
+        <div class="ctrl"><label>Specificity <b><span id="b-spec">90</span>%</b></label>
+          <input type="range" id="b-spec-i" min="50" max="100" value="90"></div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">P(sick | test positive)</div><div class="v" id="b-ppv">–</div></div>
+        <div class="stat"><div class="k">True hits</div><div class="v" id="b-tp">–</div></div>
+        <div class="stat"><div class="k">False alarms</div><div class="v" id="b-fp">–</div></div>
+      </div>
+    </div>
+
+    <p>Slide prevalence up: as the disease gets common, the same test suddenly becomes trustworthy. The test never changed — only how rare the thing it's looking for is. That's Bayes: what you should believe after the evidence depends on what was true before it.</p>
+  </div>
+</section>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<section class="closing">
+  <div class="wrap">
+    <p class="credits">An interactive note in the spirit of <a href="https://seeing-theory.brown.edu" rel="noopener">Seeing Theory</a> — Daniel Kunin's visual introduction to probability and statistics at Brown University. The three games here were rebuilt independently in vanilla JavaScript and Canvas, with none of the original's code; the concept and inspiration belong to it. Part of the <a href="/">Concept Simulator</a> family — abstract ideas you play, not read.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+  </div>
+</footer>
+
+<script>
+/* ---------- paper palette (matches the concept-simulator family) ---------- */
+const C = {
+  blue:'#2f5d86', amber:'#bd8324', red:'#b23a2e', green:'#1f7a5a',
+  ink:'#1d1a16', soft:'#544e44', faint:'#8a8275',
+  line:'#e2dac9', line2:'#d4cab4'
+};
+function fit(cv,h){const r=devicePixelRatio||1,w=cv.clientWidth;cv.width=w*r;cv.height=h*r;
+  const x=cv.getContext('2d');x.setTransform(r,0,0,r,0,0);return {x,w,h};}
+
+/* ---------- Game 1 · Law of Large Numbers ---------- */
+(function(){
+  const cv=document.getElementById('lln');let g=fit(cv,300);
+  let n=0,h=0,hist=[];
+  const elN=document.getElementById('lln-n'),elH=document.getElementById('lln-h'),elP=document.getElementById('lln-p');
+  function flip(k){for(let i=0;i<k;i++){n++;if(Math.random()<.5)h++;
+    if(n<=400||n%Math.ceil(n/400)===0)hist.push(h/n);}draw();}
+  function draw(){const {x,w,h:H}=g;x.clearRect(0,0,w,H);
+    const pad=40,bw=w-pad*1.4,bh=H-pad*1.3,x0=pad,y0=pad*.55;
+    x.strokeStyle=C.line;x.lineWidth=1;x.font='11px "IBM Plex Mono", monospace';
+    for(let p=0;p<=1;p+=.25){const yy=y0+bh*(1-p);x.beginPath();x.moveTo(x0,yy);x.lineTo(x0+bw,yy);x.stroke();
+      x.fillStyle=C.faint;x.fillText(p.toFixed(2),6,yy+3);}
+    x.strokeStyle=C.amber;x.setLineDash([5,5]);const y5=y0+bh*.5;
+    x.beginPath();x.moveTo(x0,y5);x.lineTo(x0+bw,y5);x.stroke();x.setLineDash([]);
+    x.fillStyle=C.amber;x.fillText('0.50 (true)',x0+bw-72,y5-7);
+    if(hist.length>1){x.strokeStyle=C.blue;x.lineWidth=2;x.beginPath();
+      hist.forEach((p,i)=>{const xx=x0+bw*(i/(hist.length-1)),yy=y0+bh*(1-p);
+        i?x.lineTo(xx,yy):x.moveTo(xx,yy);});x.stroke();
+      const lp=hist[hist.length-1];x.fillStyle=C.blue;x.beginPath();
+      x.arc(x0+bw,y0+bh*(1-lp),4,0,7);x.fill();}
+    elN.textContent=n.toLocaleString();elH.textContent=h.toLocaleString();
+    elP.textContent=n?(h/n).toFixed(3):'–';}
+  document.getElementById('lln1').onclick=()=>flip(1);
+  document.getElementById('lln100').onclick=()=>flip(100);
+  document.getElementById('lln1k').onclick=()=>flip(1000);
+  document.getElementById('llnreset').onclick=()=>{n=0;h=0;hist=[];draw();};
+  addEventListener('resize',()=>{g=fit(cv,300);draw();});draw();
+})();
+
+/* ---------- Game 2 · Central Limit Theorem ---------- */
+(function(){
+  const cv=document.getElementById('clt');let g=fit(cv,330);
+  let N=5,means=[],bins=new Array(40).fill(0),timer=null;
+  const nLab=document.getElementById('clt-nlabel'),cCount=document.getElementById('clt-count'),
+    cMean=document.getElementById('clt-mean'),cSd=document.getElementById('clt-sd'),
+    runBtn=document.getElementById('clt-run');
+  function gauss(){let s=0;for(let i=0;i<3;i++)s+=Math.random();return (s-1.5)/1.5;}
+  function pop(){let u=Math.random();let v=(u<.5)?0.18+0.12*gauss():0.78+0.12*gauss();
+    return Math.max(0,Math.min(1,v));}
+  function sample(){let s=0;for(let i=0;i<N;i++)s+=pop();const m=s/N;means.push(m);
+    const bi=Math.min(39,Math.max(0,Math.floor(m*40)));bins[bi]++;draw();}
+  function run(){if(timer){clearInterval(timer);timer=null;runBtn.textContent='Auto-collect';
+      runBtn.classList.add('primary');return;}
+    runBtn.textContent='⏸ Stop';runBtn.classList.remove('primary');timer=setInterval(sample,40);}
+  function draw(){const {x,w,h:H}=g;x.clearRect(0,0,w,H);
+    const splitter=H*0.60;
+    const max=Math.max(4,...bins),bw=w/40;
+    for(let i=0;i<40;i++){const bh=(bins[i]/max)*(splitter-34);
+      x.fillStyle=C.amber;x.fillRect(i*bw+1,splitter-bh-8,bw-2,bh);}
+    x.fillStyle=C.soft;x.font='600 12px "IBM Plex Mono", monospace';
+    x.fillText('Distribution of sample means',8,18);
+    x.fillStyle=C.paper;x.fillStyle='#f3eee4';x.fillRect(0,splitter+8,w,H-splitter-8);
+    x.fillStyle=C.faint;x.fillText('Population (two peaks — not normal)',8,splitter+26);
+    for(let i=0;i<260;i++){const v=pop();x.fillStyle='rgba(47,93,134,.45)';
+      x.beginPath();x.arc(v*w, splitter+34+Math.random()*(H-splitter-46),2,0,7);x.fill();}
+    const c=means.length;cCount.textContent=c.toLocaleString();nLab.textContent=N;
+    if(c){const mu=means.reduce((a,b)=>a+b,0)/c;
+      const sd=Math.sqrt(means.reduce((a,b)=>a+(b-mu)**2,0)/c);
+      cMean.textContent=mu.toFixed(3);cSd.textContent=sd.toFixed(3);}
+    else{cMean.textContent='–';cSd.textContent='–';}}
+  document.getElementById('clt-n').oninput=e=>{N=+e.target.value;means=[];bins.fill(0);draw();};
+  document.getElementById('clt-1').onclick=sample;
+  runBtn.onclick=run;
+  document.getElementById('clt-reset').onclick=()=>{means=[];bins.fill(0);
+    if(timer){clearInterval(timer);timer=null;runBtn.textContent='Auto-collect';runBtn.classList.add('primary');}draw();};
+  addEventListener('resize',()=>{g=fit(cv,330);draw();});draw();
+})();
+
+/* ---------- Game 3 · Bayesian medical test ---------- */
+(function(){
+  const cv=document.getElementById('bayes');let g=fit(cv,360);
+  const TOTAL=1000;
+  let prev=1,sens=90,spec=90;
+  const eP=document.getElementById('b-prev'),eS=document.getElementById('b-sens'),eK=document.getElementById('b-spec'),
+    ppv=document.getElementById('b-ppv'),tp=document.getElementById('b-tp'),fp=document.getElementById('b-fp');
+  function draw(){const {x,w,h:H}=g;x.clearRect(0,0,w,H);
+    const sick=Math.round(TOTAL*prev/100), well=TOTAL-sick;
+    const truePos=Math.round(sick*sens/100), falseNeg=sick-truePos;
+    const trueNeg=Math.round(well*spec/100), falsePos=well-trueNeg;
+    const neg=[],pos=[];
+    for(let k=0;k<trueNeg;k++)neg.push(0);for(let k=0;k<falseNeg;k++)neg.push(1);
+    for(let k=0;k<truePos;k++)pos.push(1);for(let k=0;k<falsePos;k++)pos.push(0);
+    const colW=(w-34)/2, top=28, areaH=H-top-6;
+    const maxDots=Math.max(neg.length,pos.length,1);
+    let pitch=Math.sqrt(colW*areaH/maxDots)*0.92;
+    let perRow=Math.max(1,Math.floor(colW/pitch));
+    pitch=colW/perRow; const r=Math.max(1.4,pitch*0.34);
+    function block(arr,ox,label){let i=0;
+      for(const item of arr){const cx=ox+(i%perRow)*pitch+pitch/2,
+        cy=top+Math.floor(i/perRow)*pitch+pitch/2;
+        x.fillStyle=item?C.red:C.blue;x.beginPath();x.arc(cx,cy,r,0,7);x.fill();i++;}
+      x.fillStyle=C.soft;x.font='600 13px "IBM Plex Mono", monospace';x.fillText(label,ox,16);}
+    block(neg,2,'Test negative ('+neg.length+')');
+    block(pos,colW+32,'Test positive ('+pos.length+')');
+    x.strokeStyle=C.line;x.beginPath();x.moveTo(colW+17,6);x.lineTo(colW+17,H-4);x.stroke();
+    const denom=truePos+falsePos;
+    ppv.textContent=denom?Math.round(100*truePos/denom)+'%':'–';
+    tp.textContent=truePos;fp.textContent=falsePos;
+    eP.textContent=prev;eS.textContent=sens;eK.textContent=spec;}
+  document.getElementById('b-prev-i').oninput=e=>{prev=+e.target.value;draw();};
+  document.getElementById('b-sens-i').oninput=e=>{sens=+e.target.value;draw();};
+  document.getElementById('b-spec-i').oninput=e=>{spec=+e.target.value;draw();};
+  addEventListener('resize',()=>{g=fit(cv,360);draw();});draw();
+})();
+
+/* ---------- email capture — wired to Launch Kit (auth.solytics.de) ---------- */
+(function(){
+  const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+  const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const email=form.email.value.trim(); if(!email) return;
+    const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+    try{
+      const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      form.reset(); note.textContent='You’re on the list — talk soon.';
+    }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+  });
+})();
+</script>
+</body>
+</html>
