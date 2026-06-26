@@ -45,6 +45,11 @@
       "name": "Daniel Kunin",
       "note": "Seeing Theory — making probability and statistics visual instead of formal.",
       "url": "https://seeing-theory.brown.edu"
+    },
+    "peters": {
+      "name": "Ole Peters",
+      "note": "Ergodicity economics — why the time-average of multiplicative wealth diverges from the ensemble-average the textbooks use.",
+      "url": "https://ergodicityeconomics.com"
     }
   },
   "concepts": [
@@ -157,6 +162,17 @@
       "blurb": "Why removing the few worst exposures collapses your risk faster than trimming the average, why a doctor who treats every wobble does more harm than one who waits, and why fixing the single weakest link beats upgrading everything — robustness comes from removal, not addition.",
       "people": ["taleb"],
       "tags": ["optionality", "via-negativa", "subtraction", "iatrogenics", "tail-risk", "decision"]
+    },
+    {
+      "slug": "ergodicity",
+      "title": "It's Just Time",
+      "concept": "Ergodicity",
+      "url": "/ergodicity/",
+      "status": "live",
+      "eyebrow": "An interactive note on ergodicity",
+      "blurb": "Why a coin with a positive expected value still wipes out almost everyone who plays it, why the 'average' outcome is one that nobody actually lives, and why the cure is not better odds but smaller bets — the gap between the crowd and the person, over time.",
+      "people": ["peters", "taleb"],
+      "tags": ["optionality", "ergodicity", "tail-risk", "ruin", "compounding", "decision"]
     }
   ]
 }

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just Time — why a positive-expectation bet still ruins almost everyone</title>
+<meta name="description" content="Three interactive games on ergodicity: why a coin flip with a positive expected value still wipes out almost every player, why the 'average' outcome is one that nobody in the room actually lives, and why the cure is not better odds but smaller bets. After Ole Peters and Nassim Taleb." />
+<meta property="og:title" content="It's Just Time" />
+<meta property="og:description" content="An interactive note on ergodicity — the gap between what the crowd averages and what one person lives through time. After Ole Peters and Nassim Taleb." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --violet:#7d4a9c;
+    --accent:#7d4a9c;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.violet .v{color:var(--violet)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+
+  /* concepts nav */
+  .topbar-r{display:flex;align-items:center;gap:18px}
+  .cnav{position:relative;display:inline-block}
+  .cnav>summary{list-style:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;-webkit-user-select:none;user-select:none}
+  .cnav>summary::-webkit-details-marker{display:none}
+  .cnav>summary::marker{content:""}
+  .cnav>summary:hover,.cnav[open]>summary{color:var(--accent,var(--ink))}
+  .cnav-ic{font-size:13px;line-height:1;transform:translateY(.5px)}
+  .cnav-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:60;background:var(--paper);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow,0 10px 34px rgba(0,0,0,.14));padding:6px;min-width:238px;max-height:min(72vh,440px);overflow:auto;display:flex;flex-direction:column;gap:1px}
+  .cnav-menu a,.cnav-menu .cnav-item{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 11px;border-radius:6px;text-decoration:none;font-family:var(--sans);font-size:13px;color:var(--ink);line-height:1.3}
+  .cnav-menu a>span,.cnav-menu .cnav-item>span{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .cnav-menu a:hover{background:rgba(128,128,128,.12)}
+  .cnav-menu a:hover,.cnav-menu a:hover>span{color:var(--accent,var(--ink))}
+  .cnav-home{font-family:var(--mono)!important;font-size:10.5px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)!important;justify-content:flex-start!important;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:3px}
+  .cnav-item.cur{background:rgba(128,128,128,.13);font-weight:600;cursor:default}
+  @media(max-width:640px){.cnav>summary .cnav-lbl{display:none}.topbar-r{gap:13px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just Time</b><span class="sub"> &nbsp;·&nbsp; ergodicity</span></a>
+    <div class="topbar-r">
+      <a class="sibling" href="/convex/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just Math →</b></a>
+      <details class="cnav">
+      <summary><span class="cnav-ic" aria-hidden="true">▦</span><span class="cnav-lbl">Concepts</span></summary>
+      <nav class="cnav-menu" aria-label="All concepts">
+        <a class="cnav-home" href="/">All concepts &rarr;</a>
+        <a href="/convex/">It's Just Math<span>Convexity</span></a>
+        <a href="/tiny-experiments/">It's Just an Experiment<span>Action under uncertainty</span></a>
+        <a href="/serendipity/">It's Just Luck<span>Serendipity</span></a>
+        <a href="/uncertainty/">It's Just Unknown<span>Uncertainty</span></a>
+        <a href="/barbell/">It's Just a Barbell<span>Barbell strategy</span></a>
+        <a href="/lindy/">It's Just Old<span>The Lindy effect</span></a>
+        <a href="/systems/">It's Just a Loop<span>Systems thinking</span></a>
+        <a href="/chance/">It's Just Chance<span>Probability &amp; statistics</span></a>
+        <a href="/antifragile/">It's Just Stress<span>Antifragility</span></a>
+        <a href="/via-negativa/">It's Just Subtraction<span>Via negativa</span></a>
+        <span class="cnav-item cur" aria-current="page">It's Just Time<span>Ergodicity</span></span>
+      </nav>
+    </details>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on ergodicity</div>
+    <h1>It's Just Time</h1>
+    <p class="lede">Three games on the gap between the crowd and the person — why a coin with a <em>positive</em> expected value still wipes out almost everyone who plays it, why the “average” outcome is one that <em>nobody</em> in the room actually lives, and why the cure is not better odds but <em>smaller bets</em> — after Ole Peters and Nassim Taleb.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> The coin that lies</div>
+    <h2>A great average, and almost everyone broke</h2>
+
+    <p>Here is an offer that any expected-value calculation will tell you to take. Bet your whole pile on a fair coin. Heads, it grows by a lot. Tails, it shrinks by less. The <em>average</em> of the two outcomes is more than you started with — so the expected value is positive, and a thousand people taking the bet will, between them, end up richer. The textbook says yes.</p>
+
+    <p class="sub">And yet. The number the textbook computes is the <strong>ensemble average</strong> — what you'd get by lining up many parallel players and averaging across them at one instant. It is <em>not</em> what happens to <strong>you</strong>, playing the same coin over and over through <strong>time</strong>. Below, a crowd of players each bets their whole wealth, round after round. Watch the two lines split: the <strong>average wealth of the crowd</strong> climbs, while the <strong>player in the middle</strong> sinks toward zero.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Heads: wealth grows by <b id="eg1-up-lab">+50%</b></label>
+          <input type="range" id="eg1-up" min="20" max="90" value="50" step="5">
+        </div>
+        <div class="ctrl">
+          <label>Tails: wealth shrinks by <b id="eg1-dn-lab">−40%</b></label>
+          <input type="range" id="eg1-dn" min="10" max="80" value="40" step="5">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Ensemble average / round</div><div class="v" id="eg1-ev">—</div></div>
+        <div class="stat green"><div class="k">What you live / round</div><div class="v" id="eg1-time">—</div></div>
+        <div class="stat amber"><div class="k">Players poorer than the start</div><div class="v" id="eg1-broke">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> average wealth of the whole crowd</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> the median player (the typical path)</span>
+        <span style="color:var(--ink-faint)"><i style="background:var(--ink-faint);opacity:.5"></i> individual players</span>
+      </div>
+      <div class="canvas-box"><canvas id="eg1" height="360"></canvas></div>
+      <div class="caption">Wealth (vertical, <em>log scale</em>: each gridline is ×10) over 40 rounds, for 1,500 players betting their whole stake on the same coin. The red crowd-average rises — dragged up by a vanishing few who keep hitting heads. The green median falls: round by round, the typical path multiplies by less than one and decays toward ruin. Positive expected value, near-certain personal ruin — and both are true at once.</div>
+    </div>
+
+    <p>The two numbers above are not opinions; they are two different averages of the very same coin. The red one multiplies the outcomes (½·grow + ½·shrink) — the crowd's arithmetic mean. The green one multiplies them <em>geometrically</em> — what compounds along a single timeline, where a −40% never quite undoes a +50%, because after a loss you have less to grow. A system where these two agree is called <strong>ergodic</strong>. Multiplicative wealth is <strong>not</strong> — and the whole drama is in that gap.</p>
+
+    <div class="formula">
+      ensemble average / round &nbsp;=&nbsp; <span class="c">½·(1+up) + ½·(1−down) − 1</span> &nbsp; <span class="muted">(average across the crowd)</span><br>
+      what you live / round &nbsp;=&nbsp; <span class="g">√[ (1+up)·(1−down) ] − 1</span> &nbsp; <span class="muted">(the geometric / time-average growth)</span><br>
+      <span class="muted"># +50% / −40% &nbsp;→&nbsp; ensemble = +5.0% a round, but time-average = √(1.5·0.6) − 1 = −5.1% a round.</span>
+    </div>
+
+    <blockquote>
+      <p>“Don't cross a river if it is <em>on average</em> four feet deep.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Skin in the Game</cite>
+    </blockquote>
+
+    <p class="sub">So the average lied — not by being wrong, but by answering a question you never asked. Game Two looks at <em>where</em> that average actually lives.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> Where the average hides</div>
+    <h2>Nobody lives the mean</h2>
+
+    <p>If the crowd's average is rising while the typical player sinks, someone must be holding all that wealth. They are: a tiny sliver of players who hit an improbable streak of heads and ran away with everything. The mean is real — it just lives in a place almost no one reaches. Let time run longer and the gap doesn't close; it <em>widens</em>, until the average is the biography of a single lottery winner and the median is the biography of everyone else.</p>
+
+    <p class="sub">Below is the full crowd after a chosen number of rounds — every player's final wealth as a histogram (again on a log scale). Slide the number of <strong>rounds</strong> and watch the bulk of people slide <em>left</em> toward ruin while the mean marker flies <em>right</em>, off into a tail almost no one occupies. The readout tracks the share of all the wealth held by the luckiest <strong>1%</strong>.</p>
+
+    <div class="formula">
+      same coin: heads ×1.5, tails ×0.6, whole stake, every round.<br>
+      <span class="g">median final wealth</span> = the middle player &nbsp;·&nbsp; <span class="c">mean final wealth</span> = total wealth ÷ players<br>
+      <span class="muted"># the bulk drifts toward zero while the mean is pinned in the right tail — the gap between them IS the non-ergodicity.</span>
+    </div>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Rounds played <b id="eg2-t-lab">30</b></label>
+          <input type="range" id="eg2-t" min="1" max="60" value="30" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat green"><div class="k">Median player ends at</div><div class="v" id="eg2-med">—</div></div>
+        <div class="stat red"><div class="k">Crowd average ends at</div><div class="v" id="eg2-mean">—</div></div>
+        <div class="stat violet"><div class="k">Held by the luckiest 1%</div><div class="v" id="eg2-top">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--ink-soft)"><i style="background:var(--line-2)"></i> how many players land at each wealth</span>
+        <span style="color:var(--green)"><i class="dash" style="color:var(--green)"></i> median (the middle player)</span>
+        <span style="color:var(--red)"><i class="dash" style="color:var(--red)"></i> mean (the crowd average)</span>
+      </div>
+      <div class="canvas-box"><canvas id="eg2" height="330"></canvas></div>
+      <div class="caption">Final wealth of 4,000 players after the chosen number of rounds. Horizontal is wealth on a log scale (×1 is where they started); each bar counts the players landing there. The green median sits with the crowd; the red mean stands far out to its right, alone among the handful of winners that hold it up. Push the rounds higher and the two markers march apart — the average becomes ever less like anyone's actual life.</div>
+    </div>
+
+    <p>This is why the “expected return” of a multiplicative gamble can be a dangerous thing to plan a life around. It is an honest average over <em>people</em>, and you are not a crowd of people — you are one person, moving through time, and your timeline cannot borrow the winners' luck. The number that describes the room is not the number you will live. To act well you need the <em>median's</em> growth rate, the one that compounds along your single thread, not the mean's.</p>
+
+    <blockquote>
+      <p>“The expectation value of wealth does not reflect what happens over time… It is dominated by rare events that almost no individual experiences.”</p>
+      <cite><b>Ole Peters</b> · The ergodicity problem in economics</cite>
+    </blockquote>
+
+    <p class="sub">If betting the whole pile makes the mean and the median fly apart, the cure is hiding in the bet size itself. Game Three turns that into the only dial that matters.</p>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> The cure is sizing</div>
+    <h2>Don't bet the whole thing</h2>
+
+    <p>The ruin in Game One was not caused by bad odds. The coin had a positive expected value the whole time. It was caused by <strong>exposure</strong> — betting <em>all</em> of your wealth, so that one bad run multiplies you down to nothing you can recover from. Keep the same coin, but stake only a <em>fraction</em> of your wealth each round, and the geometry changes completely: now there is a best fraction, and it is nowhere near all of it.</p>
+
+    <p class="sub">Below, the same +50% / −40% coin from Game One. The straight line is what <strong>expected value</strong> says: bet more, always, all the way to everything. The curved line is the growth rate you actually <strong>live</strong> through time at each bet size. Slide the fraction you stake and watch the two diverge — they recommend opposite things.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Fraction of wealth you stake <b id="eg3-f-lab">25%</b></label>
+          <input type="range" id="eg3-f" min="0" max="100" value="25" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat green"><div class="k">What you live / round</div><div class="v" id="eg3-you">—</div></div>
+        <div class="stat violet"><div class="k">Growth-optimal stake</div><div class="v" id="eg3-kelly">—</div></div>
+        <div class="stat red"><div class="k">Expected value says</div><div class="v" id="eg3-ev">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> growth you live through time</span>
+        <span style="color:var(--red)"><i class="dash" style="color:var(--red)"></i> what expected value promises</span>
+        <span style="color:var(--violet)"><i class="dot" style="background:var(--violet)"></i> the growth-optimal fraction</span>
+      </div>
+      <div class="canvas-box"><canvas id="eg3" height="330"></canvas></div>
+      <div class="caption">Growth rate per round (vertical, zero line marked) against the fraction of your wealth you stake (horizontal, 0 to 100%). Expected value (red, dashed) rises in a straight line — it always wants more. The lived, compounding growth (green) is a hill: it climbs to a peak at the growth-optimal stake, then falls, crosses zero, and goes negative. Stake everything — the right edge — and you are back at Game One's −5% a round. The bet expected value loves most is the one that ruins you.</div>
+    </div>
+
+    <p>The peak is the <strong>Kelly fraction</strong> — the stake that maximises the growth you actually live. For this coin it sits at a quarter of your wealth, turning the whole-stake −5% a round into a steady <em>positive</em> climb. Notice what changed: not the coin, not the odds, only the <em>exposure</em>. Survival is a precondition for return, not a tax on it. This is the same lesson the barbell and via negativa tell from other angles — cap the downside first, and the upside takes care of itself over time.</p>
+
+    <blockquote>
+      <p>“To make money, you must first survive… The ones who win in the long run are the ones who are still in the game.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Skin in the Game</cite>
+    </blockquote>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>The average belongs to the crowd. You only get one path.</h2>
+    <p>Ergodicity is the quiet question under every bet: does averaging across many people at one instant give the same answer as following one person through time? For a coin toss of fixed stakes, yes. For anything that <em>multiplies</em> — wealth, growth, compounding risk — no, and the gap is enormous. The expected value is an honest average over a crowd you will never be (Game One); it is held up by a tail almost no one reaches (Game Two); and the cure is not better odds but smaller exposure, so your single timeline survives long enough to compound (Game Three). Plan for the path you'll actually live, not the room you'll never be.</p>
+    <blockquote>
+      <p>“It is not a good idea to take a risk for which the downside is ruin, regardless of the upside.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · The Black Swan</cite>
+    </blockquote>
+    <p class="credits">
+      <strong>Ergodicity</strong> is the property that a system's time-average equals its ensemble-average; <strong>Ole Peters</strong> (London Mathematical Laboratory) built “ergodicity economics” around the observation that multiplicative wealth violates it, and <strong>Nassim Taleb</strong> threads the same idea through <em>Skin in the Game</em> as the primacy of survival. Games One and Two are honest Monte-Carlo simulations of the multiplicative coin (1,500 and 4,000 players, fixed seed), with the ensemble-average and time-average growth rates shown in closed form alongside; Game Three plots the exact time-average growth rate g(f) = ½·ln(1+f·up) + ½·ln(1−f·down) against the linear expected value, with the peak being the Kelly-optimal fraction. The toy coin is deliberately simple — directionally honest about the mechanism, not a model of any real market. Part of a family with <a href="/convex/" rel="noopener">It's Just Math</a> (convexity), <a href="/barbell/" rel="noopener">It's Just a Barbell</a> (the barbell), <a href="/antifragile/" rel="noopener">It's Just Stress</a> (antifragility), <a href="/via-negativa/" rel="noopener">It's Just Subtraction</a> (via negativa), <a href="/lindy/" rel="noopener">It's Just Old</a> (the Lindy effect), <a href="/uncertainty/" rel="noopener">It's Just Unknown</a> (uncertainty), and <a href="/chance/" rel="noopener">It's Just Chance</a> (probability). <a href="/" rel="noopener">See all concepts →</a>
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b', blue:'#2f5d86', violet:'#7d4a9c',
+    grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.62)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  const L10=w=>Math.log10(Math.max(w,1e-12));
+  function median(sorted){ const n=sorted.length; return n%2 ? sorted[(n-1)/2] : 0.5*(sorted[n/2-1]+sorted[n/2]); }
+  function powLabel(p){           // p = exponent of 10
+    if(p===0) return '×1';
+    if(p>=0)  return '×'+(p<=3? (Math.pow(10,p)).toLocaleString('en-US') : '10^'+p);
+    return '×'+ (p>=-3 ? Math.pow(10,p).toLocaleString('en-US',{maximumFractionDigits:3}) : '10^'+p);
+  }
+
+  /* =====================================================================
+     GAME ONE — the multiplicative coin. 1500 players bet their WHOLE stake
+       each round: heads -> *(1+up), tails -> *(1-down), p=0.5.
+       Ensemble average / round = 0.5*(1+up)+0.5*(1-down) - 1   (arithmetic)
+       Time-average  / round    = sqrt((1+up)*(1-down)) - 1     (geometric)
+     We Monte-Carlo the crowd (fixed seed -> stable), tracking the mean and
+     the median wealth at every round plus a few sample paths, and plot on a
+     log axis. Mean climbs, median sinks: ergodicity-breaking, made visible.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('eg1'); if(!cv) return;
+    const N=1500, T=40, NPATH=22;
+    let up=0.50, dn=0.40;
+    const elUp=document.getElementById('eg1-up-lab'), elDn=document.getElementById('eg1-dn-lab'),
+          elEv=document.getElementById('eg1-ev'), elTime=document.getElementById('eg1-time'),
+          elBroke=document.getElementById('eg1-broke');
+    let meanArr=[], medArr=[], paths=[], broke=0;
+
+    function run(){
+      const rng=mulberry32(20260626);
+      const w=new Float64Array(N).fill(1);
+      const gU=1+up, gD=1-dn;
+      meanArr=new Array(T+1); medArr=new Array(T+1);
+      paths=[]; for(let j=0;j<NPATH;j++) paths.push(new Array(T+1));
+      const rec=(t)=>{
+        let s=0; for(let i=0;i<N;i++) s+=w[i];
+        meanArr[t]=s/N;
+        const c=Float64Array.from(w).sort(); medArr[t]=median(c);
+        for(let j=0;j<NPATH;j++) paths[j][t]=w[j];
+      };
+      rec(0);
+      for(let t=1;t<=T;t++){
+        for(let i=0;i<N;i++) w[i]*= (rng()<0.5? gU : gD);
+        rec(t);
+      }
+      let b=0; for(let i=0;i<N;i++) if(w[i]<1) b++;
+      broke=b/N;
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:46,r:14,t:16,b:30});
+      // y-range over everything shown, in log10
+      let lo=0, hi=0;
+      for(let t=0;t<=T;t++){ lo=Math.min(lo,L10(medArr[t])); hi=Math.max(hi,L10(meanArr[t])); }
+      for(let j=0;j<NPATH;j++) for(let t=0;t<=T;t++){ const v=L10(paths[j][t]); if(v<lo)lo=v; if(v>hi)hi=v; }
+      lo=Math.floor(lo-0.15); hi=Math.ceil(hi+0.15);
+      const X=t=>f.l+f.W*(t/T);
+      const Y=v=>f.b-f.H*((v-lo)/(hi-lo));
+      // gridlines at integer powers of 10
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let p=lo;p<=hi;p++){ const y=Y(p);
+        ctx.strokeStyle = p===0 ? 'rgba(29,26,22,.20)' : C.grid; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(powLabel(p), f.l-6, y+3); }
+      ctx.textAlign='center'; ctx.fillStyle=C.faint;
+      [0,10,20,30,40].forEach(t=>{ if(t<=T) ctx.fillText(t, X(t), f.b+15); });
+      ctx.fillText('rounds played →', (f.l+f.r)/2, f.b+26);
+      // sample paths (faint)
+      ctx.lineWidth=1; ctx.strokeStyle='rgba(138,130,117,.28)';
+      for(let j=0;j<NPATH;j++){ ctx.beginPath();
+        for(let t=0;t<=T;t++){ const px=X(t),py=Y(L10(paths[j][t])); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+        ctx.stroke(); }
+      // crowd mean (red)
+      ctx.strokeStyle=C.red; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let t=0;t<=T;t++){ const px=X(t),py=Y(L10(meanArr[t])); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // median (green)
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.beginPath();
+      for(let t=0;t<=T;t++){ const px=X(t),py=Y(L10(medArr[t])); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // end dots
+      [[meanArr[T],C.red],[medArr[T],C.green]].forEach(([v,c])=>{
+        const y=Y(L10(v)); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(X(T),y,4.4,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke(); });
+    }
+    function render(){
+      elUp.textContent='+'+Math.round(up*100)+'%';
+      elDn.textContent='−'+Math.round(dn*100)+'%';
+      const ev = 0.5*(1+up)+0.5*(1-dn) - 1;
+      const tg = Math.sqrt((1+up)*(1-dn)) - 1;
+      elEv.textContent   = (ev>=0?'+':'−')+Math.abs(ev*100).toFixed(1)+'%';
+      elTime.textContent = (tg>=0?'+':'−')+Math.abs(tg*100).toFixed(1)+'%';
+      elBroke.textContent= Math.round(broke*100)+'%';
+      draw();
+    }
+    function rerun(){ run(); render(); }
+    document.getElementById('eg1-up').oninput=e=>{ up=(+e.target.value)/100; rerun(); };
+    document.getElementById('eg1-dn').oninput=e=>{ dn=(+e.target.value)/100; rerun(); };
+    rerun();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* =====================================================================
+     GAME TWO — the distribution. 4000 players, fixed coin (up=.5, dn=.4),
+     T rounds. Histogram of final wealth on a log axis; mark the median
+     (in the bulk) and the mean (out in the right tail). Track the share of
+     total wealth held by the luckiest 1%. As T grows the bulk slides toward
+     ruin while the mean is pinned in the tail -> the gap is non-ergodicity.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('eg2'); if(!cv) return;
+    const N=4000; const up=0.5, dn=0.4, gU=1.5, gD=0.6;
+    let T=30;
+    const elMed=document.getElementById('eg2-med'), elMean=document.getElementById('eg2-mean'),
+          elTop=document.getElementById('eg2-top'), elT=document.getElementById('eg2-t-lab');
+    let wealth=null, med=1, mean=1, top1=0;
+
+    function run(){
+      const rng=mulberry32(777013);
+      wealth=new Float64Array(N);
+      for(let i=0;i<N;i++){ let x=1; for(let t=0;t<T;t++) x*= (rng()<0.5?gU:gD); wealth[i]=x; }
+      const c=Float64Array.from(wealth).sort();
+      med=median(c);
+      let s=0; for(let i=0;i<N;i++) s+=wealth[i]; mean=s/N;
+      const k=Math.max(1,Math.round(N*0.01)); let top=0;
+      for(let i=N-k;i<N;i++) top+=c[i];
+      top1 = top/s;
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:30,r:14,t:16,b:42});
+      // log-wealth range
+      let lo=Infinity, hi=-Infinity;
+      for(let i=0;i<N;i++){ const v=L10(wealth[i]); if(v<lo)lo=v; if(v>hi)hi=v; }
+      const Lmean=L10(mean);
+      lo=Math.min(lo, L10(med))-0.3; hi=Math.max(hi, Lmean)+0.3;
+      if(hi-lo<1){ const m=(hi+lo)/2; lo=m-0.6; hi=m+0.6; }
+      const NB=46, counts=new Array(NB).fill(0);
+      const bin=v=>clamp(Math.floor((L10(v)-lo)/(hi-lo)*NB),0,NB-1);
+      for(let i=0;i<N;i++) counts[bin(wealth[i])]++;
+      let cmax=0; counts.forEach(c=>{ if(c>cmax)cmax=c; });
+      const X=v=>f.l+f.W*((v-lo)/(hi-lo));        // v = log10 wealth
+      const bw=f.W/NB;
+      // baseline
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,f.b); ctx.lineTo(f.r,f.b); ctx.stroke();
+      // bars
+      ctx.fillStyle=C.line2;
+      for(let i=0;i<NB;i++){ if(!counts[i])continue;
+        const x0=f.l+i*bw, bh=f.H*(counts[i]/cmax);
+        ctx.fillRect(x0+0.5, f.b-bh, Math.max(1,bw-1), bh); }
+      // x ticks at integer powers
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='center'; ctx.fillStyle=C.faint;
+      for(let p=Math.ceil(lo);p<=Math.floor(hi);p++){
+        const x=X(p); if(p===0){ ctx.strokeStyle='rgba(29,26,22,.18)'; ctx.lineWidth=1;
+          ctx.beginPath(); ctx.moveTo(x,f.t); ctx.lineTo(x,f.b); ctx.stroke(); }
+        ctx.fillText(powLabel(p), x, f.b+15); }
+      ctx.fillText('final wealth (log scale, ×1 = where they started) →', (f.l+f.r)/2, f.b+30);
+      // median + mean markers
+      function marker(v,col,lab,side){
+        const x=clamp(X(L10(v)),f.l,f.r);
+        ctx.strokeStyle=col; ctx.setLineDash([5,4]); ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(x,f.t+2); ctx.lineTo(x,f.b); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle=col; ctx.font='600 11px Inter'; ctx.textAlign=side;
+        const tx = side==='right' ? x-5 : x+5;
+        ctx.fillText(lab, tx, f.t+11);
+      }
+      marker(med, C.green, 'median', X(L10(med))>f.l+f.W*0.5?'right':'left');
+      marker(mean, C.red, 'mean', X(L10(mean))>f.l+f.W*0.5?'right':'left');
+    }
+    function fmtx(v){
+      if(v>=100) return '×'+Math.round(v).toLocaleString('en-US');
+      if(v>=1)   return '×'+v.toFixed(1);
+      if(v>=0.01)return '×'+v.toFixed(2);
+      return '×'+v.toExponential(0);
+    }
+    function render(){
+      elT.textContent=T;
+      elMed.textContent=fmtx(med);
+      elMean.textContent=fmtx(mean);
+      elTop.textContent=Math.round(top1*100)+'%';
+      draw();
+    }
+    function rerun(){ run(); render(); }
+    document.getElementById('eg2-t').oninput=e=>{ T=+e.target.value; rerun(); };
+    rerun();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* =====================================================================
+     GAME THREE — bet sizing. Same coin (up=.5, dn=.4). Stake a fraction f
+     of wealth each round. Closed form, no Monte-Carlo needed:
+       time-average growth  g(f) = 0.5*ln(1+f*up) + 0.5*ln(1-f*dn)
+       expected value/round ev(f) = f*(0.5*up - 0.5*dn)   (linear, always up)
+     Kelly fraction f* maximises g. For up=.5,dn=.4 -> f*=0.25, g(.25)=+0.62%.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('eg3'); if(!cv) return;
+    const up=0.5, dn=0.4, FMAX=1.0;
+    let f=0.25;
+    const elYou=document.getElementById('eg3-you'), elK=document.getElementById('eg3-kelly'),
+          elEv=document.getElementById('eg3-ev'), elF=document.getElementById('eg3-f-lab');
+    const g  = x => 0.5*Math.log(1+x*up) + 0.5*Math.log(1-x*dn);   // per-round log-growth
+    const ev = x => x*(0.5*up - 0.5*dn);                            // per-round arithmetic growth
+    // Kelly fraction in closed form: d/df g = 0 -> f* = (up-dn)/(2*up*dn)
+    const fstar = clamp((up-dn)/(2*up*dn), 0, FMAX);
+
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const fr=frame(w,h,{l:48,r:14,t:18,b:32});
+      // y-range across both curves over [0,FMAX]
+      let ymin=0, ymax=0;
+      for(let i=0;i<=120;i++){ const x=FMAX*i/120; ymin=Math.min(ymin,g(x)); ymax=Math.max(ymax,ev(x),g(x)); }
+      ymin=Math.min(ymin,-0.005); ymax*=1.08;
+      const X=x=>fr.l+fr.W*(x/FMAX);
+      const Y=v=>fr.b-fr.H*((v-ymin)/(ymax-ymin));
+      // grid + % labels
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let gi=0;gi<=4;gi++){ const v=ymin+(ymax-ymin)*gi/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(fr.l,y); ctx.lineTo(fr.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText((v>=0?'+':'−')+Math.abs(v*100).toFixed(0)+'%', fr.l-6, y+3); }
+      // zero line
+      const yz=Y(0); ctx.strokeStyle='rgba(29,26,22,.22)'; ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(fr.l,yz); ctx.lineTo(fr.r,yz); ctx.stroke();
+      ctx.textAlign='center'; ctx.fillStyle=C.faint;
+      [0,0.25,0.5,0.75,1].forEach(x=>{ ctx.fillText(Math.round(x*100)+'%', X(x), fr.b+15); });
+      ctx.fillText('fraction of wealth you stake →', (fr.l+fr.r)/2, fr.b+26);
+      // EV line (red dashed)
+      ctx.strokeStyle=C.red; ctx.setLineDash([5,4]); ctx.lineWidth=2; ctx.beginPath();
+      for(let i=0;i<=120;i++){ const x=FMAX*i/120, px=X(x),py=Y(ev(x)); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke(); ctx.setLineDash([]);
+      // g curve (green)
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let i=0;i<=120;i++){ const x=FMAX*i/120, px=X(x),py=Y(g(x)); i?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // Kelly peak marker
+      const kx=X(fstar), ky=Y(g(fstar));
+      ctx.strokeStyle=C.violet; ctx.setLineDash([3,3]); ctx.lineWidth=1.3;
+      ctx.beginPath(); ctx.moveTo(kx,fr.t); ctx.lineTo(kx,fr.b); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=C.violet; ctx.beginPath(); ctx.arc(kx,ky,4.6,0,6.283); ctx.fill();
+      ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      // your f marker
+      const x=X(f);
+      ctx.strokeStyle='rgba(138,130,117,.9)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(x,fr.t); ctx.lineTo(x,fr.b); ctx.stroke(); ctx.setLineDash([]);
+      [[g(f),C.green],[ev(f),C.red]].forEach(([v,c])=>{
+        const y=Y(v); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x,y,4.4,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke(); });
+    }
+    function render(){
+      elF.textContent=Math.round(f*100)+'%';
+      const gy=g(f);
+      elYou.textContent=(gy>=0?'+':'−')+Math.abs(gy*100).toFixed(2)+'%';
+      elK.textContent=Math.round(fstar*100)+'%';
+      elEv.textContent='bet it all';
+      draw();
+    }
+    document.getElementById('eg3-f').oninput=e=>{ f=(+e.target.value)/100; render(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+<script>/* concepts nav: close on outside-click / Escape */
+document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
+</script>
+</body>
+</html>
