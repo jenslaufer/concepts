@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just Subtraction — why removing the harmful beats adding the helpful</title>
+<meta name="description" content="Three interactive games on via negativa: why removing the few worst exposures collapses your risk far faster than trimming the average, why a doctor who treats every wobble does more harm than one who waits, and why fixing the single weakest link beats upgrading everything. After Nassim Taleb." />
+<meta property="og:title" content="It's Just Subtraction" />
+<meta property="og:description" content="An interactive note on via negativa — how robustness comes from removal, not addition. After Nassim Taleb." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --violet:#7d4a9c;
+    --accent:#7d4a9c;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.violet .v{color:var(--violet)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+
+  /* concepts nav */
+  .topbar-r{display:flex;align-items:center;gap:18px}
+  .cnav{position:relative;display:inline-block}
+  .cnav>summary{list-style:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;-webkit-user-select:none;user-select:none}
+  .cnav>summary::-webkit-details-marker{display:none}
+  .cnav>summary::marker{content:""}
+  .cnav>summary:hover,.cnav[open]>summary{color:var(--accent,var(--ink))}
+  .cnav-ic{font-size:13px;line-height:1;transform:translateY(.5px)}
+  .cnav-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:60;background:var(--paper);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow,0 10px 34px rgba(0,0,0,.14));padding:6px;min-width:238px;max-height:min(72vh,440px);overflow:auto;display:flex;flex-direction:column;gap:1px}
+  .cnav-menu a,.cnav-menu .cnav-item{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 11px;border-radius:6px;text-decoration:none;font-family:var(--sans);font-size:13px;color:var(--ink);line-height:1.3}
+  .cnav-menu a>span,.cnav-menu .cnav-item>span{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .cnav-menu a:hover{background:rgba(128,128,128,.12)}
+  .cnav-menu a:hover,.cnav-menu a:hover>span{color:var(--accent,var(--ink))}
+  .cnav-home{font-family:var(--mono)!important;font-size:10.5px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)!important;justify-content:flex-start!important;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:3px}
+  .cnav-item.cur{background:rgba(128,128,128,.13);font-weight:600;cursor:default}
+  @media(max-width:640px){.cnav>summary .cnav-lbl{display:none}.topbar-r{gap:13px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just Subtraction</b><span class="sub"> &nbsp;·&nbsp; via negativa</span></a>
+    <div class="topbar-r">
+      <a class="sibling" href="/antifragile/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just Stress →</b></a>
+      <details class="cnav">
+      <summary><span class="cnav-ic" aria-hidden="true">▦</span><span class="cnav-lbl">Concepts</span></summary>
+      <nav class="cnav-menu" aria-label="All concepts">
+        <a class="cnav-home" href="/">All concepts &rarr;</a>
+        <a href="/convex/">It's Just Math<span>Convexity</span></a>
+        <a href="/tiny-experiments/">It's Just an Experiment<span>Action under uncertainty</span></a>
+        <a href="/serendipity/">It's Just Luck<span>Serendipity</span></a>
+        <a href="/uncertainty/">It's Just Unknown<span>Uncertainty</span></a>
+        <a href="/barbell/">It's Just a Barbell<span>Barbell strategy</span></a>
+        <a href="/lindy/">It's Just Old<span>The Lindy effect</span></a>
+        <a href="/systems/">It's Just a Loop<span>Systems thinking</span></a>
+        <a href="/chance/">It's Just Chance<span>Probability &amp; statistics</span></a>
+        <a href="/antifragile/">It's Just Stress<span>Antifragility</span></a>
+        <span class="cnav-item cur" aria-current="page">It's Just Subtraction<span>Via negativa</span></span>
+      </nav>
+    </details>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on via negativa</div>
+    <h1>It's Just Subtraction</h1>
+    <p class="lede">Three games on improvement by removal — why deleting the few worst exposures <em>collapses</em> your risk while trimming the average barely moves it, why the doctor who treats every wobble does <em>more</em> harm than the one who waits, and why fixing one weak link beats upgrading <em>everything</em> — after Nassim Taleb.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> Cut the worst</div>
+    <h2>Most of your risk hides in a few places</h2>
+
+    <p>The instinct, when something is too risky, is to improve everything a little: tidy each exposure, shave a bit off every line. It feels fair and it feels thorough. But risk almost never spreads evenly — in a world of fat tails, a handful of exposures carry nearly all of it, and the rest are rounding error. When that's true, the fastest way down is not to polish the average. It is to <em>find the few worst and remove them.</em></p>
+
+    <p class="sub">Below are <strong>120 exposures</strong>, each contributing some risk, drawn from a fat-tailed distribution — a few monsters, a long tail of small fry. Slide how many you remove, and compare two policies on the <strong>same</strong> portfolio: remove the <strong>worst</strong> ones first (via negativa), or remove them at <strong>random</strong> (improve-a-bit-everywhere). The <em>tail</em> slider sets how concentrated the world is.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Exposures you remove <b id="vn1-k-lab">0</b></label>
+          <input type="range" id="vn1-k" min="0" max="60" value="0" step="1">
+        </div>
+        <div class="ctrl">
+          <label>How fat the tail <b id="vn1-a-lab">heavy</b></label>
+          <input type="range" id="vn1-a" min="110" max="320" value="150" step="5">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat green"><div class="k">Cut worst · risk left</div><div class="v" id="vn1-worst">—</div></div>
+        <div class="stat"><div class="k">Cut random · risk left</div><div class="v" id="vn1-rand">—</div></div>
+        <div class="stat violet"><div class="k">Worst cut · risk gone</div><div class="v" id="vn1-gone">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> remove the worst first</span>
+        <span style="color:var(--ink-soft)"><i class="dash" style="color:var(--ink-soft)"></i> remove at random (≈ improve everything a bit)</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> how many you cut</span>
+      </div>
+      <div class="canvas-box"><canvas id="vn1" height="340"></canvas></div>
+      <div class="caption">Risk remaining (vertical, as a share of the original total) against how many of the 120 exposures you remove. Cutting at random drains the pile in a straight line — each cut takes its fair share. Cutting the worst first plunges: the first few removals take the monsters with them. Same portfolio, same number of cuts; only the <em>choice of what to cut</em> differs.</div>
+    </div>
+
+    <p>Watch the green curve fall off a cliff while the grey line ambles down. With a heavy tail, removing the worst <strong>five</strong> exposures can erase more risk than removing fifty at random. This is the actionable core of <em>less is more</em>: you do not need to know what is right everywhere — you only need to find the few things that are clearly, badly wrong, and cut them. Subtractive knowledge is robust. The monsters announce themselves.</p>
+
+    <div class="formula">
+      risk left after cutting the worst k &nbsp;=&nbsp; <span class="g">total − (sum of the k biggest)</span><br>
+      risk left after cutting k at random &nbsp;=&nbsp; <span class="muted">total · (N − k) / N &nbsp; (each cut takes its average share)</span><br>
+      <span class="muted"># the gap between the two curves is the entire payoff of aiming at the tail.</span>
+    </div>
+
+    <blockquote>
+      <p>“We know with much more clarity what is bad than what is good… The greatest — and most robust — contribution to knowledge consists in removing what we think is wrong.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+
+    <p class="sub">So the first move is not to add good — it's to subtract the worst, because in a fat-tailed world the worst is where the risk lives. Game Two turns to the most expensive form of adding: the help that hurts.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> First, do no harm</div>
+    <h2>The doctor who treats every wobble</h2>
+
+    <p>Many systems heal themselves. A body, an economy, a forest, a quiet mood — left alone, they drift away from trouble and back toward the middle. Into that self-correcting world steps the interventionist, who sees every wobble as a problem to fix. But each intervention reads a <em>noisy</em> signal and adds its own error and overshoot. When the system would have recovered on its own, the cure is pure damage.</p>
+
+    <p class="sub">Below, thousands of self-healing patients drift and recover over many rounds. A doctor watches a <strong>noisy</strong> reading and intervenes whenever it strays past a threshold. Move the threshold from <em>treat every twitch</em> (left) to <em>only the real emergencies</em> (right), and read the average harm the doctor leaves behind. The <strong>skill</strong> slider sets how clean the intervention is — how little iatrogenic noise it injects.</p>
+
+    <div class="formula">
+      a self-healing state: &nbsp; x &nbsp;←&nbsp; <span class="g">x − heal·x</span> &nbsp;+&nbsp; <span class="muted">noise</span> &nbsp; <span class="muted">(drifts back toward 0 on its own)</span><br>
+      the doctor reads &nbsp; y = x + <span class="c">reading-error</span>, &nbsp; and if |y| &gt; threshold: &nbsp; x &nbsp;←&nbsp; x − skill·y + <span class="c">harm</span><br>
+      <span class="muted"># acting on a noisy reading of a system that was already recovering injects more error than it removes.</span>
+    </div>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Treat past a deviation of <b id="vn2-t-lab">0.2</b></label>
+          <input type="range" id="vn2-t" min="0" max="300" value="20" step="4">
+        </div>
+        <div class="ctrl">
+          <label>Skill of the intervention <b id="vn2-s-lab">0.45</b></label>
+          <input type="range" id="vn2-s" min="10" max="95" value="45" step="5">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat violet"><div class="k">Least-harm threshold</div><div class="v" id="vn2-best">—</div></div>
+        <div class="stat green"><div class="k">Your threshold → harm</div><div class="v" id="vn2-you">—</div></div>
+        <div class="stat amber"><div class="k">You intervene on</div><div class="v" id="vn2-rate">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--violet)"><i style="background:var(--violet)"></i> average harm left behind</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> harm if you never intervene (the self-healing floor)</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> your threshold</span>
+      </div>
+      <div class="canvas-box"><canvas id="vn2" height="340"></canvas></div>
+      <div class="caption">Average harm (vertical, how far patients end up from healthy) against the threshold at which the doctor acts. On the left the doctor treats every twitch and harm is high — the interventions <em>are</em> the disease. Slide right and harm sinks toward the dashed floor: what the body would have reached untouched. Lower the skill and the whole curve lifts — when you can't intervene cleanly, the case for doing less only gets stronger.</div>
+    </div>
+
+    <p>This is iatrogenics — harm from the healer. Its trap is an asymmetry of visibility: the benefits of intervening are immediate and easy to claim, while the costs are delayed, diffuse, and never traced back to the cure. So we systematically over-treat. Via negativa says the first question is not <em>what should I do</em> but <em>what happens if I do nothing</em> — and to act only when the deviation is large enough to clear the harm the action itself will cause.</p>
+
+    <blockquote>
+      <p>“Medicine has gotten better… by removing the harmful, not by adding the helpful. First, do no harm.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+
+    <p class="sub">Subtracting the worst (Game One) and subtracting the meddling (Game Two) are both about removing harm. The last game is the happier face of the same coin: where adding a little, in exactly one place, is the whole game.</p>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> The weakest link</div>
+    <h2>A chain breaks at one link, not on average</h2>
+
+    <p>Some things hold only if <em>every</em> part holds: the steps in a launch, the links in a chain, the stages of a deal. The whole survives as the <strong>product</strong> of the parts — and a product is ruled by its smallest term. Push every part up a little and you barely move the result, because the one weak link still caps it. Pour the same effort into that single link and the whole thing leaps.</p>
+
+    <p class="sub">Below are <strong>seven links</strong>, each with its own reliability, and one of them is clearly the runt. You have a fixed budget of improvement. Spend it two ways and compare: <strong>spread it evenly</strong> across all seven (the additive instinct), or <strong>pour it into the weakest</strong> first, then the next weakest (via negativa). The bars show where your budget went; the readouts show what the <em>whole chain</em> does in each case.</p>
+
+    <div class="card wide">
+      <div class="seg" id="vn3-seg" style="margin:2px 0 14px">
+        <button data-mode="weak" aria-pressed="true">Pour into the weakest</button>
+        <button data-mode="spread" aria-pressed="false">Spread it evenly</button>
+      </div>
+      <div class="controls">
+        <div class="ctrl">
+          <label>Improvement budget <b id="vn3-b-lab">0.60</b></label>
+          <input type="range" id="vn3-b" min="0" max="200" value="60" step="4">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat"><div class="k">Chain before</div><div class="v" id="vn3-base">—</div></div>
+        <div class="stat green"><div class="k">Pour into weakest</div><div class="v" id="vn3-weak">—</div></div>
+        <div class="stat red"><div class="k">Spread evenly</div><div class="v" id="vn3-spread">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--ink-soft)"><i style="background:var(--line-2)"></i> original reliability</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> improvement you bought</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the link that caps the chain</span>
+      </div>
+      <div class="canvas-box"><canvas id="vn3" height="320"></canvas></div>
+      <div class="caption">Each bar is one link's reliability; the chain works only if all seven hold, so its odds are the bars multiplied together. Toggle between the two ways to spend the same budget. Spread evenly, the runt barely rises and the chain stays capped. Poured into the weakest, the bottleneck lifts and the whole product jumps — far more chain for the very same effort.</div>
+    </div>
+
+    <p>The lesson is not “improve things.” It is <em>find the one thing that caps you and remove the cap.</em> In a chain, in a product, in any system where the parts must all hold, the return on effort is wildly uneven: almost all of it sits on the weakest link, and almost none on the parts that were already fine. Subtracting a bottleneck — a single broken step, one fragile dependency — usually beats any amount of broad, even, well-meaning addition.</p>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>Don't ask what to add. Ask what to remove.</h2>
+    <p>Via negativa is the quiet engine under the whole family. You don't need to know what is right everywhere — only to find what is clearly wrong and cut it: the few worst exposures where the risk actually lives (Game One), the meddling that costs more than it cures (Game Two), the single weak link that caps the chain (Game Three). Removal is robust where addition is fragile, because we know harm with far more clarity than we know good, and a thing you took away can't blow up on you later. The shortest path to better is usually shorter, not longer.</p>
+    <blockquote>
+      <p>“The solution… is to remove things rather than to add. Via negativa: acting by removing is more powerful, and less error-prone, than acting by addition.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+    <p class="credits">
+      <strong>Via negativa</strong> is Nassim Taleb's name (borrowed from apophatic theology) for the principle that robustness and knowledge grow by <em>removal</em> in <em>Antifragile: Things That Gain from Disorder</em> (2012). Game One is the fat-tailed “less is more” / Pareto observation that a few exposures dominate the total — the exposures are a seeded Pareto sample, the curves are exact arithmetic. Game Two is <em>iatrogenics</em> and “first, do no harm” (<em>primum non nocere</em>, older than Taleb) shown as a Monte-Carlo over a self-healing process with noisy intervention. Game Three is the classic “weakest link” — a series system whose reliability is the product of its parts — with budget allocated by water-filling the minimum. The simulations are deliberately simple toy models: directionally honest, not a forecast of any particular portfolio, patient, or chain. Part of a family with <a href="/antifragile/" rel="noopener">It's Just Stress</a> (antifragility), <a href="/convex/" rel="noopener">It's Just Math</a> (convexity), <a href="/barbell/" rel="noopener">It's Just a Barbell</a> (the barbell), <a href="/lindy/" rel="noopener">It's Just Old</a> (the Lindy effect), <a href="/uncertainty/" rel="noopener">It's Just Unknown</a> (uncertainty), <a href="/serendipity/" rel="noopener">It's Just Luck</a> (serendipity), and <a href="/tiny-experiments/" rel="noopener">It's Just an Experiment</a> (action). <a href="/" rel="noopener">See all concepts →</a>
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b', blue:'#2f5d86', violet:'#7d4a9c',
+    grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.6)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  function gauss(rng){ let u=rng()||1e-9, v=rng(); return Math.sqrt(-2*Math.log(u))*Math.cos(6.283185307*v); }
+
+  /* =====================================================================
+     GAME ONE — cut the worst: 120 exposures drawn from a Pareto tail.
+       contribution r_i = U_i^(-1/alpha)   (U uniform in (0,1])  -> Pareto(alpha)
+       smaller alpha = fatter tail = more concentrated risk.
+     Remove-worst-k:  total - sum(top k of sorted-desc)         (exact)
+     Remove-random-k: total * (N-k)/N                           (exact expectation)
+     We plot risk-remaining as a share of the original total against k.
+     The exposures are a FIXED seeded sample so the curve is stable; the only
+     thing the alpha slider changes is how concentrated that sample is.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('vn1'); if(!cv) return;
+    const N=120, KMAX=60;
+    let k=0, alpha=1.5;
+    const elK=document.getElementById('vn1-k-lab'), elA=document.getElementById('vn1-a-lab'),
+          elW=document.getElementById('vn1-worst'), elR=document.getElementById('vn1-rand'),
+          elG=document.getElementById('vn1-gone');
+    let sortedDesc=[], total=0, cumTop=[];   // cumTop[k] = sum of the k biggest
+
+    function build(){
+      // fixed uniforms -> Pareto with current alpha. Same seed => stable sample.
+      const rng=mulberry32(73561);
+      const arr=new Array(N);
+      for(let i=0;i<N;i++){ const u=rng()||1e-9; arr[i]=Math.pow(u,-1/alpha); }
+      arr.sort((a,b)=>b-a);                       // descending
+      sortedDesc=arr;
+      total=0; for(let i=0;i<N;i++) total+=arr[i];
+      cumTop=new Array(N+1); cumTop[0]=0;
+      for(let i=0;i<N;i++) cumTop[i+1]=cumTop[i]+arr[i];
+    }
+    const leftWorst =(kk)=> (total - cumTop[kk]) / total;     // share remaining
+    const leftRandom=(kk)=> (N - kk) / N;
+
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:36,r:16,t:18,b:32});
+      const X=kk=>f.l+f.W*(kk/KMAX);
+      const Y=v=>f.b-f.H*v;                       // v in [0,1] share
+      // grid + y labels (%)
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const v=g/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(Math.round(v*100)+'%', f.l-5, y+3); }
+      ctx.textAlign='center';
+      [0,15,30,45,60].forEach(kk=>{ ctx.fillStyle=C.faint; ctx.fillText(kk, X(kk), f.b+16); });
+      ctx.fillText('exposures removed (of 120) →', (f.l+f.r)/2, f.b+27);
+      // random line (linear)
+      ctx.strokeStyle=C.inkSoft; ctx.setLineDash([5,4]); ctx.lineWidth=1.8; ctx.beginPath();
+      for(let kk=0;kk<=KMAX;kk++){ const px=X(kk),py=Y(leftRandom(kk)); kk?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke(); ctx.setLineDash([]);
+      // worst curve (convex collapse)
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let kk=0;kk<=KMAX;kk++){ const px=X(kk),py=Y(leftWorst(kk)); kk?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // current k marker + dots
+      const x=X(k);
+      ctx.strokeStyle='rgba(138,130,117,.85)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(x,f.t); ctx.lineTo(x,f.b); ctx.stroke(); ctx.setLineDash([]);
+      [[leftRandom(k),C.inkSoft],[leftWorst(k),C.green]].forEach(([v,c])=>{
+        const y=Y(v); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x,y,4.6,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      });
+    }
+    function render(){
+      elK.textContent=k;
+      elA.textContent = alpha<1.5 ? 'very heavy' : alpha<2.1 ? 'heavy' : alpha<2.8 ? 'moderate' : 'light';
+      const w=leftWorst(k), r=leftRandom(k);
+      elW.textContent=Math.round(w*100)+'%';
+      elR.textContent=Math.round(r*100)+'%';
+      elG.textContent=Math.round((1-w)*100)+'%';
+      draw();
+    }
+    document.getElementById('vn1-k').oninput=e=>{ k=+e.target.value; render(); };
+    document.getElementById('vn1-a').oninput=e=>{ alpha=(+e.target.value)/100; build(); render(); };
+    build(); render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* =====================================================================
+     GAME TWO — iatrogenics: a self-healing (mean-reverting) state, a doctor
+     who acts on a NOISY reading whenever it strays past a threshold tau.
+       x_{t+1} = x_t - heal*x_t + procNoise*gauss
+       y = x + obsNoise*gauss
+       if |y| > tau:  x += -skill*y + iatro*gauss   (corrects, but injects harm)
+     Harm = mean |x| over the last stretch, averaged over many patients.
+     Sweep tau -> curve. Floor = never-intervene harm (the self-healing level).
+     Monotone-ish: at tau=0 (treat everything) harm is highest; as tau grows it
+     falls toward the floor. Lower skill lifts the whole curve.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('vn2'); if(!cv) return;
+    const T=80, BURN=20, M=240, NT=42, TMAX=3.0;
+    const heal=0.28, procNoise=0.34, obsNoise=0.45, iatroBase=0.90;
+    let tau=0.2, skill=0.45;
+    let curve=null, best=null, floor=0;
+    const elBest=document.getElementById('vn2-best'), elYou=document.getElementById('vn2-you'),
+          elRate=document.getElementById('vn2-rate'), elT=document.getElementById('vn2-t-lab'),
+          elS=document.getElementById('vn2-s-lab');
+
+    // run M patients at threshold TAU; return {harm, rate}
+    function atTau(TAU){
+      const rng=mulberry32(Math.round(TAU*1000)+1300);
+      let acc=0, n=0, acts=0, seen=0;
+      const iatro = iatroBase*(1.05 - skill);         // sloppier skill => more injected harm
+      for(let p=0;p<M;p++){
+        let x = gauss(rng)*0.6;
+        for(let t=0;t<T;t++){
+          x = x - heal*x + procNoise*gauss(rng);
+          const y = x + obsNoise*gauss(rng);
+          if(Math.abs(y) > TAU){ x += -skill*y + iatro*gauss(rng); if(t>=BURN){acts++;} }
+          if(t>=BURN){ acc+=Math.abs(x); n++; seen++; }
+        }
+      }
+      return {harm:acc/n, rate:acts/seen};
+    }
+    function build(){
+      curve=new Array(NT); best={tau:0,harm:1e9};
+      for(let i=0;i<NT;i++){ const TAU=TMAX*i/(NT-1); const r=atTau(TAU);
+        curve[i]={tau:TAU, harm:r.harm}; if(r.harm<best.harm){ best={tau:TAU, harm:r.harm}; } }
+      floor=curve[NT-1].harm;                          // ~never intervene
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:34,r:16,t:18,b:32});
+      let ymax=0; curve.forEach(p=>{ if(p.harm>ymax)ymax=p.harm; }); ymax=Math.max(ymax*1.08,0.4);
+      const X=t=>f.l+f.W*(t/TMAX);
+      const Y=v=>f.b-f.H*(v/ymax);
+      // grid + labels
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const v=ymax*g/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(v.toFixed(1), f.l-5, y+3); }
+      ctx.textAlign='center';
+      ctx.fillText('treat every twitch', X(0.42), f.b+17);
+      ctx.fillText('only emergencies', X(TMAX)-46, f.b+17);
+      ctx.fillText('threshold to act →', (f.l+f.r)/2, f.b+27);
+      // never-intervene floor
+      ctx.strokeStyle=C.faint; ctx.setLineDash([4,4]); ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(floor)); ctx.lineTo(f.r,Y(floor)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.textAlign='left'; ctx.fillStyle=C.faint; ctx.fillText('do-nothing floor', f.l+4, Y(floor)-5);
+      // harm curve
+      ctx.strokeStyle=C.violet; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      curve.forEach((p,i)=>{ const px=X(p.tau),py=Y(clamp(p.harm,0,ymax)); i?ctx.lineTo(px,py):ctx.moveTo(px,py); });
+      ctx.stroke();
+      // your threshold
+      const x=X(tau);
+      ctx.strokeStyle='rgba(138,130,117,.85)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(x,f.t); ctx.lineTo(x,f.b); ctx.stroke(); ctx.setLineDash([]);
+      const you=atTau(tau); const yy=Y(clamp(you.harm,0,ymax));
+      ctx.fillStyle = you.harm<=floor*1.08 ? C.green : C.red;
+      ctx.beginPath(); ctx.arc(x,yy,4.8,0,6.283); ctx.fill();
+      ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      // readouts
+      elBest.textContent = best.tau>=TMAX*0.92 ? 'never' : best.tau.toFixed(1);
+      elYou.textContent = you.harm.toFixed(2);
+      elRate.textContent = Math.round(you.rate*100)+'%';
+    }
+    function rebuild(){ build(); draw(); }
+    function render(){ elT.textContent=tau.toFixed(1); elS.textContent=skill.toFixed(2); rebuild(); }
+    document.getElementById('vn2-t').oninput=e=>{ tau=(+e.target.value)/100; elT.textContent=tau.toFixed(1); draw(); };
+    document.getElementById('vn2-s').oninput=e=>{ skill=(+e.target.value)/100; elS.textContent=skill.toFixed(2); rebuild(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* =====================================================================
+     GAME THREE — the weakest link: a series system of 7 links, reliability
+       R = product(p_i).  A fixed budget B of improvement spent two ways:
+       SPREAD:   add B/7 to every link (capped near 0.995)
+       WEAKEST:  water-fill — repeatedly add a small increment to the current
+                 minimum link until the budget is exhausted.
+     Bars show baseline + bought improvement under the selected mode.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('vn3'); if(!cv) return;
+    const BASE=[0.86,0.94,0.62,0.90,0.97,0.88,0.93];   // one clear runt (0.62)
+    const NL=BASE.length, CAP=0.995;
+    let budget=0.60, mode='weak';
+    const elBase=document.getElementById('vn3-base'), elW=document.getElementById('vn3-weak'),
+          elS=document.getElementById('vn3-spread'), elB=document.getElementById('vn3-b-lab');
+
+    const prod=a=>a.reduce((m,v)=>m*v,1);
+    function allocSpread(B){
+      const p=BASE.slice(); const each=B/NL;
+      for(let i=0;i<NL;i++) p[i]=Math.min(CAP,p[i]+each);
+      return p;
+    }
+    function allocWeak(B){
+      const p=BASE.slice(); let left=B; const step=0.005;
+      let guard=0;
+      while(left>1e-9 && guard++<100000){
+        // lowest link that still has headroom
+        let mi=-1, mv=2;
+        for(let i=0;i<NL;i++){ if(p[i]<CAP && p[i]<mv){ mv=p[i]; mi=i; } }
+        if(mi<0) break;                                 // all capped
+        const inc=Math.min(step,left,CAP-p[mi]);
+        p[mi]+=inc; left-=inc;
+      }
+      return p;
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:30,r:14,t:18,b:34});
+      const p = mode==='weak' ? allocWeak(budget) : allocSpread(budget);
+      const minBase = Math.min.apply(null,BASE);
+      // y maps reliability 0..1
+      const Y=v=>f.b-f.H*v;
+      // grid
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const v=g/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(Math.round(v*100)+'%', f.l-5, y+3); }
+      // bars
+      const gap=10, bw=(f.W-gap*(NL-1))/NL;
+      for(let i=0;i<NL;i++){
+        const x0=f.l+i*(bw+gap);
+        // baseline portion
+        ctx.fillStyle=C.line2;
+        ctx.fillRect(x0, Y(BASE[i]), bw, f.b-Y(BASE[i]));
+        // bought improvement
+        if(p[i]>BASE[i]+1e-6){
+          ctx.fillStyle=C.green;
+          ctx.fillRect(x0, Y(p[i]), bw, Y(BASE[i])-Y(p[i]));
+        }
+        // mark the link that caps the (original) chain
+        if(Math.abs(BASE[i]-minBase)<1e-9){
+          ctx.strokeStyle=C.faint; ctx.setLineDash([3,3]); ctx.lineWidth=1.2;
+          ctx.beginPath(); ctx.moveTo(x0-2,Y(BASE[i])); ctx.lineTo(x0+bw+2,Y(BASE[i])); ctx.stroke(); ctx.setLineDash([]);
+        }
+        ctx.fillStyle=C.faint; ctx.font='9.5px IBM Plex Mono'; ctx.textAlign='center';
+        ctx.fillText('L'+(i+1), x0+bw/2, f.b+15);
+      }
+      // baseline axis
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,f.b); ctx.lineTo(f.r,f.b); ctx.stroke();
+    }
+    function render(){
+      elB.textContent=budget.toFixed(2);
+      const base=prod(BASE), wk=prod(allocWeak(budget)), sp=prod(allocSpread(budget));
+      elBase.textContent=Math.round(base*100)+'%';
+      elW.textContent=Math.round(wk*100)+'%';
+      elS.textContent=Math.round(sp*100)+'%';
+      draw();
+    }
+    document.querySelectorAll('#vn3-seg button').forEach(b=>{
+      b.addEventListener('click',()=>{
+        mode=b.dataset.mode;
+        document.querySelectorAll('#vn3-seg button').forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false'));
+        draw();
+      });
+    });
+    document.getElementById('vn3-b').oninput=e=>{ budget=(+e.target.value)/100; render(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+<script>/* concepts nav: close on outside-click / Escape */
+document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
+</script>
+</body>
+</html>

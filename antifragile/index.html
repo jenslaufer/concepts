@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just Stress — why some things get stronger from disorder, and how to be one of them</title>
+<meta name="description" content="Three interactive games on antifragility: the convexity bias that makes volatility a gift, why the same total shock harms more when concentrated than when spread, and the hormetic dose where stress plus recovery makes you stronger. After Nassim Taleb." />
+<meta property="og:title" content="It's Just Stress" />
+<meta property="og:description" content="An interactive note on antifragility — why some things gain from shocks, and how to put yourself on the right side of the curve. After Nassim Taleb." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --violet:#7d4a9c;
+    --accent:#7d4a9c;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.violet .v{color:var(--violet)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+
+  /* concepts nav */
+  .topbar-r{display:flex;align-items:center;gap:18px}
+  .cnav{position:relative;display:inline-block}
+  .cnav>summary{list-style:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;-webkit-user-select:none;user-select:none}
+  .cnav>summary::-webkit-details-marker{display:none}
+  .cnav>summary::marker{content:""}
+  .cnav>summary:hover,.cnav[open]>summary{color:var(--accent,var(--ink))}
+  .cnav-ic{font-size:13px;line-height:1;transform:translateY(.5px)}
+  .cnav-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:60;background:var(--paper);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow,0 10px 34px rgba(0,0,0,.14));padding:6px;min-width:238px;max-height:min(72vh,440px);overflow:auto;display:flex;flex-direction:column;gap:1px}
+  .cnav-menu a,.cnav-menu .cnav-item{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 11px;border-radius:6px;text-decoration:none;font-family:var(--sans);font-size:13px;color:var(--ink);line-height:1.3}
+  .cnav-menu a>span,.cnav-menu .cnav-item>span{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .cnav-menu a:hover{background:rgba(128,128,128,.12)}
+  .cnav-menu a:hover,.cnav-menu a:hover>span{color:var(--accent,var(--ink))}
+  .cnav-home{font-family:var(--mono)!important;font-size:10.5px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)!important;justify-content:flex-start!important;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:3px}
+  .cnav-item.cur{background:rgba(128,128,128,.13);font-weight:600;cursor:default}
+  @media(max-width:640px){.cnav>summary .cnav-lbl{display:none}.topbar-r{gap:13px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just Stress</b><span class="sub"> &nbsp;·&nbsp; antifragility</span></a>
+    <div class="topbar-r">
+      <a class="sibling" href="/convex/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just Math →</b></a>
+      <details class="cnav">
+      <summary><span class="cnav-ic" aria-hidden="true">▦</span><span class="cnav-lbl">Concepts</span></summary>
+      <nav class="cnav-menu" aria-label="All concepts">
+        <a class="cnav-home" href="/">All concepts &rarr;</a>
+        <a href="/convex/">It's Just Math<span>Convexity</span></a>
+        <a href="/tiny-experiments/">It's Just an Experiment<span>Action under uncertainty</span></a>
+        <a href="/serendipity/">It's Just Luck<span>Serendipity</span></a>
+        <a href="/uncertainty/">It's Just Unknown<span>Uncertainty</span></a>
+        <a href="/barbell/">It's Just a Barbell<span>Barbell strategy</span></a>
+        <a href="/lindy/">It's Just Old<span>The Lindy effect</span></a>
+        <a href="/systems/">It's Just a Loop<span>Systems thinking</span></a>
+        <a href="/chance/">It's Just Chance<span>Probability &amp; statistics</span></a>
+        <span class="cnav-item cur" aria-current="page">It's Just Stress<span>Antifragility</span></span>
+        <a href="/via-negativa/">It's Just Subtraction<span>Via negativa</span></a>
+      </nav>
+    </details>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on antifragility</div>
+    <h1>It's Just Stress</h1>
+    <p class="lede">Three games on antifragility — why a curved response turns volatility into a <em>gift</em>, why the same total shock is far worse <em>concentrated</em> than spread thin, and the exact dose of stress where pressure plus recovery leaves you <em>stronger</em> — after Nassim Taleb.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> The curve</div>
+    <h2>Three machines eat the same chaos</h2>
+
+    <p>Fragile, robust, antifragile. We use the words loosely, but there is a precise line between them, and it is not about strength. It is about the <em>shape</em> of how a thing responds to a shock — whether the response curve bends up, runs straight, or bends down. That single piece of geometry decides whether disorder is your enemy, a non-event, or your fuel.</p>
+
+    <p class="sub">Below are three machines. Each takes the <strong>same</strong> stream of random shocks — same average, exactly zero, no thumb on the scale — and turns each shock into an outcome through its own response curve. The <strong>fragile</strong> one bends down (it loses fast, gains slow). The <strong>robust</strong> one is a straight line (it doesn't care). The <strong>antifragile</strong> one bends up (it gains fast, loses slow). Turn up the volatility and watch where their average outcomes go.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Volatility of the world <b id="af1-vol-lab">σ 1.0</b></label>
+          <input type="range" id="af1-vol" min="0" max="200" value="100" step="2">
+        </div>
+        <div class="ctrl">
+          <label>Curvature of the machines <b id="af1-cur-lab">0.50</b></label>
+          <input type="range" id="af1-cur" min="10" max="90" value="50" step="2">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Fragile · avg outcome</div><div class="v" id="af1-frag">—</div></div>
+        <div class="stat"><div class="k">Robust · avg outcome</div><div class="v" id="af1-rob">—</div></div>
+        <div class="stat green"><div class="k">Antifragile · avg outcome</div><div class="v" id="af1-anti">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> fragile (concave)</span>
+        <span style="color:var(--ink-soft)"><i style="background:var(--ink-soft)"></i> robust (linear)</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> antifragile (convex)</span>
+        <span style="color:var(--ink-faint)"><i style="background:var(--accent);opacity:.18"></i> range the shocks cover</span>
+      </div>
+      <div class="canvas-box"><canvas id="af1" height="340"></canvas></div>
+      <div class="caption">Outcome (vertical) against shock (horizontal). The dots on the centre line are each machine's <em>measured</em> average outcome over thousands of random shocks. The straight machine averages to zero. The curved ones don't — averaging a spread of shocks across a bend lands you off the line. That offset is the whole story.</div>
+    </div>
+
+    <p>The shocks average to zero, so a straight-line machine averages to zero too — disorder is a wash. But run those same shocks through a <em>bent</em> machine and the average drifts off the line, because the curve weights the two sides unevenly. Bend up and the good side outweighs the bad: the average outcome is <em>positive</em>, and it grows as you add volatility. Bend down and it's the reverse. This is <strong>Jensen's inequality</strong> — the convexity bias — and it is the entire mathematical content of antifragility.</p>
+
+    <div class="formula">
+      average outcome &nbsp;=&nbsp; <span class="g">curvature · σ²</span> &nbsp;<span class="muted">(for the convex machine; negative for the concave one)</span><br>
+      <span class="muted"># nothing here comes from the average shock — it is exactly zero.</span><br>
+      <span class="muted"># the edge is bought entirely with <span class="g">variance</span> (σ²): more disorder, more payout.</span>
+    </div>
+
+    <blockquote>
+      <p>“Wind extinguishes a candle and energizes fire. Likewise with randomness, uncertainty, chaos: you want to use them, not hide from them. You want to be the fire and wish for the wind.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+
+    <p class="sub">So antifragility isn't grit or toughness — it's a curve that turns variance into a payout. But the curve has a second, sharper face: it cares not just <em>how much</em> disorder arrives, but in <em>what size</em>. That's Game Two.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> Size matters</div>
+    <h2>One big rock, or a bucket of pebbles</h2>
+
+    <p>Here is the same total stress delivered two ways. You can take it all in one blow, or break it into many small ones. For a linear thing the total is identical — stress is stress. But almost nothing real is linear, and once there is a bend, <em>how the dose is split</em> changes everything.</p>
+
+    <p class="sub">Taleb's image: jumping once off a thirty-metre wall kills you; the same thirty metres taken as a hundred thirty-centimetre hops barely registers. The harm from one big shock is more than the sum of the harm from many small ones — that <em>is</em> fragility. The antifragile thing is the mirror: it needs the occasional big jolt to grow, and a fine mist of tiny ones does nothing for it. Slide from one giant shock to many tiny ones and watch the two react in opposite directions.</p>
+
+    <div class="formula">
+      total effect of a fixed stress S, split into k equal hits &nbsp;=&nbsp; <span class="muted">S<sup>p</sup> · k<sup>(1−p)</sup></span><br>
+      <span class="c">fragile</span> harm grows faster than linear (p&gt;1) → concentration is ruinous, spreading saves it<br>
+      <span class="g">antifragile</span> gain grows faster than linear (p&gt;1) → it feeds on the big hit, spreading starves it
+    </div>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Break the shock into <b id="af2-k-lab">1 hit</b></label>
+          <input type="range" id="af2-k" min="1" max="40" value="1" step="1">
+        </div>
+        <div class="ctrl">
+          <label>How non-linear (p) <b id="af2-p-lab">2.0</b></label>
+          <input type="range" id="af2-p" min="120" max="280" value="200" step="5">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Fragile · net (harm)</div><div class="v" id="af2-frag">—</div></div>
+        <div class="stat"><div class="k">Robust · net</div><div class="v" id="af2-rob">—</div></div>
+        <div class="stat green"><div class="k">Antifragile · net (gain)</div><div class="v" id="af2-anti">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> fragile outcome</span>
+        <span style="color:var(--ink-soft)"><i class="dash" style="color:var(--ink-soft)"></i> robust (always = S)</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> antifragile outcome</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the split you picked</span>
+      </div>
+      <div class="canvas-box"><canvas id="af2" height="330"></canvas></div>
+      <div class="caption">Outcome against how finely the same total stress is chopped — one big hit on the left, a mist of tiny ones on the right. The fragile curve climbs out of its hole as you spread the load; the antifragile curve gives up its windfall. The robust line never moves. Same total stress every time.</div>
+    </div>
+
+    <p>Read the left edge, where everything is one enormous shock: the fragile thing is in ruins and the antifragile thing is soaring — from the <em>identical</em> event. Now spread that stress into a hundred specks and both collapse toward the boring middle line. This is why the fragilista loves to smooth, average, and suppress every small wobble — and why doing so quietly stores up the one big rock that breaks them. Suppressing volatility doesn't remove risk; it concentrates it into the tail.</p>
+
+    <blockquote>
+      <p>“The fragile wants tranquility, the antifragile grows from disorder, and the robust doesn't care too much.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+
+    <p class="sub">Two faces of one curve: variance pays (Game One), and the dose must come in the right <em>size</em> (Game Two). Which raises the only question that matters for a living thing — how much stress, exactly, and how much rest? That's Game Three.</p>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> The dose</div>
+    <h2>Stress, then recover, and overshoot</h2>
+
+    <p>A muscle, a bone, an immune system, a skill, a business — give it a jolt and let it rest, and it doesn't just repair. It <em>overcompensates</em>, rebuilding to slightly above where it was, bracing for a bigger version of the same. That's hormesis: the small poison that makes you stronger. But the gift has a dose. Too little stress and you atrophy from comfort; too much, or too little recovery, and the damage compounds until you break.</p>
+
+    <p class="sub">Below, a body is put through many cycles of stress-and-recovery, thousands of times over, at every dose. The curve is the <em>measured</em> median strength it ends with — not asserted, simulated. It is an inverted U: a peak in the middle with cliffs on both sides. Move <strong>recovery</strong> and the whole curve lifts or sags. Move <strong>resilience</strong> and the cliff on the right slides. Then set <em>your</em> dose and see where you land — and how often a body at that dose simply breaks.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Your dose of stress <b id="af3-dose-lab">7</b></label>
+          <input type="range" id="af3-dose" min="0" max="180" value="70" step="2">
+        </div>
+        <div class="ctrl">
+          <label>Recovery / adaptation <b id="af3-rec-lab">0.55</b></label>
+          <input type="range" id="af3-rec" min="20" max="100" value="55" step="2">
+        </div>
+        <div class="ctrl">
+          <label>Resilience (injury threshold) <b id="af3-res-lab">14</b></label>
+          <input type="range" id="af3-res" min="8" max="22" value="14" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat violet"><div class="k">Best dose (the peak)</div><div class="v" id="af3-best">—</div></div>
+        <div class="stat green"><div class="k">Your dose → strength</div><div class="v" id="af3-you">—</div></div>
+        <div class="stat red"><div class="k">Your dose → broke</div><div class="v" id="af3-broke">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--violet)"><i style="background:var(--violet)"></i> median strength after many cycles</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the starting body (= 100)</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> your chosen dose</span>
+      </div>
+      <div class="canvas-box"><canvas id="af3" height="350"></canvas></div>
+      <div class="caption">Final strength against the dose of stress, measured by simulating thousands of bodies through dozens of stress-and-rest cycles each. Left of the peak: too comfortable, you decay below where you started. Right of the peak: injury outruns recovery and the curve falls off a cliff. Antifragility lives at the top of the hump — and the hump is narrower than anyone hopes.</div>
+    </div>
+
+    <p>This is the actionable shape of the whole idea. Not “seek stress” and not “avoid stress,” but <em>find the dose</em> — and pair it with real recovery, because without rest even the right stress only accumulates as damage. It argues for a barbell of effort: bouts of genuine, acute load separated by full recovery, rather than a flat grey grind of chronic mild strain that never lets you overshoot and never lets you heal. Bubble-wrap atrophies you. Overload breaks you. The narrow middle, taken in the right-sized doses with rest between, is the only place a thing gets stronger by being used.</p>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>Don't endure disorder. Be shaped to feed on it.</h2>
+    <p>Antifragility is not toughness — toughness merely survives. It is a <em>curve</em>: bend your response so that variance pays you (Game One), so that you are not in the path of the one concentrated shock that ruins the fragile (Game Two), and so that the stress you do take comes in doses your recovery can convert into overshoot (Game Three). It is the same convex shape that runs through every essay here — clip the downside, leave the upside open — pointed this time at the disorder of the world itself. Don't ask how to avoid the wind. Ask how to be the fire.</p>
+    <blockquote>
+      <p>“Some things benefit from shocks; they thrive and grow when exposed to volatility, randomness, disorder, and stressors and love adventure, risk, and uncertainty.”</p>
+      <cite><b>Nassim Nicholas Taleb</b> · Antifragile</cite>
+    </blockquote>
+    <p class="credits">
+      <strong>Antifragility</strong> is Nassim Taleb's coinage from <em>Antifragile: Things That Gain from Disorder</em> (2012) — he opens by noting there was no word for the opposite of fragile, so he made one. The convexity bias in Game One is <strong>Jensen's inequality</strong> (Johan Jensen, 1906), standard mathematics; the “harm grows faster than the dose” argument in Game Two and the hormesis curve in Game Three are Taleb's framings of older results in pharmacology and physiology (the term <em>hormesis</em> is from toxicology). The candle-and-fire, fragile-wants-tranquility, and things-that-benefit-from-shocks lines are his. The simulations are deliberately simple toy models — directionally honest, not a forecast of any particular body or business. Part of a family with <a href="/convex/" rel="noopener">It's Just Math</a> (convexity), <a href="/barbell/" rel="noopener">It's Just a Barbell</a> (the barbell), <a href="/lindy/" rel="noopener">It's Just Old</a> (the Lindy effect), <a href="/uncertainty/" rel="noopener">It's Just Unknown</a> (uncertainty), <a href="/serendipity/" rel="noopener">It's Just Luck</a> (serendipity), and <a href="/tiny-experiments/" rel="noopener">It's Just an Experiment</a> (action). <a href="/" rel="noopener">See all concepts →</a>
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b', blue:'#2f5d86', violet:'#7d4a9c',
+    grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.6)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  // standard normal via Box-Muller, fed by a seeded uniform
+  function gauss(rng){ let u=rng()||1e-9, v=rng(); return Math.sqrt(-2*Math.log(u))*Math.cos(6.283185307*v); }
+  function sgn(v){ return v<0?-1:1; }
+
+  /* =====================================================================
+     GAME ONE — the curve: three response functions eat the SAME zero-mean
+     shocks. Measured average outcome demonstrates Jensen's inequality:
+       fragile (concave) f = x - c·x·|x| ... we use f = x - c·x²·sgn? No —
+     to keep a clean convex/concave pair we use:
+       robust:      f(x) = x
+       antifragile: f(x) = x + c·x²       (convex, second deriv = +2c)
+       fragile:     f(x) = x - c·x²       (concave, second deriv = -2c)
+     E[x]=0 so E[f] = ± c·E[x²] = ± c·σ². The dots sit at that measured mean.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('af1'); if(!cv) return;
+    const N=60000;
+    let sigma=1.0, cur=0.50;
+    const elV=document.getElementById('af1-vol-lab'), elCl=document.getElementById('af1-cur-lab'),
+          elF=document.getElementById('af1-frag'), elR=document.getElementById('af1-rob'),
+          elA=document.getElementById('af1-anti');
+    const fFrag=(x)=> x - cur*x*x;
+    const fRob =(x)=> x;
+    const fAnti=(x)=> x + cur*x*x;
+
+    function measure(){
+      const rng=mulberry32(20260626);
+      let sF=0,sR=0,sA=0;
+      for(let i=0;i<N;i++){ const x=gauss(rng)*sigma; sF+=fFrag(x); sR+=fRob(x); sA+=fAnti(x); }
+      return {f:sF/N, r:sR/N, a:sA/N};
+    }
+    function draw(m){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:18,r:18,t:18,b:30});
+      const XMAX=Math.max(2.2, sigma*2.6);
+      // y range: cover the curves over [-XMAX,XMAX]
+      const yAt=x=>x + cur*x*x;            // convex is the most extreme upward
+      const YMAX=Math.max(2.4, yAt(XMAX), -fFrag(XMAX), Math.abs(fFrag(-XMAX)));
+      const X=x=>f.l+f.W*((x+XMAX)/(2*XMAX));
+      const Y=v=>f.b-f.H*((v+YMAX)/(2*YMAX));
+      // shock band ±sigma
+      ctx.fillStyle='rgba(125,74,156,.10)';
+      ctx.fillRect(X(-sigma),f.t, X(sigma)-X(-sigma), f.b-f.t);
+      // axes
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(0)); ctx.lineTo(f.r,Y(0)); ctx.stroke();   // outcome = 0
+      ctx.beginPath(); ctx.moveTo(X(0),f.t); ctx.lineTo(X(0),f.b); ctx.stroke();   // shock = 0
+      ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
+      ctx.textAlign='center'; ctx.fillText('shock →', (f.l+f.r)/2, f.b+26);
+      ctx.textAlign='left'; ctx.fillText('outcome', f.l+2, f.t+10);
+      // curves
+      function curve(fn,color,wd){ ctx.strokeStyle=color; ctx.lineWidth=wd; ctx.lineJoin='round'; ctx.beginPath();
+        let first=true; for(let i=0;i<=160;i++){ const x=-XMAX+2*XMAX*i/160; const yy=clamp(fn(x),-YMAX,YMAX);
+          const px=X(x),py=Y(yy); first?(ctx.moveTo(px,py),first=false):ctx.lineTo(px,py);} ctx.stroke(); }
+      curve(fRob, C.inkSoft, 2.0);
+      curve(fFrag,C.red, 2.6);
+      curve(fAnti,C.green,2.6);
+      // measured-mean dots on the centre (shock=0) line
+      const cx=X(0);
+      [[m.a,C.green],[m.r,C.inkSoft],[m.f,C.red]].forEach(([v,c])=>{
+        const y=Y(clamp(v,-YMAX,YMAX));
+        ctx.strokeStyle=c; ctx.setLineDash([4,3]); ctx.lineWidth=1.4;
+        ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(cx,y); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle=c; ctx.beginPath(); ctx.arc(cx,y,4.6,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      });
+    }
+    function render(){
+      elV.textContent='σ '+sigma.toFixed(1); elCl.textContent=cur.toFixed(2);
+      const m=measure();
+      elF.textContent=(m.f>=0?'+':'')+m.f.toFixed(2);
+      elR.textContent=(m.r>=0?'+':'')+m.r.toFixed(2);
+      elA.textContent=(m.a>=0?'+':'')+m.a.toFixed(2);
+      draw(m);
+    }
+    document.getElementById('af1-vol').oninput=e=>{ sigma=(+e.target.value)/100; render(); };
+    document.getElementById('af1-cur').oninput=e=>{ cur=(+e.target.value)/100; render(); };
+    render();
+    window.addEventListener('resize',()=>render());
+  })();
+
+  /* =====================================================================
+     GAME TWO — size matters: a fixed total stress S split into k equal hits.
+       per-hit magnitude s = S/k ; nonlinear effect per hit = s^p
+       total = k · (S/k)^p = S^p · k^(1-p)
+     fragile: outcome = -(S^p·k^(1-p)) scaled  (harm, convex in size)
+     antifragile: outcome = +(S^p·k^(1-p)) scaled (gain, convex in size)
+     robust: outcome = S (linear; the same whatever k)
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('af2'); if(!cv) return;
+    const S=10, KMAX=40;
+    let k=1, p=2.0;
+    const elK=document.getElementById('af2-k-lab'), elP=document.getElementById('af2-p-lab'),
+          elF=document.getElementById('af2-frag'), elR=document.getElementById('af2-rob'),
+          elA=document.getElementById('af2-anti');
+    // total nonlinear effect k·(S/k)^p = S^p·k^(1-p), normalised so one big hit (k=1)
+    // tops out at the magnitude S — antifragile gain ~ +S, fragile harm ~ -S at k=1.
+    const val=(kk)=> S*Math.pow(kk,1-p);                 // = S^p·k^(1-p) · S^(1-p)
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:30,r:16,t:18,b:32});
+      const YMAX=S*1.12;
+      const X=kk=>f.l+f.W*((kk-1)/(KMAX-1));
+      const Y=v=>f.b-f.H*((v+YMAX)/(2*YMAX));
+      // grid + zero line
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(0)); ctx.lineTo(f.r,Y(0)); ctx.stroke();
+      ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      [YMAX,0,-YMAX].forEach(v=>{ ctx.fillText((v>0?'+':'')+Math.round(v), f.l-5, Y(v)+3); });
+      ctx.textAlign='center';
+      ctx.fillText('1 huge hit', X(1)+22, f.b+18);
+      ctx.fillText('many tiny hits', X(KMAX)-30, f.b+18);
+      // robust dashed (= S, constant)
+      ctx.strokeStyle=C.inkSoft; ctx.setLineDash([5,4]); ctx.lineWidth=1.6;
+      ctx.beginPath(); ctx.moveTo(X(1),Y(S)); ctx.lineTo(X(KMAX),Y(S)); ctx.stroke(); ctx.setLineDash([]);
+      // fragile & antifragile curves
+      function curve(sign,color){ ctx.strokeStyle=color; ctx.lineWidth=2.6; ctx.lineJoin='round'; ctx.beginPath();
+        let first=true; for(let kk=1;kk<=KMAX;kk++){ const v=sign*val(kk); const px=X(kk),py=Y(clamp(v,-YMAX,YMAX));
+          first?(ctx.moveTo(px,py),first=false):ctx.lineTo(px,py);} ctx.stroke(); }
+      curve(+1,C.green);   // antifragile gain
+      curve(-1,C.red);     // fragile harm
+      // current k marker
+      const x=X(k);
+      ctx.strokeStyle='rgba(138,130,117,.8)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(x,f.t); ctx.lineTo(x,f.b); ctx.stroke(); ctx.setLineDash([]);
+      [[+val(k),C.green],[S,C.inkSoft],[-val(k),C.red]].forEach(([v,c])=>{
+        const y=Y(clamp(v,-YMAX,YMAX)); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(x,y,4.4,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      });
+      // readouts
+      elF.textContent='−'+val(k).toFixed(1);
+      elR.textContent='+'+S.toFixed(1);
+      elA.textContent='+'+val(k).toFixed(1);
+    }
+    function render(){
+      elK.textContent = k===1 ? '1 hit' : k+' hits';
+      elP.textContent = p.toFixed(1);
+      draw();
+    }
+    document.getElementById('af2-k').oninput=e=>{ k=+e.target.value; render(); };
+    document.getElementById('af2-p').oninput=e=>{ p=(+e.target.value)/100; render(); };
+    render();
+    window.addEventListener('resize',()=>render());
+  })();
+
+  /* =====================================================================
+     GAME THREE — the dose: hormesis. A body of strength s (start 100) runs
+     T cycles. Each cycle a stressor x ≈ dose (with noise) hits it:
+        gain = rec · x · (1 - x/res)      // overcompensation below res, injury above
+        s += gain ; if s<=0 -> broke
+     With no stress, s decays (atrophy). Sweep dose -> median final strength
+     across M bodies -> the inverted-U emerges from simulation, not assertion.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('af3'); if(!cv) return;
+    const T=34, M=360, DMAX=18, NDOSE=46, START=100, ATROPHY=1.1;
+    let dose=7.0, rec=0.55, res=14;
+    let curve=null, peak=null;
+    const elBest=document.getElementById('af3-best'), elYou=document.getElementById('af3-you'),
+          elBroke=document.getElementById('af3-broke'), elDl=document.getElementById('af3-dose-lab'),
+          elRl=document.getElementById('af3-rec-lab'), elSl=document.getElementById('af3-res-lab');
+
+    // one body for T cycles at mean dose D -> {final, broke}
+    function runBody(D, rng){
+      let s=START;
+      for(let c=0;c<T;c++){
+        let x = D*(0.6+0.8*rng());                 // stressor this cycle, ±40% around the dose
+        if(x<=0.05){ s -= ATROPHY; }               // comfort -> atrophy
+        else{
+          const gain = rec * x * (1 - x/res);      // hormetic: + below res, - above
+          s += gain;
+        }
+        s -= 0.15;                                 // small baseline upkeep cost
+        if(s<=0){ return {final:0, broke:true}; }
+      }
+      return {final:s, broke:false};
+    }
+    // median final strength + broke-rate at dose D
+    function atDose(D){
+      const rng=mulberry32(Math.round(D*1000)+99); const fin=new Float64Array(M); let broke=0;
+      for(let i=0;i<M;i++){ const r=runBody(D,rng); fin[i]=r.final; if(r.broke)broke++; }
+      fin.sort(); const med=fin[Math.floor(M*0.5)];
+      return {med, broke:broke/M};
+    }
+    function build(){
+      curve=new Array(NDOSE); peak={d:0,med:-1};
+      for(let i=0;i<NDOSE;i++){ const D=DMAX*i/(NDOSE-1); const r=atDose(D);
+        curve[i]={d:D, med:r.med}; if(r.med>peak.med){ peak={d:D, med:r.med}; } }
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:34,r:16,t:18,b:32});
+      const YMAX=Math.max(START*1.25, peak.med*1.1, 60), YMIN=0;
+      const X=d=>f.l+f.W*(d/DMAX);
+      const Y=v=>f.b-f.H*((v-YMIN)/(YMAX-YMIN));
+      // grid
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const v=YMIN+(YMAX-YMIN)*g/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(Math.round(v), f.l-5, y+3); }
+      // starting-body reference at 100
+      ctx.strokeStyle=C.faint; ctx.setLineDash([4,4]); ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(f.l,Y(START)); ctx.lineTo(f.r,Y(START)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.textAlign='left'; ctx.fillStyle=C.faint; ctx.fillText('start = 100', f.l+4, Y(START)-5);
+      ctx.textAlign='center';
+      [0,6,12,18].forEach(d=>{ ctx.fillStyle=C.faint; ctx.fillText(d, X(d), f.b+16); });
+      ctx.fillText('dose of stress per cycle →', (f.l+f.r)/2, f.b+27);
+      // the hormetic curve
+      ctx.strokeStyle=C.violet; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      curve.forEach((pt,i)=>{ const px=X(pt.d),py=Y(clamp(pt.med,YMIN,YMAX)); i?ctx.lineTo(px,py):ctx.moveTo(px,py); });
+      ctx.stroke();
+      // peak marker
+      ctx.fillStyle=C.violet; ctx.beginPath(); ctx.arc(X(peak.d),Y(clamp(peak.med,YMIN,YMAX)),4.6,0,6.283); ctx.fill();
+      ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      // your dose
+      const x=X(dose);
+      ctx.strokeStyle='rgba(138,130,117,.85)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(x,f.t); ctx.lineTo(x,f.b); ctx.stroke(); ctx.setLineDash([]);
+      const you=atDose(dose);
+      const yy=Y(clamp(you.med,YMIN,YMAX));
+      ctx.fillStyle=you.med>=START?C.green:C.red; ctx.beginPath(); ctx.arc(x,yy,4.8,0,6.283); ctx.fill();
+      ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      // readouts
+      elBest.textContent='dose '+peak.d.toFixed(1);
+      elYou.textContent=Math.round(you.med);
+      elBroke.textContent=Math.round(you.broke*100)+'%';
+    }
+    function rebuild(){ build(); draw(); }
+    function render(){
+      elDl.textContent=dose.toFixed(0); elRl.textContent=rec.toFixed(2); elSl.textContent=res;
+      rebuild();
+    }
+    document.getElementById('af3-dose').oninput=e=>{ dose=(+e.target.value)/10; elDl.textContent=dose.toFixed(0); draw(); };
+    document.getElementById('af3-rec').oninput=e=>{ rec=(+e.target.value)/100; elRl.textContent=rec.toFixed(2); rebuild(); };
+    document.getElementById('af3-res').oninput=e=>{ res=+e.target.value; elSl.textContent=res; rebuild(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+<script>/* concepts nav: close on outside-click / Escape */
+document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
+</script>
+</body>
+</html>

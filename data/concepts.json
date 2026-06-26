@@ -135,6 +135,28 @@
       "blurb": "Why one coin flip is unknowable but a thousand flips are a law, why the means of any distribution pile into the same bell, and why a positive test for a rare disease usually means you're fine — three classic results you watch happen instead of derive.",
       "people": ["kunin"],
       "tags": ["probability", "statistics", "bayes", "intuition", "randomness"]
+    },
+    {
+      "slug": "antifragile",
+      "title": "It's Just Stress",
+      "concept": "Antifragility",
+      "url": "/antifragile/",
+      "status": "live",
+      "eyebrow": "An interactive note on antifragility",
+      "blurb": "Why a curved response turns volatility into a gift, why the same total shock is far worse concentrated than spread thin, and the exact dose of stress where pressure plus recovery leaves you stronger — not just unbroken.",
+      "people": ["taleb"],
+      "tags": ["optionality", "antifragility", "convexity", "hormesis", "tail-risk", "decision"]
+    },
+    {
+      "slug": "via-negativa",
+      "title": "It's Just Subtraction",
+      "concept": "Via negativa",
+      "url": "/via-negativa/",
+      "status": "live",
+      "eyebrow": "An interactive note on via negativa",
+      "blurb": "Why removing the few worst exposures collapses your risk faster than trimming the average, why a doctor who treats every wobble does more harm than one who waits, and why fixing the single weakest link beats upgrading everything — robustness comes from removal, not addition.",
+      "people": ["taleb"],
+      "tags": ["optionality", "via-negativa", "subtraction", "iatrogenics", "tail-risk", "decision"]
     }
   ]
 }
