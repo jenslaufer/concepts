@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just Patience — why compounding is invisible, then unstoppable</title>
+<meta name="description" content="Three interactive games on compounding: why an exponential curve looks like nothing for years and then runs away from you, why when you start beats how much you save, and why a fee of 'just 1%' quietly eats a third of your wealth. After Morgan Housel and Charlie Munger." />
+<meta property="og:title" content="It's Just Patience" />
+<meta property="og:description" content="An interactive note on compounding — the curve you can't feel until it's too late to have started earlier. After Morgan Housel." />
+<meta property="og:type" content="article" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --violet:#7d4a9c;
+    --accent:#b07a1f;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.violet .v{color:var(--violet)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+
+  /* concepts nav */
+  .topbar-r{display:flex;align-items:center;gap:18px}
+  .cnav{position:relative;display:inline-block}
+  .cnav>summary{list-style:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;-webkit-user-select:none;user-select:none}
+  .cnav>summary::-webkit-details-marker{display:none}
+  .cnav>summary::marker{content:""}
+  .cnav>summary:hover,.cnav[open]>summary{color:var(--accent,var(--ink))}
+  .cnav-ic{font-size:13px;line-height:1;transform:translateY(.5px)}
+  .cnav-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:60;background:var(--paper);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow,0 10px 34px rgba(0,0,0,.14));padding:6px;min-width:238px;max-height:min(72vh,440px);overflow:auto;display:flex;flex-direction:column;gap:1px}
+  .cnav-menu a,.cnav-menu .cnav-item{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 11px;border-radius:6px;text-decoration:none;font-family:var(--sans);font-size:13px;color:var(--ink);line-height:1.3}
+  .cnav-menu a>span,.cnav-menu .cnav-item>span{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .cnav-menu a:hover{background:rgba(128,128,128,.12)}
+  .cnav-menu a:hover,.cnav-menu a:hover>span{color:var(--accent,var(--ink))}
+  .cnav-home{font-family:var(--mono)!important;font-size:10.5px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)!important;justify-content:flex-start!important;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:3px}
+  .cnav-item.cur{background:rgba(128,128,128,.13);font-weight:600;cursor:default}
+  @media(max-width:640px){.cnav>summary .cnav-lbl{display:none}.topbar-r{gap:13px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just Patience</b><span class="sub"> &nbsp;·&nbsp; compounding</span></a>
+    <div class="topbar-r">
+      <a class="sibling" href="/convex/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just Math →</b></a>
+      <details class="cnav">
+      <summary><span class="cnav-ic" aria-hidden="true">▦</span><span class="cnav-lbl">Concepts</span></summary>
+      <nav class="cnav-menu" aria-label="All concepts">
+        <a class="cnav-home" href="/">All concepts &rarr;</a>
+        <a href="/convex/">It's Just Math<span>Convexity</span></a>
+        <a href="/tiny-experiments/">It's Just an Experiment<span>Action under uncertainty</span></a>
+        <a href="/serendipity/">It's Just Luck<span>Serendipity</span></a>
+        <a href="/uncertainty/">It's Just Unknown<span>Uncertainty</span></a>
+        <a href="/barbell/">It's Just a Barbell<span>Barbell strategy</span></a>
+        <a href="/lindy/">It's Just Old<span>The Lindy effect</span></a>
+        <a href="/systems/">It's Just a Loop<span>Systems thinking</span></a>
+        <a href="/chance/">It's Just Chance<span>Probability &amp; statistics</span></a>
+        <a href="/antifragile/">It's Just Stress<span>Antifragility</span></a>
+        <a href="/via-negativa/">It's Just Subtraction<span>Via negativa</span></a>
+        <a href="/ergodicity/">It's Just Time<span>Ergodicity</span></a>
+        <span class="cnav-item cur" aria-current="page">It's Just Patience<span>Compounding</span></span>
+      </nav>
+    </details>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on compounding</div>
+    <h1>It's Just Patience</h1>
+    <p class="lede">Three games on the curve nobody can feel in time — why exponential growth looks like <em>nothing</em> for years and then runs away from you, why <em>when</em> you start beats how much you save, and why a fee of “just one percent” quietly eats a third of everything — after Morgan Housel and Charlie Munger.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> The bend</div>
+    <h2>It looks like nothing, until it's everything</h2>
+
+    <p>The human mind runs on addition. Ask someone what 7% a year for forty years comes to and they'll reach for a straight line — seven, times forty, a couple of hundred percent, maybe a tripling. The real answer is a <em>fifteen-fold</em>. We are simply not built to feel an exponential: it hugs the floor for years, indistinguishable from a flat line, and then — at no particular moment — it lifts off the page. By the time the curve is obviously bending, the cheap years are already behind you.</p>
+
+    <p class="sub">Below, a single euro grows at a steady rate, year after year. The <strong>green</strong> curve is what compounding actually does; the <strong>grey</strong> line is the straight-line guess your gut makes (the same growth, just added up instead of multiplied). Set the <strong>rate</strong> and the <strong>horizon</strong>, and watch the gap between intuition and reality open up.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Growth per year <b id="c1-r-lab">7%</b></label>
+          <input type="range" id="c1-r" min="1" max="15" value="7" step="1">
+        </div>
+        <div class="ctrl">
+          <label>Years you stay in <b id="c1-t-lab">40</b></label>
+          <input type="range" id="c1-t" min="5" max="50" value="40" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat green"><div class="k">Compounded</div><div class="v" id="c1-geo">—</div></div>
+        <div class="stat"><div class="k">Straight-line guess</div><div class="v" id="c1-lin">—</div></div>
+        <div class="stat amber"><div class="k">Years to double</div><div class="v" id="c1-dbl">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> compounded — (1+r) every year</span>
+        <span style="color:var(--ink-soft)"><i class="dash" style="color:var(--ink-soft)"></i> straight-line intuition — r added each year</span>
+      </div>
+      <div class="canvas-box"><canvas id="c1" height="340"></canvas></div>
+      <div class="caption">What one euro becomes (vertical, as a multiple) over the years you stay invested. The grey line is the answer your gut gives — growth added up. The green curve is the answer compounding gives — growth multiplied. They start together and look identical for years; then the green one leaves. The whole fortune is in the distance between the two lines at the right edge.</div>
+    </div>
+
+    <p>Notice where the green curve does its work: almost all of it is in the <em>last</em> stretch. Drag the horizon and watch — the final years add more than the first few decades combined, because each one multiplies a bigger base. This is why compounding feels unfair to the impatient and unstoppable to the patient. The arithmetic is trivial. The hard part — the only part — is staying in long enough to reach the bend.</p>
+
+    <div class="formula">
+      what it becomes &nbsp;=&nbsp; <span class="g">(1 + r)<sup>years</sup></span> &nbsp;&nbsp; <span class="muted"># multiplied, not added</span><br>
+      what your gut guesses &nbsp;=&nbsp; <span class="muted">1 + r · years &nbsp; (the straight line)</span><br>
+      years to double &nbsp;≈&nbsp; <span class="muted">72 / (rate in %) &nbsp; — the rule of 72</span>
+    </div>
+
+    <blockquote>
+      <p>“$81.5 billion of Warren Buffett's $84.5 billion net worth came after his 65th birthday. Our minds are not built to handle such absurdities.”</p>
+      <cite><b>Morgan Housel</b> · The Psychology of Money</cite>
+    </blockquote>
+
+    <p class="sub">So the first truth of compounding is that the payoff lives at the far end of the curve. Which raises the only question that really matters: how do you make sure you reach it? Game Two is the answer most people get backwards.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> Time beats rate</div>
+    <h2>When you start beats how much you save</h2>
+
+    <p>Two people. Same return, every year. <strong>Ava</strong> starts now: she puts in €2,000 a year for a handful of early years, then stops contributing entirely and never adds another cent — she just lets it sit. <strong>Ben</strong> waits until Ava stops, then contributes the same €2,000 every single year for the rest of the window. Ben puts in far <em>more</em> money, for far <em>longer</em>. The intuition is obvious: Ben wins.</p>
+
+    <p class="sub">He usually doesn't. Below, set the <strong>return</strong> and how many early years <strong>Ava</strong> contributes before she quits; Ben then fills the rest of a 40-year window. The readouts show what each one <em>put in</em> versus what each one <em>ends with</em>. Ava's early euros get the one thing Ben's can never buy back: time on the curve.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Return per year <b id="c2-r-lab">8%</b></label>
+          <input type="range" id="c2-r" min="3" max="12" value="8" step="1">
+        </div>
+        <div class="ctrl">
+          <label>Years Ava saves, then stops <b id="c2-e-lab">10</b></label>
+          <input type="range" id="c2-e" min="3" max="20" value="10" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat green"><div class="k">Ava · put in</div><div class="v" id="c2-ain">—</div></div>
+        <div class="stat green"><div class="k">Ava · ends with</div><div class="v" id="c2-aend">—</div></div>
+        <div class="stat blue"><div class="k">Ben · put in</div><div class="v" id="c2-bin">—</div></div>
+        <div class="stat blue"><div class="k">Ben · ends with</div><div class="v" id="c2-bend">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> Ava — saves early, then stops</span>
+        <span style="color:var(--blue)"><i style="background:var(--blue)"></i> Ben — starts late, never stops</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the year Ava stops / Ben starts</span>
+      </div>
+      <div class="canvas-box"><canvas id="c2" height="340"></canvas></div>
+      <div class="caption">Each balance (vertical) across a 40-year window. Ava's green line climbs while she contributes, then keeps rising on its own after she stops — pure compounding, no new money. Ben's blue line stays flat at zero while he waits, then ramps as he pours money in. Watch who's ahead at the right edge: very often it's Ava, who put in a fraction of what Ben did, because her euros had decades to multiply and his did not.</div>
+    </div>
+
+    <p>The lever isn't effort or income — it's the calendar. A euro invested at the start of a long window is worth multiples of a euro invested near the end, because it gets multiplied more times. That's the whole asymmetry: <em>the early money is the expensive money</em>, and you can only buy it once, today. Waiting for a better moment to start is the single most costly thing a compounder can do — not because of the money missed, but because of the <em>time</em> missed, which never comes back.</p>
+
+    <blockquote>
+      <p>“The first rule of compounding: never interrupt it unnecessarily.”</p>
+      <cite><b>Charlie Munger</b></cite>
+    </blockquote>
+
+    <p class="sub">Start early, and let it run. But “let it run” has a quiet enemy — one so small it never looks worth worrying about. Game Three is about the leak you can't see.</p>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> The quiet drag</div>
+    <h2>“Just one percent” is never just one percent</h2>
+
+    <p>A fee of one percent a year sounds like a rounding error. A fund charges it, an advisor takes it, a tax skims it — and on any single year it's invisible, swamped by the ups and downs. But a fee doesn't cost you one percent <em>once</em>. It costs you one percent of a <em>compounding</em> base, every year, forever — and the euros it removes are exactly the early euros that would have multiplied the most. The leak compounds against you in perfect mirror to the growth working for you.</p>
+
+    <p class="sub">Below, two investors earn the <strong>same gross return</strong> on the same money over the same horizon. One keeps all of it; the other pays a small annual <strong>drag</strong> — a fee, a tax, a bad habit. Set the gross return, the horizon, and the drag, and read the one number that matters: the share of your final wealth the “small” fee quietly ate.</p>
+
+    <div class="formula">
+      keeps everything &nbsp;=&nbsp; <span class="g">(1 + gross)<sup>years</sup></span><br>
+      pays the drag &nbsp;&nbsp;&nbsp;=&nbsp; <span class="c">(1 + gross − drag)<sup>years</sup></span><br>
+      <span class="muted"># the gap isn't "drag" — it's drag, compounded for every year you were invested.</span>
+    </div>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Gross return per year <b id="c3-g-lab">7%</b></label>
+          <input type="range" id="c3-g" min="3" max="12" value="7" step="1">
+        </div>
+        <div class="ctrl">
+          <label>Years invested <b id="c3-t-lab">40</b></label>
+          <input type="range" id="c3-t" min="10" max="50" value="40" step="1">
+        </div>
+        <div class="ctrl">
+          <label>The “small” drag <b id="c3-f-lab">1.00%</b></label>
+          <input type="range" id="c3-f" min="0" max="300" value="100" step="10">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat green"><div class="k">Keeps everything</div><div class="v" id="c3-net">—</div></div>
+        <div class="stat red"><div class="k">Pays the drag</div><div class="v" id="c3-fee">—</div></div>
+        <div class="stat amber"><div class="k">Share the fee ate</div><div class="v" id="c3-eaten">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> no drag — you keep the whole curve</span>
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> with the drag — a slightly lower curve, every year</span>
+        <span style="color:var(--ink-faint)"><i style="background:var(--red-soft)"></i> what the drag quietly removed</span>
+      </div>
+      <div class="canvas-box"><canvas id="c3" height="340"></canvas></div>
+      <div class="caption">Both curves grow; the red one just grows a hair slower, every year. Early on the gap is nothing — which is exactly why nobody objects. But the shaded wedge between them widens faster than either curve, because the missing euros are the ones that would have compounded longest. By the right edge a “one percent” fee has often taken a quarter to a third of everything you'd otherwise have.</div>
+    </div>
+
+    <p>This is the dark twin of Game One. The same machinery that turns a small edge into a fortune over time turns a small leak into a catastrophe over time. So the practical rules of compounding are almost embarrassingly simple: start as early as you can, protect the base from anything that nibbles it, and then — the hardest discipline of all — <em>do nothing</em> for a very long time. The arithmetic will take care of the rest.</p>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>The math is trivial. The patience is everything.</h2>
+    <p>Compounding is the quiet engine under wealth, skill, reputation, and trust — anything that builds on its own previous output. Its three lessons all come from the same shape: the payoff hides at the far end of the curve (Game One), so the early time you give it is worth more than any amount you add later (Game Two), and any small, steady drain works against you with the exact same ruthless multiplication (Game Three). None of it is clever. The edge isn't intelligence or timing — it's starting, not interrupting, and waiting longer than feels reasonable. The curve does the rest.</p>
+    <blockquote>
+      <p>“Good investing is not necessarily about earning the highest returns… It's about earning pretty good returns that you can stick with for the longest period of time. That's when compounding runs wild.”</p>
+      <cite><b>Morgan Housel</b> · The Psychology of Money</cite>
+    </blockquote>
+    <p class="credits">
+      <strong>Compounding</strong> is growth that builds on its own output — interest on interest, returns on returns — so a quantity grows in proportion to its current size and follows an exponential curve. The framing here leans on <a href="https://www.morganhousel.com/" rel="noopener">Morgan Housel</a>'s <em>The Psychology of Money</em> (2020), which argues that the dominant variable in long-run wealth is not return but <em>time</em>, and on <a href="https://en.wikipedia.org/wiki/Charlie_Munger" rel="noopener">Charlie Munger</a>'s rule never to interrupt compounding unnecessarily. Every number on this page is exact arithmetic, not a simulation: Game One contrasts (1+r)<sup>t</sup> with the linear 1+rt and uses the rule of 72 for doubling time; Game Two runs two identical year-by-year contribution schedules through the same return; Game Three compares (1+g)<sup>t</sup> with (1+g−fee)<sup>t</sup>. These are deliberately simple, frictionless models — no inflation, no taxes beyond the “drag” slider, no market crashes — meant to build intuition for the <em>shape</em> of compounding, not to forecast any real portfolio. Part of a family with <a href="/convex/" rel="noopener">It's Just Math</a> (convexity), <a href="/lindy/" rel="noopener">It's Just Old</a> (the Lindy effect), <a href="/barbell/" rel="noopener">It's Just a Barbell</a> (the barbell), <a href="/antifragile/" rel="noopener">It's Just Stress</a> (antifragility), <a href="/via-negativa/" rel="noopener">It's Just Subtraction</a> (via negativa), and <a href="/tiny-experiments/" rel="noopener">It's Just an Experiment</a> (action). <a href="/" rel="noopener">See all concepts →</a>
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b', blue:'#2f5d86', violet:'#7d4a9c',
+    redSoft:'#f4e3df', grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.6)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+
+  // compact money/multiple formatting
+  function fmtX(v){
+    if(v>=100) return Math.round(v)+'×';
+    if(v>=10)  return v.toFixed(0)+'×';
+    return v.toFixed(1)+'×';
+  }
+  function fmtEur(v){
+    if(v>=1e6) return '€'+(v/1e6).toFixed(2)+'M';
+    if(v>=1e3) return '€'+(v/1e3).toFixed(0)+'k';
+    return '€'+Math.round(v);
+  }
+
+  /* =====================================================================
+     GAME ONE — the bend: one euro at rate r over t years.
+       geometric:  (1+r)^t        (what compounding does)
+       linear:     1 + r*t        (the straight-line intuition)
+     Exact arithmetic. y-axis is linear (the point is to SEE the bend).
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('c1'); if(!cv) return;
+    let r=0.07, T=40;
+    const elR=document.getElementById('c1-r-lab'), elT=document.getElementById('c1-t-lab'),
+          elGeo=document.getElementById('c1-geo'), elLin=document.getElementById('c1-lin'),
+          elDbl=document.getElementById('c1-dbl');
+    const geo=t=>Math.pow(1+r,t);
+    const lin=t=>1+r*t;
+
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:42,r:16,t:18,b:32});
+      const ymax=Math.max(geo(T),lin(T))*1.05;
+      const X=t=>f.l+f.W*(t/T);
+      const Y=v=>f.b-f.H*(v/ymax);
+      // grid + y labels (×)
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const v=ymax*g/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(fmtX(v), f.l-5, y+3); }
+      ctx.textAlign='center';
+      const ticks=[0, Math.round(T/2), T];
+      ticks.forEach(t=>{ ctx.fillStyle=C.faint; ctx.fillText(t, X(t), f.b+16); });
+      ctx.fillText('years →', (f.l+f.r)/2, f.b+27);
+      // linear line
+      ctx.strokeStyle=C.inkSoft; ctx.setLineDash([5,4]); ctx.lineWidth=1.8; ctx.beginPath();
+      for(let t=0;t<=T;t++){ const px=X(t),py=Y(lin(t)); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke(); ctx.setLineDash([]);
+      // geometric curve
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let t=0;t<=T;t++){ const px=X(t),py=Y(geo(t)); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // end dots
+      [[lin(T),C.inkSoft],[geo(T),C.green]].forEach(([v,c])=>{
+        const y=Y(v); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(X(T),y,4.6,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      });
+    }
+    function render(){
+      elR.textContent=Math.round(r*100)+'%';
+      elT.textContent=T;
+      elGeo.textContent=fmtX(geo(T));
+      elLin.textContent=fmtX(lin(T));
+      const dbl=Math.log(2)/Math.log(1+r);
+      elDbl.textContent=dbl.toFixed(1)+' yr';
+      draw();
+    }
+    document.getElementById('c1-r').oninput=e=>{ r=(+e.target.value)/100; render(); };
+    document.getElementById('c1-t').oninput=e=>{ T=+e.target.value; render(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* =====================================================================
+     GAME TWO — time beats rate: 40-year window, annual contribution C.
+       Ava:  contributes years 0..E-1, then stops (lets it ride).
+       Ben:  contributes years E..W-1 (starts when Ava stops).
+     Year step: balance *= (1+r); if contributing this year, balance += C.
+     (Contribution made at the start of each active year, then grows.)
+     Exact, deterministic. We plot both balance paths.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('c2'); if(!cv) return;
+    const W=40, C0=2000;
+    let r=0.08, E=10;
+    const elR=document.getElementById('c2-r-lab'), elE=document.getElementById('c2-e-lab'),
+          elAin=document.getElementById('c2-ain'), elAend=document.getElementById('c2-aend'),
+          elBin=document.getElementById('c2-bin'), elBend=document.getElementById('c2-bend');
+
+    // returns array of balances length W+1 (index 0 = start, before year 1)
+    function path(activeFrom, activeTo){   // contributes during years [activeFrom, activeTo)
+      const bal=new Array(W+1); bal[0]=0; let b=0;
+      for(let y=0;y<W;y++){
+        if(y>=activeFrom && y<activeTo) b+=C0;   // contribute at start of year
+        b*=(1+r);                                 // grows through the year
+        bal[y+1]=b;
+      }
+      return bal;
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:46,r:16,t:18,b:32});
+      const ava=path(0,E), ben=path(E,W);
+      const ymax=Math.max(ava[W],ben[W],1)*1.08;
+      const X=y=>f.l+f.W*(y/W);
+      const Y=v=>f.b-f.H*(v/ymax);
+      // grid + y labels (money)
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const v=ymax*g/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(fmtEur(v), f.l-5, y+3); }
+      ctx.textAlign='center';
+      [0,10,20,30,40].forEach(y=>{ ctx.fillStyle=C.faint; ctx.fillText(y, X(y), f.b+16); });
+      ctx.fillText('years →', (f.l+f.r)/2, f.b+27);
+      // split marker (Ava stops / Ben starts)
+      const xs=X(E);
+      ctx.strokeStyle='rgba(138,130,117,.8)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(xs,f.t); ctx.lineTo(xs,f.b); ctx.stroke(); ctx.setLineDash([]);
+      // Ben (blue)
+      ctx.strokeStyle=C.blue; ctx.lineWidth=2.6; ctx.lineJoin='round'; ctx.beginPath();
+      for(let y=0;y<=W;y++){ const px=X(y),py=Y(ben[y]); y?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // Ava (green)
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let y=0;y<=W;y++){ const px=X(y),py=Y(ava[y]); y?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // end dots
+      [[ben[W],C.blue],[ava[W],C.green]].forEach(([v,c])=>{
+        const y=Y(v); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(X(W),y,4.6,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      });
+      return {ava,ben};
+    }
+    function render(){
+      elR.textContent=Math.round(r*100)+'%';
+      elE.textContent=E;
+      const {ava,ben}=draw();
+      elAin.textContent=fmtEur(E*C0);
+      elAend.textContent=fmtEur(ava[W]);
+      elBin.textContent=fmtEur((W-E)*C0);
+      elBend.textContent=fmtEur(ben[W]);
+    }
+    document.getElementById('c2-r').oninput=e=>{ r=(+e.target.value)/100; render(); };
+    document.getElementById('c2-e').oninput=e=>{ E=+e.target.value; render(); };
+    render();
+    window.addEventListener('resize',()=>render());
+  })();
+
+  /* =====================================================================
+     GAME THREE — the quiet drag: same money, same horizon.
+       net curve:  (1+g)^t
+       fee curve:  (1+g-f)^t
+     Share eaten = 1 - feeFinal/netFinal. Exact. Shade the wedge.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('c3'); if(!cv) return;
+    let g=0.07, T=40, fee=0.01;
+    const elG=document.getElementById('c3-g-lab'), elT=document.getElementById('c3-t-lab'),
+          elF=document.getElementById('c3-f-lab'), elNet=document.getElementById('c3-net'),
+          elFee=document.getElementById('c3-fee'), elEat=document.getElementById('c3-eaten');
+    const net=t=>Math.pow(1+g,t);
+    const wf =t=>Math.pow(1+Math.max(0,g-fee),t);
+
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:42,r:16,t:18,b:32});
+      const ymax=net(T)*1.05;
+      const X=t=>f.l+f.W*(t/T);
+      const Y=v=>f.b-f.H*(v/ymax);
+      // grid + y labels (×)
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let gg=0;gg<=4;gg++){ const v=ymax*gg/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(fmtX(v), f.l-5, y+3); }
+      ctx.textAlign='center';
+      [0,Math.round(T/2),T].forEach(t=>{ ctx.fillStyle=C.faint; ctx.fillText(t, X(t), f.b+16); });
+      ctx.fillText('years →', (f.l+f.r)/2, f.b+27);
+      // shaded wedge (what the fee removed): between net (top) and fee (bottom)
+      ctx.fillStyle=C.redSoft; ctx.beginPath();
+      ctx.moveTo(X(0),Y(net(0)));
+      for(let t=0;t<=T;t++) ctx.lineTo(X(t),Y(net(t)));
+      for(let t=T;t>=0;t--) ctx.lineTo(X(t),Y(wf(t)));
+      ctx.closePath(); ctx.fill();
+      // fee curve (red)
+      ctx.strokeStyle=C.red; ctx.lineWidth=2.4; ctx.lineJoin='round'; ctx.beginPath();
+      for(let t=0;t<=T;t++){ const px=X(t),py=Y(wf(t)); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // net curve (green)
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let t=0;t<=T;t++){ const px=X(t),py=Y(net(t)); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // end dots
+      [[wf(T),C.red],[net(T),C.green]].forEach(([v,c])=>{
+        const y=Y(v); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(X(T),y,4.6,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      });
+    }
+    function render(){
+      elG.textContent=Math.round(g*100)+'%';
+      elT.textContent=T;
+      elF.textContent=(fee*100).toFixed(2)+'%';
+      elNet.textContent=fmtX(net(T));
+      elFee.textContent=fmtX(wf(T));
+      const eaten=net(T)>0 ? (1-wf(T)/net(T)) : 0;
+      elEat.textContent=Math.round(eaten*100)+'%';
+      draw();
+    }
+    document.getElementById('c3-g').oninput=e=>{ g=(+e.target.value)/100; render(); };
+    document.getElementById('c3-t').oninput=e=>{ T=+e.target.value; render(); };
+    document.getElementById('c3-f').oninput=e=>{ fee=(+e.target.value)/10000; render(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+<script>/* concepts nav: close on outside-click / Escape */
+document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
+</script>
+</body>
+</html>

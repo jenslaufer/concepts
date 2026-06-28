@@ -50,6 +50,11 @@
       "name": "Ole Peters",
       "note": "Ergodicity economics — why the time-average of multiplicative wealth diverges from the ensemble-average the textbooks use.",
       "url": "https://ergodicityeconomics.com"
+    },
+    "housel": {
+      "name": "Morgan Housel",
+      "note": "The Psychology of Money — the dominant variable in long-run wealth is time, not return.",
+      "url": "https://www.morganhousel.com/"
     }
   },
   "concepts": [
@@ -173,6 +178,17 @@
       "blurb": "Why a coin with a positive expected value still wipes out almost everyone who plays it, why the 'average' outcome is one that nobody actually lives, and why the cure is not better odds but smaller bets — the gap between the crowd and the person, over time.",
       "people": ["peters", "taleb"],
       "tags": ["optionality", "ergodicity", "tail-risk", "ruin", "compounding", "decision"]
+    },
+    {
+      "slug": "compounding",
+      "title": "It's Just Patience",
+      "concept": "Compounding",
+      "url": "/compounding/",
+      "status": "live",
+      "eyebrow": "An interactive note on compounding",
+      "blurb": "Why an exponential curve looks like nothing for years and then runs away — why when you start beats how much you save, and why a fee of “just 1%” quietly eats a third of everything.",
+      "people": ["housel"],
+      "tags": ["compounding", "time", "patience", "growth-loops", "decision"]
     }
   ]
 }
