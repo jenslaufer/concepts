@@ -55,6 +55,11 @@
       "name": "Morgan Housel",
       "note": "The Psychology of Money — the dominant variable in long-run wealth is time, not return.",
       "url": "https://www.morganhousel.com/"
+    },
+    "bengen": {
+      "name": "William Bengen",
+      "note": "The 4% rule — the historical-data study that named sequence-of-returns risk: once you withdraw, the order of returns decides whether the money lasts.",
+      "url": "https://en.wikipedia.org/wiki/William_Bengen"
     }
   },
   "concepts": [
@@ -189,6 +194,17 @@
       "blurb": "Why an exponential curve looks like nothing for years and then runs away — why when you start beats how much you save, and why a fee of “just 1%” quietly eats a third of everything.",
       "people": ["housel"],
       "tags": ["compounding", "time", "patience", "growth-loops", "decision"]
+    },
+    {
+      "slug": "sequence",
+      "title": "It's Just the Order",
+      "concept": "Sequence-of-returns risk",
+      "url": "/sequence/",
+      "status": "live",
+      "eyebrow": "An interactive note on sequence risk",
+      "blurb": "Why two retirees with the identical set of returns can end up one broke and one rich — the order only starts to matter the day you stop adding and start spending — and why spending a little less in the lean years removes most of the danger.",
+      "people": ["bengen", "taleb"],
+      "tags": ["sequence-risk", "path-dependence", "decumulation", "ruin", "ergodicity", "decision"]
     }
   ]
 }

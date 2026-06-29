@@ -611,7 +611,8 @@
       if(v>=100) return '×'+Math.round(v).toLocaleString('en-US');
       if(v>=1)   return '×'+v.toFixed(1);
       if(v>=0.01)return '×'+v.toFixed(2);
-      return '×'+v.toExponential(0);
+      if(v>=0.0001)return '×'+v.toFixed(4);
+      return 'wiped out';
     }
     function render(){
       elT.textContent=T;
@@ -723,5 +724,7 @@
 document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
 </script>
+<script src="/share/embed.js" defer></script>
+<script src="/share/plot-share.js" defer></script>
 </body>
 </html>

@@ -314,16 +314,16 @@
       <div class="readouts">
         <div class="stat blue"><div class="k">Survivors at age t</div><div class="v" id="g2-n">—</div></div>
         <div class="stat green"><div class="k">Typical life left (measured)</div><div class="v" id="g2-emp">—</div></div>
-        <div class="stat amber"><div class="k">Theory: t·(2^(1/α)−1)</div><div class="v" id="g2-mult">—</div></div>
+        <div class="stat amber"><div class="k">Lindy forecast</div><div class="v" id="g2-mult">—</div></div>
       </div>
       <div class="legend">
         <span style="color:var(--amber)"><i style="background:var(--amber);opacity:.55"></i> remaining life of each survivor</span>
         <span style="color:var(--green)"><i class="dash" style="color:var(--green)"></i> measured median</span>
-        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> theory: t·(2^(1/α)−1)</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> Lindy forecast</span>
       </div>
       <div class="canvas-box"><canvas id="g2" height="330"></canvas></div>
       <div class="btnrow"><button class="act-btn" id="g2-rerun">Draw a fresh population</button></div>
-      <div class="caption">Remaining life among survivors at age t. The measured median (green) and the theoretical t·(2^(1/α)−1) line (grey, dashed) sit on top of each other — and both slide right as you age the cutoff. Older survivors have more future, not less.</div>
+      <div class="caption">Remaining life among survivors at age t. The measured median (green) and the Lindy forecast (grey, dashed) sit on top of each other — and both slide right as you age the cutoff. Older survivors have more future, not less.</div>
     </div>
 
     <p>This is the engine under the paradox. A power law has no built-in “normal” lifespan to decay toward, so age stops being a countdown and becomes a <em>credential</em>. Having lasted is the strongest available signal that the thing is the durable kind — and the longer it lasts, the stronger that signal gets. Mandelbrot worked out the mathematics — life expectancy proportional to age; Taleb made the consequence concrete:</p>
@@ -650,5 +650,7 @@
 document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
 </script>
+<script src="/share/embed.js" defer></script>
+<script src="/share/plot-share.js" defer></script>
 </body>
 </html>

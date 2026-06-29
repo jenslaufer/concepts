@@ -424,7 +424,7 @@
   };
   const fmtMoney = v => v>=1000 ? '$'+Math.round(v).toLocaleString() :
                         v>=1 ? '$'+v.toFixed(2) :
-                        v>=0.01 ? '$'+v.toFixed(3) : '$'+v.toExponential(1);
+                        v>=0.01 ? '$'+v.toFixed(3) : '<$0.01';
   const pct = (v,d=2) => (v>=0?'+':'')+(v*100).toFixed(d)+'%';
 
   // ---------- canvas helper ----------
@@ -708,5 +708,7 @@
 document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
 </script>
+<script src="/share/embed.js" defer></script>
+<script src="/share/plot-share.js" defer></script>
 </body>
 </html>

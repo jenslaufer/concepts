@@ -374,7 +374,8 @@ function fit(cv,h){const r=devicePixelRatio||1,w=cv.clientWidth;cv.width=w*r;cv.
   document.getElementById('lln100').onclick=()=>flip(100);
   document.getElementById('lln1k').onclick=()=>flip(1000);
   document.getElementById('llnreset').onclick=()=>{n=0;h=0;hist=[];draw();};
-  addEventListener('resize',()=>{g=fit(cv,300);draw();});draw();
+  addEventListener('resize',()=>{g=fit(cv,300);draw();});
+  flip(120);   // start mid-run so the curve is alive (jagged, settling) instead of blank
 })();
 
 /* ---------- Game 2 · Central Limit Theorem ---------- */
@@ -413,7 +414,8 @@ function fit(cv,h){const r=devicePixelRatio||1,w=cv.clientWidth;cv.width=w*r;cv.
   runBtn.onclick=run;
   document.getElementById('clt-reset').onclick=()=>{means=[];bins.fill(0);
     if(timer){clearInterval(timer);timer=null;runBtn.textContent='Auto-collect';runBtn.classList.add('primary');}draw();};
-  addEventListener('resize',()=>{g=fit(cv,330);draw();});draw();
+  addEventListener('resize',()=>{g=fit(cv,330);draw();});
+  for(let i=0;i<60;i++)sample();   // start with a forming bell instead of an empty histogram
 })();
 
 /* ---------- Game 3 · Bayesian medical test ---------- */
@@ -474,5 +476,7 @@ function fit(cv,h){const r=devicePixelRatio||1,w=cv.clientWidth;cv.width=w*r;cv.
 document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
 </script>
+<script src="/share/embed.js" defer></script>
+<script src="/share/plot-share.js" defer></script>
 </body>
 </html>

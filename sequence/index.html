@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just the Order — why the sequence of returns decides whether your money lasts</title>
+<meta name="description" content="Three interactive games on sequence-of-returns risk: why two retirees with the identical set of returns end up one broke and one rich, why spending a little less in the lean years removes most of the danger, and why the withdrawal rate is a cliff, not a dial. After William Bengen." />
+<meta property="og:title" content="It's Just the Order" />
+<meta property="og:description" content="An interactive note on sequence-of-returns risk — while you're adding, the order is noise; the day you start spending, it's everything. After William Bengen." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://concepts.jenslaufer.com/sequence/" />
+<meta property="og:image" content="https://concepts.jenslaufer.com/share/sequence.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="It's Just the Order" />
+<meta name="twitter:description" content="An interactive note on sequence-of-returns risk — while you're adding, the order is noise; the day you start spending, it's everything. After William Bengen." />
+<meta name="twitter:image" content="https://concepts.jenslaufer.com/share/sequence.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --violet:#7d4a9c;
+    --accent:#b07a1f;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.violet .v{color:var(--violet)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+
+  /* concepts nav */
+  .topbar-r{display:flex;align-items:center;gap:18px}
+  .cnav{position:relative;display:inline-block}
+  .cnav>summary{list-style:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;-webkit-user-select:none;user-select:none}
+  .cnav>summary::-webkit-details-marker{display:none}
+  .cnav>summary::marker{content:""}
+  .cnav>summary:hover,.cnav[open]>summary{color:var(--accent,var(--ink))}
+  .cnav-ic{font-size:13px;line-height:1;transform:translateY(.5px)}
+  .cnav-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:60;background:var(--paper);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow,0 10px 34px rgba(0,0,0,.14));padding:6px;min-width:238px;max-height:min(72vh,440px);overflow:auto;display:flex;flex-direction:column;gap:1px}
+  .cnav-menu a,.cnav-menu .cnav-item{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 11px;border-radius:6px;text-decoration:none;font-family:var(--sans);font-size:13px;color:var(--ink);line-height:1.3}
+  .cnav-menu a>span,.cnav-menu .cnav-item>span{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .cnav-menu a:hover{background:rgba(128,128,128,.12)}
+  .cnav-menu a:hover,.cnav-menu a:hover>span{color:var(--accent,var(--ink))}
+  .cnav-home{font-family:var(--mono)!important;font-size:10.5px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)!important;justify-content:flex-start!important;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:3px}
+  .cnav-item.cur{background:rgba(128,128,128,.13);font-weight:600;cursor:default}
+  @media(max-width:640px){.cnav>summary .cnav-lbl{display:none}.topbar-r{gap:13px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just the Order</b><span class="sub"> &nbsp;·&nbsp; sequence risk</span></a>
+    <div class="topbar-r">
+      <a class="sibling" href="/ergodicity/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just Time →</b></a>
+      <details class="cnav">
+      <summary><span class="cnav-ic" aria-hidden="true">▦</span><span class="cnav-lbl">Concepts</span></summary>
+      <nav class="cnav-menu" aria-label="All concepts">
+        <a class="cnav-home" href="/">All concepts &rarr;</a>
+        <a href="/convex/">It's Just Math<span>Convexity</span></a>
+        <a href="/tiny-experiments/">It's Just an Experiment<span>Action under uncertainty</span></a>
+        <a href="/serendipity/">It's Just Luck<span>Serendipity</span></a>
+        <a href="/uncertainty/">It's Just Unknown<span>Uncertainty</span></a>
+        <a href="/barbell/">It's Just a Barbell<span>Barbell strategy</span></a>
+        <a href="/lindy/">It's Just Old<span>The Lindy effect</span></a>
+        <a href="/systems/">It's Just a Loop<span>Systems thinking</span></a>
+        <a href="/chance/">It's Just Chance<span>Probability &amp; statistics</span></a>
+        <a href="/antifragile/">It's Just Stress<span>Antifragility</span></a>
+        <a href="/via-negativa/">It's Just Subtraction<span>Via negativa</span></a>
+        <a href="/ergodicity/">It's Just Time<span>Ergodicity</span></a>
+        <a href="/compounding/">It's Just Patience<span>Compounding</span></a>
+        <span class="cnav-item cur" aria-current="page">It's Just the Order<span>Sequence-of-returns risk</span></span>
+      </nav>
+    </details>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on sequence risk</div>
+    <h1>It's Just the Order</h1>
+    <p class="lede">Three games on the risk that only wakes up the day you stop saving — why two retirees with the <em>identical</em> set of returns can end up one broke and one rich, why simply spending a little <em>less</em> in the lean years removes most of the danger, and why the withdrawal rate is a <em>cliff</em>, not a dial — after William Bengen.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> The order</div>
+    <h2>Same returns, opposite endings</h2>
+
+    <p>While you are still <em>adding</em> money, the order of your returns does not matter at all. A good decade followed by a bad one, or the bad one first — it makes no difference to where you land, because multiplication does not care about order: 1.2 × 0.8 is exactly 0.8 × 1.2. This is why the accumulation years feel forgiving. You can be unlucky early and the arithmetic forgives you completely.</p>
+
+    <p class="sub">The day you start <em>spending</em>, that forgiveness vanishes. Below are two retirees who get the <strong>exact same thirty annual returns</strong> — same set, same average, same everything — in <strong>opposite order</strong>. One meets the bad years early; the other meets them last. Each withdraws the same amount every year. Set the <strong>withdrawal</strong>, then flip <strong>spending off</strong> and watch the two endings snap together — proof that the gap is made entirely of the spending, not the returns.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Withdraw each year <b id="s1-w-lab">5%</b></label>
+          <input type="range" id="s1-w" min="0" max="70" value="50" step="5">
+        </div>
+        <div class="ctrl">
+          <label>Spending</label>
+          <div class="seg" role="group" aria-label="Spending on or off">
+            <button id="s1-on"  aria-pressed="true">Take the money out</button>
+            <button id="s1-off" aria-pressed="false">Leave it untouched</button>
+          </div>
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Bad years early · ends with</div><div class="v" id="s1-early">—</div></div>
+        <div class="stat green"><div class="k">Bad years last · ends with</div><div class="v" id="s1-late">—</div></div>
+        <div class="stat amber"><div class="k">Average return — both</div><div class="v" id="s1-avg">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> unlucky — the crash comes first</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> lucky — the same crash comes last</span>
+      </div>
+      <div class="canvas-box"><canvas id="s1" height="340"></canvas></div>
+      <div class="caption">Each portfolio (vertical, in euros) over thirty years of retirement, both starting at €1,000,000. The two retirees draw the identical thirty returns in reverse order and withdraw the same euros each year. With spending on, the unlucky one — forced to sell into an early crash — can dig a hole the later good years never fill, while the lucky one rides the good years first and is almost untouchable by the time the crash arrives. Flip spending off and the two lines land on the exact same point: order, by itself, is nothing.</div>
+    </div>
+
+    <p>The mechanism is brutally simple. When you sell to live during a crash, you turn a paper loss into a permanent one — those shares are gone and can never recover. Sell into an early crash and you spend the rest of your life compounding a <em>smaller</em> base; the same crash at the end lands on a fortune that has already done its growing. Identical returns, identical average, identical withdrawals — and yet one retiree dies rich and the other runs dry, decided by nothing but <em>when</em> the bad years happened to fall.</p>
+
+    <blockquote>
+      <p>“The retiree who encounters a bear market in the first years of retirement is in far greater danger than one who meets it later — even if their average return is identical.”</p>
+      <cite><b>The sequence-of-returns problem</b> · after William Bengen</cite>
+    </blockquote>
+
+    <p class="sub">So the danger isn't your average return — you can't control that anyway, and both retirees here had the same one. The danger is being a forced seller at the wrong moment. Which raises the practical question: if you can't choose the order, how do you stop a bad early year from forcing your hand? Game Two is the cheapest answer there is.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> The flex</div>
+    <h2>Spend a little less when it's down</h2>
+
+    <p>If ruin comes from selling too much into a downturn, the cheapest fix isn't a clever portfolio — it's a flexible one. Most retirees plan to spend the same amount every year, come what may. But the years that actually break a plan are the bad ones early on, and those are exactly the years you can afford to ease off a little: skip a trip, hold the line on the budget, don't take the inflation raise. A modest, temporary trim in the lean years gives the portfolio room to heal instead of bleeding it at the worst possible moment.</p>
+
+    <p class="sub">Below, the same retirement is simulated thousands of times over random markets. <span style="color:var(--red)"><strong>Spend the same</strong></span> withdraws a fixed amount every year, crash or boom. <span style="color:var(--green)"><strong>Trim in lean years</strong></span> cuts spending by a set amount whenever the portfolio is down on where it started — and restores it once the market recovers. Set the withdrawal rate and how much you're willing to trim, and watch how many retirements are still solvent at each year.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Withdraw each year <b id="s2-w-lab">4.5%</b></label>
+          <input type="range" id="s2-w" min="30" max="65" value="45" step="5">
+        </div>
+        <div class="ctrl">
+          <label>Trim in lean years <b id="s2-c-lab">15%</b></label>
+          <input type="range" id="s2-c" min="0" max="30" value="15" step="5">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Ran out — spend the same</div><div class="v" id="s2-rn">—</div></div>
+        <div class="stat green"><div class="k">Ran out — trim in lean years</div><div class="v" id="s2-rb">—</div></div>
+        <div class="stat amber"><div class="k">Danger removed</div><div class="v" id="s2-cut">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> spend the same — fixed budget, every year</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> trim in lean years — ease off while underwater</span>
+      </div>
+      <div class="canvas-box"><canvas id="s2" height="340"></canvas></div>
+      <div class="caption">The share of simulated retirements still solvent (vertical, 0–100%) at each year. Both lines start at 100% and slope down as unlucky paths run dry. The red line — fixed spending — drops faster, because a bad early stretch keeps draining the same euros from a shrinking pot. The green line holds higher: a temporary trim while the portfolio is underwater takes the pressure off in exactly the years that decide the outcome. Same money, same returns — only your willingness to bend the budget changes.</div>
+    </div>
+
+    <p>Notice what the flexibility is really buying: it's not return, and it's not a big sacrifice. The trim only bites in the bad years — when you'd want to be careful anyway — and most retirements never need it at all. Yet that small willingness to bend is worth more than almost any tweak to the portfolio, because it attacks the actual cause of ruin: spending hard into a falling market. A cash reserve of a couple of years' spending is one popular way to fund those leaner years without selling — but the protection comes from the smaller withdrawal, not from the cash itself.</p>
+
+    <div class="formula">
+      portfolio down on the start &nbsp;→&nbsp; spend <span class="g">a little less</span>, let it heal<br>
+      portfolio recovered &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;→&nbsp; spend the full amount again<br>
+      <span class="muted"># same wealth, same returns — only how hard you spend into a slump changes.</span>
+    </div>
+
+    <p class="sub">Flexibility changes <em>how</em> you withdraw. But there is a blunter lever still — <em>how much</em> you withdraw — and it does not behave like a dial at all. Game Three is the one that should change what number you pick.</p>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> The cliff</div>
+    <h2>The withdrawal rate is a cliff, not a dial</h2>
+
+    <p>It is tempting to treat the withdrawal rate as a slider you can nudge: take a little more, accept a little more risk, smoothly. It isn't. Because a portfolio under withdrawal lives or dies on whether it can outrun the spending, there is a band where the odds are gentle — and then a knee, where a single extra percent of spending stops being a small indulgence and becomes a sharp jump in the chance you outlive your money. The famous “4%” isn't a magic constant; it's roughly where, for a thirty-year horizon, the curve is still flat enough to feel safe.</p>
+
+    <p class="sub">Below, the same thousands of random retirements are run across a whole range of withdrawal rates. The curve is the chance of running out before the horizon. Drag your <strong>withdrawal rate</strong> and your <strong>horizon</strong>, and find the knee — the point where the line stops crawling and starts to climb.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Your withdrawal rate <b id="s3-w-lab">4.0%</b></label>
+          <input type="range" id="s3-w" min="20" max="70" value="40" step="2">
+        </div>
+        <div class="ctrl">
+          <label>Years it must last <b id="s3-h-lab">30</b></label>
+          <input type="range" id="s3-h" min="20" max="45" value="30" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat amber"><div class="k">At your rate · ran out</div><div class="v" id="s3-p">—</div></div>
+        <div class="stat teal"><div class="k">A safe-ish floor (3%)</div><div class="v" id="s3-safe">—</div></div>
+        <div class="stat red"><div class="k">One percent more (yours +1)</div><div class="v" id="s3-plus">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--amber)"><i style="background:var(--amber)"></i> chance of running out, by withdrawal rate</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the “4% rule” reference</span>
+        <span style="color:var(--ink)"><i class="dot" style="background:var(--ink)"></i> your rate</span>
+      </div>
+      <div class="canvas-box"><canvas id="s3" height="340"></canvas></div>
+      <div class="caption">The chance of running out before the horizon (vertical, 0–100%) against the yearly withdrawal rate (horizontal). The line hugs the floor through the low rates, then bends upward — the cliff. The dashed marker sits at 4%. Slide your rate toward the knee and the readouts show the cost of one extra percent: down in the flat zone it's almost free; past the knee it can double your odds of ruin. Shorten the horizon and the whole cliff slides right — a shorter retirement can safely spend much more.</div>
+    </div>
+
+    <p>This is why the right move is so rarely “just take a bit more.” In the flat zone, a smaller withdrawal buys an almost absurd amount of safety for very little forgone spending; past the knee, the same one percent you'd barely notice in your budget can be the difference between dying rich and running out at eighty. The number you pick matters far more than the fund you pick — and unlike the market, it's the one variable entirely in your hands.</p>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>While you're adding, the order is noise. The day you spend, it's everything.</h2>
+    <p>Sequence-of-returns risk is the quiet reason that two people with the same average return, the same savings, and the same plan can retire into completely different lives. It comes from one fact: a forced seller turns a temporary loss into a permanent one. All three games are the same fact seen from three sides — the order of returns decides your fate only once you're spending (Game One), a modest, temporary trim in the lean years keeps an early crash from compounding into ruin (Game Two), and the withdrawal rate isn't a smooth dial but a cliff you want to stay on the gentle side of (Game Three). You can't choose your luck or its timing. You <em>can</em> choose to spend a little less when the market is down, and you can choose a number that keeps you off the cliff. In decumulation, that is almost the whole game.</p>
+    <blockquote>
+      <p>“It is not the size of the average return that breaks a retirement. It is the order in which the returns arrive, and whether you are forced to sell when they arrive badly.”</p>
+      <cite><b>Sequence-of-returns risk</b></cite>
+    </blockquote>
+    <p class="credits">
+      <strong>Sequence-of-returns risk</strong> is the danger that the <em>order</em> of investment returns — not just their average — determines whether a portfolio under withdrawal survives, because selling assets to fund spending during an early downturn locks in losses the portfolio can never recover. The framing here leans on <a href="https://en.wikipedia.org/wiki/William_Bengen" rel="noopener">William Bengen</a>'s 1994 historical-data study that produced the “4% rule,” and on the flexible-spending and guardrail strategies developed by later retirement researchers. Game One is exact arithmetic: a single fixed sequence of thirty annual returns and its exact reverse, run through identical withdrawals — same multiset, so an identical average, and (with spending off) an identical ending. Games Two and Three are honestly-computed, seeded Monte-Carlo: thousands of thirty-year retirements drawing annual real returns from a normal distribution (about 5.5% mean, 15% volatility), with “ran out” defined as the first year the withdrawal can't be funded. The fixed strategy withdraws a constant real amount; the flexible strategy trims that amount by the chosen percentage in any year the portfolio sits below 85% of where it started, restoring it once recovered. (A naive cash buffer, by contrast, barely helps in this model — parking money at a near-zero real return is a permanent drag that costs roughly what the sequence protection saves; the gain comes from spending less, not from holding cash.) These are deliberately simple models — no taxes, no fees, no fat tails, normal returns understate real crashes — built to teach the <em>shape</em> of the risk, not to forecast any real portfolio, and nothing here is financial advice. Part of a family with <a href="/ergodicity/" rel="noopener">It's Just Time</a> (ergodicity — the same path-dependence without the spending), <a href="/compounding/" rel="noopener">It's Just Patience</a> (compounding — its mirror in the saving years), <a href="/barbell/" rel="noopener">It's Just a Barbell</a> (the barbell), and <a href="/via-negativa/" rel="noopener">It's Just Subtraction</a> (via negativa). <a href="/" rel="noopener">See all concepts →</a>
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b', blue:'#2f5d86', violet:'#7d4a9c',
+    redSoft:'#f4e3df', greenSoft:'#e4efe7', grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const START = 1000000;
+
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.6)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+
+  function fmtEur(v){
+    if(v>=1e6) return '€'+(v/1e6).toFixed(2)+'M';
+    if(v>=1e3) return '€'+(v/1e3).toFixed(0)+'k';
+    if(v<=0)   return '€0';
+    return '€'+Math.round(v);
+  }
+  function fmtPct(v){ return Math.round(v)+'%'; }
+
+  // deterministic RNG so the Monte-Carlo is stable across slider moves and reloads.
+  function mulberry32(a){
+    return function(){
+      a|=0; a=a+0x6D2B79F5|0;
+      let t=Math.imul(a^a>>>15,1|a);
+      t=t+Math.imul(t^t>>>7,61|t)^t;
+      return((t^t>>>14)>>>0)/4294967296;
+    };
+  }
+  function gauss(rng){
+    let u=0,v=0; while(u===0)u=rng(); while(v===0)v=rng();
+    return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+  }
+  const MU=0.055, SIGMA=0.15;              // annual real return assumptions
+  function drawReturn(rng){ return Math.max(-0.95, MU + SIGMA*gauss(rng)); }
+
+  /* =====================================================================
+     GAME ONE — the order: one fixed return sequence vs. its exact reverse.
+       Same multiset of returns -> identical average and (spending off)
+       identical ending. With a flat real withdrawal each year, the early-
+       crash order can be gutted while the late-crash order rides it out.
+     Exact, deterministic arithmetic.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('s1'); if(!cv) return;
+    // 30 yearly returns (%) — an early-crash ordering. Reverse = late crash.
+    const RAW=[-21,-13,-7,18,11,6,22,9,14,5,17,8,13,7,19,6,12,10,15,7,16,5,11,14,8,15,7,10,12,9];
+    const early=RAW.map(x=>x/100);
+    const late=early.slice().reverse();
+    const avg=RAW.reduce((a,b)=>a+b,0)/RAW.length;        // identical for both
+    let w=0.05, spend=true;
+    const elW=document.getElementById('s1-w-lab'),
+          elE=document.getElementById('s1-early'), elL=document.getElementById('s1-late'),
+          elA=document.getElementById('s1-avg');
+    const bOn=document.getElementById('s1-on'), bOff=document.getElementById('s1-off');
+
+    function path(rets){
+      const draw=spend? w*START : 0;
+      let b=START; const arr=[b];
+      for(let i=0;i<rets.length;i++){
+        b-=draw; if(b<0)b=0;
+        b*=(1+rets[i]);
+        arr.push(b);
+      }
+      return arr;
+    }
+    function draw(){
+      const {ctx,w:cw,h}=setup(cv);
+      const f=frame(cw,h,{l:50,r:16,t:18,b:32});
+      const pe=path(early), pl=path(late);
+      const N=early.length;
+      const ymax=Math.max(pe[N],pl[N],...pe,...pl,1)*1.06;
+      const X=t=>f.l+f.W*(t/N);
+      const Y=v=>f.b-f.H*(v/ymax);
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const v=ymax*g/4, y=Y(v);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(fmtEur(v), f.l-6, y+3); }
+      ctx.textAlign='center';
+      [0,10,20,30].forEach(t=>{ ctx.fillStyle=C.faint; ctx.fillText(t, X(t), f.b+16); });
+      ctx.fillText('years into retirement →', (f.l+f.r)/2, f.b+27);
+      // late (green)
+      ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let t=0;t<=N;t++){ const px=X(t),py=Y(pl[t]); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      // early (red)
+      ctx.strokeStyle=C.red; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let t=0;t<=N;t++){ const px=X(t),py=Y(pe[t]); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
+      ctx.stroke();
+      [[pl[N],C.green],[pe[N],C.red]].forEach(([v,c])=>{
+        const y=Y(v); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(X(N),y,4.6,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      });
+      return {pe,pl,N};
+    }
+    function render(){
+      elW.textContent=Math.round(w*100)+'%';
+      const {pe,pl,N}=draw();
+      elE.textContent=fmtEur(pe[N]);
+      elL.textContent=fmtEur(pl[N]);
+      elA.textContent=(avg>=0?'+':'')+avg.toFixed(1)+'%';
+      bOn.setAttribute('aria-pressed', spend?'true':'false');
+      bOff.setAttribute('aria-pressed', spend?'false':'true');
+    }
+    document.getElementById('s1-w').oninput=e=>{ w=(+e.target.value)/1000; render(); };
+    bOn.onclick=()=>{ spend=true; render(); };
+    bOff.onclick=()=>{ spend=false; render(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* =====================================================================
+     GAME TWO — the flex: thousands of random 30-year retirements.
+       spend-the-same:   fixed real withdrawal every year.
+       trim-in-lean:     when the portfolio is below where it started, cut
+                         the withdrawal by `cut`; restore it once recovered.
+       Same starting wealth, same returns. Survival = % still solvent.
+     Seeded Monte-Carlo (stable across slider moves).
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('s2'); if(!cv) return;
+    const H=30, NSIM=2000, SEED=12345, THRESH=0.85;   // trim while below 85% of start
+    let w=0.045, cut=0.15;
+    const elW=document.getElementById('s2-w-lab'), elC=document.getElementById('s2-c-lab'),
+          elRn=document.getElementById('s2-rn'), elRb=document.getElementById('s2-rb'),
+          elCut=document.getElementById('s2-cut');
+
+    function compute(){
+      const base=w*START;
+      // survival[y] = number of sims still solvent through year y (1..H)
+      const survN=new Array(H+1).fill(0), survF=new Array(H+1).fill(0);
+      const rng=mulberry32(SEED);
+      for(let s=0;s<NSIM;s++){
+        const rets=new Array(H);
+        for(let y=0;y<H;y++) rets[y]=drawReturn(rng);
+        let port=START, aliveN=true;    // spend the same
+        let pf=START,   aliveF=true;    // trim in lean years
+        for(let y=0;y<H;y++){
+          const r=rets[y];
+          if(aliveN){
+            if(port>=base){ port-=base; port*=(1+r); survN[y+1]++; }
+            else { aliveN=false; }
+          }
+          if(aliveF){
+            const spend = pf < THRESH*START ? base*(1-cut) : base;
+            if(pf>=spend){ pf-=spend; pf*=(1+r); survF[y+1]++; }
+            else { aliveF=false; }
+          }
+        }
+      }
+      return {survN,survB:survF};
+    }
+    function draw(){
+      const {ctx,w:cw,h}=setup(cv);
+      const f=frame(cw,h,{l:40,r:16,t:18,b:32});
+      const {survN,survB}=compute();
+      const X=y=>f.l+f.W*(y/H);
+      const Y=p=>f.b-f.H*p;                 // p in 0..1
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const p=g/4, y=Y(p);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(Math.round(p*100)+'%', f.l-6, y+3); }
+      ctx.textAlign='center';
+      [0,10,20,30].forEach(y=>{ ctx.fillStyle=C.faint; ctx.fillText(y, X(y), f.b+16); });
+      ctx.fillText('years into retirement →', (f.l+f.r)/2, f.b+27);
+      const line=(arr,col,lw)=>{ ctx.strokeStyle=col; ctx.lineWidth=lw; ctx.lineJoin='round'; ctx.beginPath();
+        for(let y=0;y<=H;y++){ const px=X(y),py=Y(arr[y]/NSIM); y?ctx.lineTo(px,py):ctx.moveTo(px,py); } ctx.stroke(); };
+      line(survN,C.red,2.6);
+      line(survB,C.green,2.8);
+      return {survN,survB};
+    }
+    function render(){
+      elW.textContent=(w*100).toFixed(1)+'%';
+      elC.textContent=Math.round(cut*100)+'%';
+      const {survN,survB}=draw();
+      const ruinN=100*(1-survN[H]/NSIM), ruinB=100*(1-survB[H]/NSIM);
+      elRn.textContent=ruinN.toFixed(0)+'%';
+      elRb.textContent=ruinB.toFixed(0)+'%';
+      const removed = ruinN>0 ? Math.round(100*(ruinN-ruinB)/ruinN) : 0;
+      elCut.textContent=removed+'%';
+    }
+    document.getElementById('s2-w').oninput=e=>{ w=(+e.target.value)/1000; render(); };
+    document.getElementById('s2-c').oninput=e=>{ cut=(+e.target.value)/100; render(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* =====================================================================
+     GAME THREE — the cliff: ruin probability vs. withdrawal rate.
+       For each rate across a range, run NSIM random retirements (sell every
+       year) over the horizon; plot P(ran out). Mark the chosen rate + 4%.
+     Seeded Monte-Carlo.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('s3'); if(!cv) return;
+    const NSIM=1500, SEED=24680;
+    const RLO=0.02, RHI=0.075, STEP=0.0025;
+    let w=0.04, H=30;
+    const elW=document.getElementById('s3-w-lab'), elH=document.getElementById('s3-h-lab'),
+          elP=document.getElementById('s3-p'), elSafe=document.getElementById('s3-safe'),
+          elPlus=document.getElementById('s3-plus');
+
+    function ruinAt(rate){
+      const spend=rate*START; let ruined=0;
+      const rng=mulberry32(SEED);              // same seed per rate -> smooth curve
+      for(let s=0;s<NSIM;s++){
+        let port=START, dead=false;
+        for(let y=0;y<H;y++){
+          if(port<spend){ dead=true; break; }
+          port-=spend; port*=(1+drawReturn(rng));
+        }
+        if(dead) ruined++;
+      }
+      return ruined/NSIM;                       // 0..1
+    }
+    function curve(){
+      const pts=[];
+      for(let r=RLO;r<=RHI+1e-9;r+=STEP) pts.push([r,ruinAt(r)]);
+      return pts;
+    }
+    function draw(){
+      const {ctx,w:cw,h}=setup(cv);
+      const f=frame(cw,h,{l:40,r:16,t:18,b:34});
+      const pts=curve();
+      const X=r=>f.l+f.W*((r-RLO)/(RHI-RLO));
+      const Y=p=>f.b-f.H*p;
+      ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
+      for(let g=0;g<=4;g++){ const p=g/4, y=Y(p);
+        ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.fillText(Math.round(p*100)+'%', f.l-6, y+3); }
+      ctx.textAlign='center';
+      [0.02,0.03,0.04,0.05,0.06,0.07].forEach(r=>{ ctx.fillStyle=C.faint;
+        ctx.fillText((r*100).toFixed(0)+'%', X(r), f.b+16); });
+      ctx.fillText('withdrawal rate →', (f.l+f.r)/2, f.b+28);
+      // 4% reference
+      const x4=X(0.04);
+      ctx.strokeStyle='rgba(138,130,117,.8)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.4;
+      ctx.beginPath(); ctx.moveTo(x4,f.t); ctx.lineTo(x4,f.b); ctx.stroke(); ctx.setLineDash([]);
+      // curve
+      ctx.strokeStyle=C.amber; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      pts.forEach(([r,p],i)=>{ const px=X(r),py=Y(p); i?ctx.lineTo(px,py):ctx.moveTo(px,py); });
+      ctx.stroke();
+      // your-rate marker
+      const pAt=ruinAt(w);
+      const mx=X(w), my=Y(pAt);
+      ctx.strokeStyle='rgba(29,26,22,.30)'; ctx.lineWidth=1.2; ctx.beginPath();
+      ctx.moveTo(mx,f.b); ctx.lineTo(mx,my); ctx.stroke();
+      ctx.fillStyle=C.ink; ctx.beginPath(); ctx.arc(mx,my,5,0,6.283); ctx.fill();
+      ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.8; ctx.stroke();
+      return pAt;
+    }
+    function render(){
+      elW.textContent=(w*100).toFixed(1)+'%';
+      elH.textContent=H;
+      const pAt=draw();
+      elP.textContent=Math.round(pAt*100)+'%';
+      elSafe.textContent=Math.round(ruinAt(0.03)*100)+'%';
+      elPlus.textContent=Math.round(ruinAt(Math.min(RHI,w+0.01))*100)+'%';
+    }
+    document.getElementById('s3-w').oninput=e=>{ w=(+e.target.value)/1000; render(); };
+    document.getElementById('s3-h').oninput=e=>{ H=+e.target.value; render(); };
+    render();
+    window.addEventListener('resize',()=>draw());
+  })();
+
+  /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+<script>/* concepts nav: close on outside-click / Escape */
+document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
+</script>
+<script src="/share/plot-share.js" defer></script>
+</body>
+</html>
