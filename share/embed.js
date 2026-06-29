@@ -10,9 +10,13 @@
       the page itself iframe-able: the calculator travels, and the
       backlink travels with it.
 
-   2. EMBED BUTTON.  On the normal page it adds an "Embed ↗" control to
-      the top bar. It opens a small panel: pick the whole simulator or
-      a single game, copy a ready-made <iframe> snippet.
+   2. EMBED BUTTONS.  On the normal page it adds Embed controls in two
+      places, mirroring how Share works:
+        • a top-bar "Embed ↗" — pick the whole simulator or any one game,
+          copy a ready-made <iframe> snippet;
+        • a per-plot "Embed this plot ↗" — sitting right next to that
+          plot's Share button, it hands you the <iframe> for that single
+          game. The thing you're looking at is the thing you can embed.
 
    No per-simulator code: it reads the concept name from the top bar and
    the games from section.act, both of which every simulator already has.
@@ -32,6 +36,26 @@
   }
   function canonicalPath() { return location.pathname.replace(/index\.html$/, "") || "/"; }
   function games() { return [].slice.call(document.querySelectorAll("section.act")); }
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+
+  // wire the copy button inside any panel that has .cs-embed-code + .cs-embed-copy
+  function wireCopy(panel) {
+    var code = panel.querySelector(".cs-embed-code");
+    var copy = panel.querySelector(".cs-embed-copy");
+    copy.addEventListener("click", function () {
+      code.focus(); code.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      if (navigator.clipboard) { navigator.clipboard.writeText(code.value).then(function(){}, function(){}); ok = true; }
+      copy.textContent = ok ? "Copied ✓" : "Press ⌘C";
+      setTimeout(function () { copy.textContent = "Copy code"; }, 1700);
+    });
+  }
+  // close the panel-wrap when clicking outside it or pressing Escape
+  function wireDismiss(wrap) {
+    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) wrap.classList.remove("open"); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") wrap.classList.remove("open"); });
+  }
 
   /* ---------- 1. EMBED VIEW ---------------------------------------- */
   function renderEmbed() {
@@ -110,20 +134,12 @@
 
     var sel = panel.querySelector(".cs-embed-sel");
     var code = panel.querySelector(".cs-embed-code");
-    var copy = panel.querySelector(".cs-embed-copy");
     function refresh() {
       var o = opts[sel.selectedIndex];
       code.value = snippet(path, o.v, name + (o.v ? " — " + o.t : ""));
     }
     sel.addEventListener("change", refresh); refresh();
-    copy.addEventListener("click", function () {
-      code.focus(); code.select();
-      var ok = false;
-      try { ok = document.execCommand("copy"); } catch (e) {}
-      if (navigator.clipboard) { navigator.clipboard.writeText(code.value).then(function(){}, function(){}); ok = true; }
-      copy.textContent = ok ? "Copied ✓" : "Press ⌘C";
-      setTimeout(function () { copy.textContent = "Copy code"; }, 1700);
-    });
+    wireCopy(panel);
     return panel;
   }
 
@@ -162,7 +178,11 @@
       ".cs-embed-copy{font-family:" + MONO + ";font-size:11.5px;font-weight:600;letter-spacing:.04em;" +
         "cursor:pointer;border:1px solid var(--ink,#1d1a16);background:var(--ink,#1d1a16);" +
         "color:var(--paper,#faf7f1);padding:7px 14px;border-radius:999px;transition:opacity .15s}" +
-      ".cs-embed-copy:hover{opacity:.85}";
+      ".cs-embed-copy:hover{opacity:.85}" +
+      // per-plot embed button: sits beside the Share button, styled to match it
+      ".plot-share-row .cs-embed-wrap{margin-left:10px}" +
+      ".cs-embed-plot-btn{text-transform:none;letter-spacing:.04em;font-weight:500;color:var(--ink-faint,#8a8275)}" +
+      ".cs-embed-plot .cs-embed-panel{width:300px}";
     document.head.appendChild(css);
 
     var wrap = document.createElement("div");
@@ -174,11 +194,62 @@
     slot.insertBefore(wrap, ref || slot.firstChild);
 
     btn.addEventListener("click", function (e) { e.stopPropagation(); wrap.classList.toggle("open"); });
-    document.addEventListener("click", function (e) { if (!wrap.contains(e.target)) wrap.classList.remove("open"); });
-    document.addEventListener("keydown", function (e) { if (e.key === "Escape") wrap.classList.remove("open"); });
+    wireDismiss(wrap);
   }
 
-  function init() { if (EMBED) renderEmbed(); else addButton(); }
+  /* ---------- 3. PER-PLOT EMBED BUTTONS ---------------------------- */
+  // Mirror the per-plot Share button: each game gets an "Embed this plot ↗"
+  // sitting in the same action row, handing back the ?embed=N iframe for that
+  // single game. Runs after plot-share.js (included right after us) has built
+  // the rows, so the two buttons share one row.
+  function addPlotEmbeds() {
+    var path = canonicalPath(), name = conceptName(), gs = games();
+    if (!gs.length) return;
+    var seen = {};
+    [].forEach.call(document.querySelectorAll("section.act .card"), function (card) {
+      if (!card.querySelector("canvas")) return;
+      var sec = card.closest("section.act"), idx = gs.indexOf(sec);
+      if (idx < 0 || seen[idx]) return;          // one embed button per game
+      seen[idx] = true;
+      var gameVal = String(idx + 1);
+      var gameLabel = txt(sec.querySelector(".actnum")) || ("Game " + gameVal);
+
+      var wrap = document.createElement("div");
+      wrap.className = "cs-embed-wrap cs-embed-plot";
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "cs-embed-btn cs-embed-plot-btn";
+      btn.textContent = "Embed this plot ↗";
+      wrap.appendChild(btn);
+
+      var panel = document.createElement("div");
+      panel.className = "cs-embed-panel";
+      panel.innerHTML =
+        '<div class="cs-embed-h">Embed this plot</div>' +
+        '<div class="cs-embed-sub">Live and interactive — drop ' + esc(gameLabel) +
+          ' into any page. A link back to ' + SITE + ' travels with it.</div>' +
+        '<textarea class="cs-embed-code" readonly rows="3"></textarea>' +
+        '<button type="button" class="cs-embed-copy">Copy code</button>';
+      panel.querySelector(".cs-embed-code").value = snippet(path, gameVal, name + " — " + gameLabel);
+      wireCopy(panel);
+      wrap.appendChild(panel);
+
+      var row = card.querySelector(".plot-share-row");
+      if (!row) { row = document.createElement("div"); row.className = "plot-share-row"; card.appendChild(row); }
+      row.appendChild(wrap);
+
+      btn.addEventListener("click", function (e) { e.stopPropagation(); wrap.classList.toggle("open"); });
+      wireDismiss(wrap);
+    });
+  }
+
+  function init() {
+    if (EMBED) { renderEmbed(); return; }
+    addButton();
+    // plot-share.js builds the per-plot rows on DOMContentLoaded; by load they exist.
+    if (document.readyState === "complete") addPlotEmbeds();
+    else addEventListener("load", addPlotEmbeds);
+  }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
 })();
