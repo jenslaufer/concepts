@@ -257,34 +257,39 @@
   <!-- ============================ ACT 1 ============================ -->
   <section class="act" id="act1">
     <div class="actnum">Game One <span class="dot">·</span> The shower</div>
-    <h2>A loop that acts on old news learns to oscillate.</h2>
+    <h2>Now <em>you</em> hold the tap.</h2>
 
     <p>Take the calmest loop there is — a balancing loop chasing a goal — and add the one thing the real world never lacks: a <strong>delay</strong>. The loop no longer acts on where the stock <em>is</em>. It acts on where the stock <em>was</em>, a few steps ago, because that is all the information that has arrived. You have met this loop in the shower with slow pipes. You nudge the tap toward warm; nothing happens; you nudge again, harder; still cold, so harder still — and then all of your corrections arrive at once and scald you, so you yank it back, and a few seconds later you are freezing. Same goal, same hand. The pipe between you and the water is the whole problem.</p>
 
-    <p class="sub">Below, a thermostat seeking a target through a pipe of adjustable length. With <strong>no delay</strong> it glides in and rests — the well-behaved balancing loop. Stretch the <strong>delay</strong> out and the same loop begins to overshoot, correct too late, overshoot the other way: it <em>hunts</em>. Stretch it further, or grab harder with the <strong>reaction strength</strong>, and the hunting grows until the loop is out of control. Nothing changed but how stale the information is.</p>
+    <p class="sub">Don't take my word for it — <strong>take the tap</strong>. Press start and drag the slider to hold the water in the green band. The catch is the one every real shower has: what you feel is the tap from a moment ago, because the water is still travelling down the pipe. Your instinct will be to push harder when nothing happens. Do it — and watch what your own corrections turn into. Then shorten the pipe, or hand it to a patient hand, and feel the difference.</p>
 
     <div class="card wide">
       <div class="controls">
         <div class="ctrl">
-          <label>Delay in the pipe <b id="g1-d-lab">5</b></label>
-          <input type="range" id="g1-d" min="0" max="12" value="5" step="1">
+          <label>The tap — drag to stay in the band <b id="g1-tap-lab">cold</b></label>
+          <input type="range" id="g1-tap" min="10" max="46" value="22" step="0.5">
         </div>
         <div class="ctrl">
-          <label>Your reaction strength <b id="g1-k-lab">0.50</b></label>
-          <input type="range" id="g1-k" min="15" max="100" value="50" step="5">
+          <label>Length of the pipe (the delay) <b id="g1-d-lab">long</b></label>
+          <input type="range" id="g1-d" min="0" max="40" value="20" step="1">
         </div>
       </div>
+      <div class="btnrow">
+        <button class="act-btn primary" id="g1-start">▶ Start the water</button>
+        <button class="act-btn" id="g1-auto" aria-pressed="false">Let a patient hand take over</button>
+      </div>
       <div class="readouts">
-        <div class="stat accent"><div class="k">Behavior</div><div class="v" id="g1-regime" style="font-size:15px">—</div></div>
-        <div class="stat amber"><div class="k">Swing size (late run)</div><div class="v" id="g1-amp">—</div></div>
-        <div class="stat"><div class="k">Settles?</div><div class="v" id="g1-settle" style="font-size:16px">—</div></div>
+        <div class="stat accent"><div class="k">Water you feel now</div><div class="v" id="g1-felt">—</div></div>
+        <div class="stat green"><div class="k">Seconds in the band</div><div class="v" id="g1-band">0.0s</div></div>
+        <div class="stat red"><div class="k">Scalded + frozen</div><div class="v" id="g1-bad">0.0s</div></div>
       </div>
       <div class="legend">
-        <span style="color:var(--accent)"><i style="background:var(--accent)"></i> the water temperature</span>
-        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the temperature you want</span>
+        <span style="color:var(--accent)"><i style="background:var(--accent)"></i> the water you feel (arrives late)</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> where you've set the tap</span>
+        <span style="color:var(--green)"><i class="dot" style="background:var(--green-soft);border:1px solid var(--green)"></i> the comfortable band</span>
       </div>
       <div class="canvas-box"><canvas id="g1" height="340"></canvas></div>
-      <div class="caption">At delay 0 the loop settles like any healthy thermostat. Add lag and the identical loop overshoots and rings; add more and it never settles. The instinct to react harder when nothing's happening is exactly what turns a delay into an explosion.</div>
+      <div class="caption">You set the tap (faint line); the water you actually feel (solid) arrives late. Hold it in the green band if you can. With a long pipe your own corrections pile up inside it and you swing between scald and freeze — the oscillation is made by <em>you</em> reacting to stale news, not by the water. Shorten the pipe and it turns easy; hand it to a patient hand and the very same delay settles.</div>
     </div>
 
     <p>This is the single most common reason competent people lose control of good systems: they react to the gap they can see, not knowing it closed a while ago. Central banks raising rates into a slowdown that already ended. A manager hiring hard for a demand spike that has passed. The fix is rarely a stronger hand — that makes it worse. The fix is to react <em>gently enough to match the lag</em>, and to stop treating a delayed signal as if it were live.</p>
@@ -391,7 +396,7 @@
       <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
     </blockquote>
     <p class="credits">
-      <strong>Donella H. Meadows</strong> (1941–2001) was an environmental scientist and lead author of <em>The Limits to Growth</em> (1972); her primer <em>Thinking in Systems</em> (2008, ed. Diana Wright) is the source of every quotation here. The delayed-oscillation insight, the bullwhip, and the warning about acting too late are hers. The three games are deliberately simple toy models — a balancing loop acting on a pure-delayed perception of its stock, a four-stage order-up-to supply chain with a per-link lead time, and a stock with momentum braking toward a ceiling under reactive versus delay-projecting control. They are directionally honest illustrations of the archetype, not a forecast of any particular shower, supply chain, or reservoir. The staging, the prose, and the thread are my own. This is the delay chapter of a systems-thinking thread that begins with <a href="/systems/" rel="noopener">It's Just a Loop</a>, alongside <a href="/reinforcing/" rel="noopener">It's Just More</a> (reinforcing loops), <a href="/balancing/" rel="noopener">It's Just a Thermostat</a> (balancing loops), and <a href="/loop-noise/" rel="noopener">It's Just Noise</a> (randomness in loops). <a href="/" rel="noopener">See all concepts →</a>
+      <strong>Donella H. Meadows</strong> (1941–2001) was an environmental scientist and lead author of <em>The Limits to Growth</em> (1972); her primer <em>Thinking in Systems</em> (2008, ed. Diana Wright) is the source of every quotation here. The delayed-oscillation insight, the bullwhip, and the warning about acting too late are hers. The three games are deliberately simple toy models — a shower you drive yourself in real time, where the temperature you feel is the tap setting delayed by a pipe of adjustable length, a four-stage order-up-to supply chain with a per-link lead time, and a stock with momentum braking toward a ceiling under reactive versus delay-projecting control. They are directionally honest illustrations of the archetype, not a forecast of any particular shower, supply chain, or reservoir. The staging, the prose, and the thread are my own. This is the delay chapter of a systems-thinking thread that begins with <a href="/systems/" rel="noopener">It's Just a Loop</a>, alongside <a href="/reinforcing/" rel="noopener">It's Just More</a> (reinforcing loops), <a href="/balancing/" rel="noopener">It's Just a Thermostat</a> (balancing loops), and <a href="/loop-noise/" rel="noopener">It's Just Noise</a> (randomness in loops). <a href="/" rel="noopener">See all concepts →</a>
     </p>
   </section>
 </main>
@@ -462,42 +467,73 @@
   }
 
   /* =====================================================================
-     GAME ONE — the shower: balancing loop on a PURE-delayed perception.
-     s[i] = s[i-1] + k*(goal - s[i-1-D]).  D=0 settles; larger D / k -> hunt.
+     GAME ONE — the shower, played by YOU. Real time, 50 ms/tick. You drag
+     the tap; the water you FEEL is the tap from D ticks ago (the pipe),
+     lightly mixed. Reacting hard to stale news makes you oscillate. The
+     "patient hand" uses a low gain matched to the lag and settles the
+     identical delay — the lesson, felt instead of read.
      ===================================================================== */
   (function(){
     const cv=document.getElementById('g1'); if(!cv) return;
-    const T=120, START=20, G=38;
-    let D=5, k=0.50;
-    const elD=document.getElementById('g1-d-lab'), elK=document.getElementById('g1-k-lab'),
-          elReg=document.getElementById('g1-regime'), elAmp=document.getElementById('g1-amp'),
-          elSet=document.getElementById('g1-settle');
-    function sim(){ const s=new Array(T).fill(START);
-      for(let i=1;i<T;i++){ const perc=s[Math.max(0,i-1-D)]; s[i]=s[i-1]+k*(G-perc);
-        if(!isFinite(s[i])) s[i]=s[i-1]; s[i]=clamp(s[i],-1e4,1e4); } return s; }
+    const elTap=document.getElementById('g1-tap'), elD=document.getElementById('g1-d'),
+          elTapLab=document.getElementById('g1-tap-lab'), elDLab=document.getElementById('g1-d-lab'),
+          elFelt=document.getElementById('g1-felt'), elBand=document.getElementById('g1-band'),
+          elBad=document.getElementById('g1-bad'),
+          btnStart=document.getElementById('g1-start'), btnAuto=document.getElementById('g1-auto');
+    const GOAL=38, HALF=1.5, FAR=5, WIN=260, DT=0.05;
+    let D=20, felt=22, cmd=22, auto=false, running=false, timer=null;
+    let feltHist=[], tapHist=[], cmdBuf=[], bandT=0, badT=0;
+
+    const tapWord=v=>v<24?'cold':v<33?'cool':v<41?'warm':'scalding';
+    const setDLab=()=>{ elDLab.textContent = D===0?'none':D<10?'short':D<24?'long':'very long'; };
+    function reset(){
+      cmd=+elTap.value; felt=Math.min(22,cmd); auto=false;
+      btnAuto.setAttribute('aria-pressed','false'); btnAuto.classList.remove('primary');
+      btnAuto.textContent='Let a patient hand take over';
+      feltHist=new Array(WIN).fill(felt); tapHist=new Array(WIN).fill(cmd);
+      cmdBuf=new Array(90).fill(felt); bandT=0; badT=0;
+      elBand.textContent='0.0s'; elBad.textContent='0.0s'; draw();
+    }
+    function step(){
+      if(auto){ const g=0.5/(D+6); cmd=clamp(cmd+g*(GOAL-felt),10,46); elTap.value=cmd.toFixed(1); elTapLab.textContent=tapWord(cmd); }
+      else cmd=+elTap.value;
+      cmdBuf.push(cmd); if(cmdBuf.length>90) cmdBuf.shift();
+      const idx=cmdBuf.length-1-D, delivered=idx>=0?cmdBuf[idx]:cmdBuf[0];
+      felt += 0.45*(delivered-felt);
+      feltHist.push(felt); if(feltHist.length>WIN) feltHist.shift();
+      tapHist.push(cmd);   if(tapHist.length>WIN)  tapHist.shift();
+      const off=Math.abs(felt-GOAL);
+      if(off<=HALF) bandT+=DT; else if(off>=FAR) badT+=DT;
+      elFelt.textContent=felt.toFixed(1)+'°';
+      elFelt.parentElement.className='stat '+(off<=HALF?'green':off>=FAR?'red':'amber');
+      elBand.textContent=bandT.toFixed(1)+'s'; elBad.textContent=badT.toFixed(1)+'s';
+      draw();
+    }
     function draw(){
       const {ctx,w,h}=setup(cv);
       const f=frame(w,h,{l:40,r:16,t:18,b:30});
-      const s=sim();
-      const lo=Math.min(START,...s), hi=Math.max(G*1.3,...s);
-      const ymax=hi+(hi-lo)*0.06, ymin=lo-(hi-lo)*0.06;
-      yGrid(ctx,f,ymin,ymax,'');
-      goalLine(ctx,f,G,ymin,ymax,'rgba(138,130,117,.8)','want');
-      plotSeries(ctx,f,s,ymin,ymax,C.accent,2.6);
+      const ymin=8, ymax=48;
+      const yb1=f.b-f.H*clamp((GOAL+HALF-ymin)/(ymax-ymin),0,1);
+      const yb2=f.b-f.H*clamp((GOAL-HALF-ymin)/(ymax-ymin),0,1);
+      ctx.fillStyle='rgba(31,122,90,.13)'; ctx.fillRect(f.l,yb1,f.W,yb2-yb1);
+      yGrid(ctx,f,ymin,ymax,'°');
+      goalLine(ctx,f,GOAL,ymin,ymax,'rgba(31,122,90,.85)','38° — just right');
+      plotSeries(ctx,f,tapHist,ymin,ymax,'rgba(138,130,117,.7)',1.4);
+      plotSeries(ctx,f,feltHist,ymin,ymax,C.accent,2.8);
       ctx.textAlign='center'; ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
-      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
-      const tail=s.slice(70); const amp=Math.max(...tail)-Math.min(...tail);
-      const diverge=Math.abs(s[T-1]-G)>3*Math.abs(START-G);
-      let reg = amp<0.5 ? 'settles — calm' : diverge||amp>50 ? 'out of control' : 'hunts — oscillates';
-      elReg.textContent=reg;
-      elReg.parentElement.className='stat '+(reg==='settles — calm'?'green':reg==='hunts — oscillates'?'amber':'red');
-      elAmp.textContent=amp<0.5?'—':'±'+fmt(amp/2);
-      elSet.textContent= amp<0.5 ? 'yes' : 'no — keeps swinging';
-      elSet.parentElement.className='stat '+(amp<0.5?'green':'red');
+      ctx.fillText(running?'now →':'press start, then drag the tap', (f.l+f.r)/2, f.b+24);
     }
-    document.getElementById('g1-d').oninput=e=>{ D=+e.target.value; elD.textContent=D; draw(); };
-    document.getElementById('g1-k').oninput=e=>{ k=(+e.target.value)/100; elK.textContent=k.toFixed(2); draw(); };
-    draw();
+    function go(){ if(timer) clearInterval(timer); reset(); running=true; btnStart.textContent='⟲ Restart'; timer=setInterval(step,50); }
+    elTap.oninput=e=>{ if(!auto) elTapLab.textContent=tapWord(+e.target.value); if(!running) draw(); };
+    elD.oninput=e=>{ D=+e.target.value; setDLab(); if(!running) draw(); };
+    btnStart.onclick=go;
+    btnAuto.onclick=()=>{
+      if(!running){ go(); }
+      auto=!auto; btnAuto.setAttribute('aria-pressed',auto?'true':'false');
+      btnAuto.classList.toggle('primary',auto);
+      btnAuto.textContent=auto?'Take the tap back':'Let a patient hand take over';
+    };
+    setDLab(); elTapLab.textContent=tapWord(+elTap.value); reset();
     window.addEventListener('resize',draw);
   })();
 
