@@ -257,34 +257,39 @@
   <!-- ============================ ACT 1 ============================ -->
   <section class="act" id="act1">
     <div class="actnum">Game One <span class="dot">·</span> Goal-seeking</div>
-    <h2>A balancing loop pushes harder the further it is from home.</h2>
+    <h2>Now <em>you</em> are the thermostat.</h2>
 
-    <p>If a reinforcing loop is the engine of change, a <strong>balancing loop</strong> is the brake — the loop that holds things still. It has a <em>goal</em>, and at every step it measures the gap between where the stock is and where it wants to be, and pushes to close it. The further away, the harder the push; the closer it gets, the gentler. A thermostat heating a cold room. A cup of coffee cooling to room temperature. Your body holding 37°C through summer and winter. These are not steady because nothing disturbs them. They are steady because a loop is constantly correcting.</p>
+    <p>If a reinforcing loop is the engine of change, a <strong>balancing loop</strong> is the brake — the loop that holds things still. It has a <em>goal</em>, and at every moment it measures the gap between where the stock is and where it wants to be, and pushes to close it: harder when far, gentler when near. A thermostat heating a cold room. A cup of coffee cooling to the kitchen. Your body holding 37&nbsp;°C through summer and winter. These are not steady because nothing disturbs them. They are steady because a loop is correcting, without pause.</p>
 
-    <p class="sub">Below is a cold room and a thermostat set to a target. Move the <strong>target</strong> and watch the room walk toward it — fast at first, then easing in, the classic patient curve that bends to its goal and rests. Turn up the <strong>correcting strength</strong> and it gets there sooner. Nothing dramatic happens here, and that is exactly the point: a healthy balancing loop is boring on purpose. Boring is the goal.</p>
+    <p class="sub">So <strong>be the loop</strong>. The room starts cold and leaks its warmth to the chilly outside without stopping — so to reach the target and <em>hold</em> it, you can never just let go of the dial. Press start and work the heat to keep the room in the green band. Try slamming it to full: you'll sail past and cook. The touch your hand has to find is to push hard while far and ease off as you arrive — proportional to the gap. Then hand it to a steady hand and watch the loop do exactly that, on its own, forever.</p>
 
     <div class="card wide">
       <div class="controls">
         <div class="ctrl">
-          <label>Target the thermostat seeks <b id="g1-goal-lab">100</b></label>
-          <input type="range" id="g1-goal" min="40" max="120" value="100" step="2">
+          <label>The dial — how hard you heat <b id="g1-p-lab">off</b></label>
+          <input type="range" id="g1-p" min="0" max="100" value="0" step="1">
         </div>
         <div class="ctrl">
-          <label>Correcting strength <b id="g1-k-lab">0.30</b></label>
-          <input type="range" id="g1-k" min="8" max="80" value="30" step="2">
+          <label>How cold it is outside <b id="g1-cold-lab">chilly</b></label>
+          <input type="range" id="g1-cold" min="-10" max="15" value="5" step="1">
         </div>
       </div>
+      <div class="btnrow">
+        <button class="act-btn primary" id="g1-start">▶ Start the room</button>
+        <button class="act-btn" id="g1-auto" aria-pressed="false">Let a steady hand take over</button>
+      </div>
       <div class="readouts">
-        <div class="stat accent"><div class="k">Settles at</div><div class="v" id="g1-final">—</div></div>
-        <div class="stat"><div class="k">Gap left at the end</div><div class="v" id="g1-gap">—</div></div>
-        <div class="stat green"><div class="k">Steps to within 1%</div><div class="v" id="g1-settle">—</div></div>
+        <div class="stat accent"><div class="k">Room right now</div><div class="v" id="g1-now">—</div></div>
+        <div class="stat green"><div class="k">Seconds on target</div><div class="v" id="g1-band">0.0s</div></div>
+        <div class="stat red"><div class="k">Worst overshoot</div><div class="v" id="g1-over">0°</div></div>
       </div>
       <div class="legend">
         <span style="color:var(--accent)"><i style="background:var(--accent)"></i> the room temperature (the stock)</span>
-        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the target it is chasing</span>
+        <span style="color:var(--green)"><i class="dot" style="background:var(--green-soft);border:1px solid var(--green)"></i> the comfortable band</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> your target (21°)</span>
       </div>
       <div class="canvas-box"><canvas id="g1" height="340"></canvas></div>
-      <div class="caption">The push is proportional to the gap, so the approach is fast when far and slow when near — an exponential glide into the goal that never quite jumps past it. This is the shape of every well-behaved control loop: it bends toward home and stays there.</div>
+      <div class="caption">You supply the heat (the dial); the room loses it to the cold outside every tick. Hold it in the green band. A heavy hand overshoots and rings; an easing, gap-matched hand glides in and stays — and because the heat keeps leaking, holding still is not rest, it is constant correction. Hand it to the steady hand to feel the loop do it by itself.</div>
     </div>
 
     <p>A balancing loop is why so many things in your life sit at a stubborn set-point and resist being moved: your weight, a company's headcount, the price in a competitive market, the temperature of a room. They feel fixed. They are not — they are <em>held</em>, by a loop you usually cannot see, quietly correcting every drift back toward a goal it was built to defend.</p>
@@ -455,34 +460,71 @@
   }
 
   /* =====================================================================
-     GAME ONE — goal-seeking: s[i] = s[i-1] + k*(goal - s[i-1]), 0<k<1.
-     Exponential glide to the goal; settle-time = ln(.01)/ln(1-k).
+     GAME ONE — you ARE the thermostat (real time, 50 ms/tick). The room
+     leaks heat to the cold outside every tick: T += cH*P − cL*(T−cold).
+     YOU set the dial P. Slam it and you overshoot; ease it in proportion
+     to the gap and it glides and holds — and because the heat never stops
+     leaking, holding still IS constant correction. The "steady hand"
+     toggle runs the proportional controller so you feel the loop do it.
      ===================================================================== */
   (function(){
     const cv=document.getElementById('g1'); if(!cv) return;
-    const T=60, START=20;
-    let goal=100, k=0.30;
-    const elG=document.getElementById('g1-goal-lab'), elK=document.getElementById('g1-k-lab'),
-          elFin=document.getElementById('g1-final'), elGap=document.getElementById('g1-gap'),
-          elSet=document.getElementById('g1-settle');
-    function sim(){ const s=new Array(T); s[0]=START; for(let i=1;i<T;i++) s[i]=s[i-1]+k*(goal-s[i-1]); return s; }
+    const elP=document.getElementById('g1-p'), elCold=document.getElementById('g1-cold'),
+          elPLab=document.getElementById('g1-p-lab'), elCLab=document.getElementById('g1-cold-lab'),
+          elNow=document.getElementById('g1-now'), elBand=document.getElementById('g1-band'),
+          elOver=document.getElementById('g1-over'),
+          btnStart=document.getElementById('g1-start'), btnAuto=document.getElementById('g1-auto');
+    const GOAL=21, HALF=1.0, FAR=4, WIN=260, DT=0.05, cH=0.01, cL=0.04;
+    let cold=5, T=5, auto=false, running=false, timer=null;
+    let Thist=[], bandT=0, maxOver=0;
+    const pWord=v=>v<1?'off':v<34?'low':v<67?'medium':'high';
+    const cWord=v=>v<0?'freezing':v<8?'chilly':v<13?'cool':'mild';
+    function reset(){
+      cold=+elCold.value; T=cold; auto=false;
+      btnAuto.setAttribute('aria-pressed','false'); btnAuto.classList.remove('primary');
+      btnAuto.textContent='Let a steady hand take over';
+      Thist=new Array(WIN).fill(T); bandT=0; maxOver=0;
+      elBand.textContent='0.0s'; elOver.textContent='0°'; draw();
+    }
+    function step(){
+      let P;
+      if(auto){ P=clamp(cL*(GOAL-cold)/cH + 4*(GOAL-T),0,100); elP.value=P.toFixed(0); elPLab.textContent=pWord(P); }
+      else P=+elP.value;
+      T += cH*P - cL*(T-cold);
+      Thist.push(T); if(Thist.length>WIN) Thist.shift();
+      const off=Math.abs(T-GOAL);
+      if(off<=HALF) bandT+=DT;
+      if(T-GOAL>maxOver) maxOver=T-GOAL;
+      elNow.textContent=T.toFixed(1)+'°';
+      elNow.parentElement.className='stat '+(off<=HALF?'green':off>=FAR?'red':'amber');
+      elBand.textContent=bandT.toFixed(1)+'s';
+      elOver.textContent= maxOver>0.1 ? '+'+maxOver.toFixed(1)+'°' : '0°';
+      draw();
+    }
     function draw(){
       const {ctx,w,h}=setup(cv);
       const f=frame(w,h,{l:40,r:16,t:18,b:30});
-      const s=sim();
-      const ymax=Math.max(goal,START)*1.12, ymin=0;
-      yGrid(ctx,f,ymin,ymax,'');
-      goalLine(ctx,f,goal,ymin,ymax,'rgba(138,130,117,.8)','target');
-      plotSeries(ctx,f,s,ymin,ymax,C.accent,2.8);
+      const ymin=-12, ymax=34;
+      const yb1=f.b-f.H*clamp((GOAL+HALF-ymin)/(ymax-ymin),0,1);
+      const yb2=f.b-f.H*clamp((GOAL-HALF-ymin)/(ymax-ymin),0,1);
+      ctx.fillStyle='rgba(31,122,90,.13)'; ctx.fillRect(f.l,yb1,f.W,yb2-yb1);
+      yGrid(ctx,f,ymin,ymax,'°');
+      goalLine(ctx,f,GOAL,ymin,ymax,'rgba(31,122,90,.85)','21° — target');
+      plotSeries(ctx,f,Thist,ymin,ymax,C.accent,2.8);
       ctx.textAlign='center'; ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
-      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
-      elFin.textContent=Math.round(s[T-1]); elGap.textContent=(goal-s[T-1]).toFixed(2);
-      const tol=0.01*Math.abs(goal-START);
-      let st=s.findIndex(v=>Math.abs(goal-v)<=Math.max(0.5,tol)); elSet.textContent= st<0 ? '> '+T : st+'';
+      ctx.fillText(running?'now →':'press start, then work the dial', (f.l+f.r)/2, f.b+24);
     }
-    document.getElementById('g1-goal').oninput=e=>{ goal=+e.target.value; elG.textContent=goal; draw(); };
-    document.getElementById('g1-k').oninput=e=>{ k=(+e.target.value)/100; elK.textContent=k.toFixed(2); draw(); };
-    draw();
+    function go(){ if(timer) clearInterval(timer); reset(); running=true; btnStart.textContent='⟲ Restart'; timer=setInterval(step,50); }
+    elP.oninput=e=>{ if(!auto) elPLab.textContent=pWord(+e.target.value); };
+    elCold.oninput=e=>{ cold=+e.target.value; elCLab.textContent=cWord(cold); if(!running){ T=cold; Thist=new Array(WIN).fill(T); draw(); } };
+    btnStart.onclick=go;
+    btnAuto.onclick=()=>{
+      if(!running){ go(); }
+      auto=!auto; btnAuto.setAttribute('aria-pressed',auto?'true':'false');
+      btnAuto.classList.toggle('primary',auto);
+      btnAuto.textContent=auto?'Take the dial back':'Let a steady hand take over';
+    };
+    elPLab.textContent=pWord(+elP.value); elCLab.textContent=cWord(+elCold.value); reset();
     window.addEventListener('resize',draw);
   })();
 

@@ -257,34 +257,35 @@
   <!-- ============================ ACT 1 ============================ -->
   <section class="act" id="act1">
     <div class="actnum">Game One <span class="dot">·</span> Signal or noise</div>
-    <h2>Pure randomness draws trends you'll swear are real.</h2>
+    <h2>Call the trend — then watch it betray you.</h2>
 
-    <p>No real system runs on clean numbers. Every loop is jostled by chance — weather, moods, a customer who happened to call, a coin that happened to land heads. And here is the thing our pattern-hungry brain cannot accept: random shocks, fed through an ordinary balancing loop, produce <em>runs</em>. Three good weeks in a row. A line that drifts up for a while and then down. Slopes, streaks, “momentum.” They look exactly like signal — like something is happening, like a story is unfolding — and underneath there is nothing at all but a flat goal and a fair coin.</p>
+    <p>No real system runs on clean numbers. Every loop is jostled by chance — weather, moods, a customer who happened to call, a coin that happened to land heads. And here is the thing our pattern-hungry brain cannot accept: random shocks, fed through an ordinary balancing loop, produce <em>runs</em>. Three good weeks in a row. A line that drifts up for a while and then down. Slopes, streaks, “momentum.” They look exactly like signal — like a story is unfolding — and underneath there is nothing at all but a flat goal and a fair coin.</p>
 
-    <p class="sub">Below is a stock held by a balancing loop at a perfectly flat target, plus random noise — and <em>no real trend whatsoever</em>. Hit <strong>new sample</strong> a few times and watch your eye invent rallies and slumps in pure static. Then press <strong>reveal the truth</strong>: the flat line was the whole story all along. Turn the noise up and the fake trends only get more convincing.</p>
+    <p class="sub">So don't just look at it — <strong>bet on it</strong>. Below is a stock held at a perfectly flat target, plus noise, and <em>no real trend whatsoever</em>. You see it up to “now” and can read the run as plainly as anyone. So commit: will it end the stretch <strong>higher</strong> or <strong>lower</strong> than it stands now? Then reveal. Do it eight or ten times and watch your hit-rate — it settles at a coin-flip, because the trend you were so sure of was never there.</p>
 
     <div class="card wide">
-      <div class="btnrow">
-        <button class="act-btn primary" id="g1-new">↻ New random sample</button>
-        <button class="act-btn" id="g1-reveal">Reveal the truth</button>
-      </div>
       <div class="controls">
         <div class="ctrl">
           <label>Noise size <b id="g1-sig-lab">4</b></label>
           <input type="range" id="g1-sig" min="1" max="9" value="4" step="0.5">
         </div>
       </div>
+      <div class="btnrow">
+        <button class="act-btn primary" id="g1-up">↑ It ends higher</button>
+        <button class="act-btn primary" id="g1-down">↓ It ends lower</button>
+        <button class="act-btn" id="g1-new">↻ New chart</button>
+      </div>
       <div class="readouts">
-        <div class="stat accent"><div class="k">Longest “winning streak”</div><div class="v" id="g1-run">—</div></div>
-        <div class="stat"><div class="k">Where it ends vs start</div><div class="v" id="g1-drift">—</div></div>
-        <div class="stat green"><div class="k">Real underlying trend</div><div class="v" id="g1-trend" style="font-size:15px">none</div></div>
+        <div class="stat accent"><div class="k">Your hit-rate</div><div class="v" id="g1-rate">—</div></div>
+        <div class="stat"><div class="k">Calls right</div><div class="v" id="g1-score">0 / 0</div></div>
+        <div class="stat amber"><div class="k">The run you're trusting</div><div class="v" id="g1-run" style="font-size:15px">—</div></div>
       </div>
       <div class="legend">
-        <span style="color:var(--accent)"><i style="background:var(--accent)"></i> what you observe</span>
-        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the flat truth (revealed)</span>
+        <span style="color:var(--accent)"><i style="background:var(--accent)"></i> what you've seen so far</span>
+        <span style="color:var(--ink-faint)"><i style="background:var(--ink-faint)"></i> what happened next (revealed)</span>
       </div>
       <div class="canvas-box"><canvas id="g1" height="340"></canvas></div>
-      <div class="caption">Every wiggle here is noise around a flat line. The “trends” you see are real patterns in the data and completely meaningless about the future — the signature of randomness in a loop. Reading a story into each one is the most expensive habit in investing, management, and health alike.</div>
+      <div class="caption">Everything here is noise around a flat line — there is no real trend to find. You see a run, you call where it goes, the reveal extends the line and scores you. Over a handful of calls your accuracy settles near 50%: proof that the slope you read carried no information about what came next.</div>
     </div>
 
     <p>This is why a run of good quarters gets a CEO a book deal and a run of bad ones gets them fired, when both may be weather. It is why we chase the hot fund, fire the cold manager, and change a diet after one heavy weigh-in. The discipline is brutal and simple: before you explain a move, ask whether a flat line plus noise would have produced it anyway. Most of the time, it would.</p>
@@ -450,42 +451,64 @@
   }
 
   /* =====================================================================
-     GAME ONE — signal or noise: balancing loop at a FLAT goal + shocks.
-     s[i] = s[i-1] + 0.25*(G - s[i-1]) + sig*gauss().  No real trend.
+     GAME ONE — call the trend (predict-then-reveal, scored). A balancing
+     loop sits at a FLAT goal under noise: s[i]=s[i-1]+0.25*(G−s[i-1])+
+     sig*gauss(). You see it up to CUT and bet whether it ends HIGHER or
+     LOWER than "now"; the reveal extends the line and scores you. Because
+     the loop is stationary, the visible slope predicts nothing — your
+     hit-rate converges on ~50%, felt one wrong call at a time.
      ===================================================================== */
   (function(){
     const cv=document.getElementById('g1'); if(!cv) return;
-    const T=120, G=50;
-    let sig=4, seed=7, reveal=false;
-    const elS=document.getElementById('g1-sig-lab'), elRun=document.getElementById('g1-run'),
-          elDr=document.getElementById('g1-drift'), btnNew=document.getElementById('g1-new'),
-          btnRev=document.getElementById('g1-reveal');
+    const T=120, G=50, CUT=78;
+    let sig=4, seed=7, bet=null, revealed=false, hits=0, total=0;
+    const elS=document.getElementById('g1-sig-lab'), elRate=document.getElementById('g1-rate'),
+          elScore=document.getElementById('g1-score'), elRun=document.getElementById('g1-run'),
+          btnUp=document.getElementById('g1-up'), btnDn=document.getElementById('g1-down'),
+          btnNew=document.getElementById('g1-new');
     function sim(){ const r=rng(seed); const s=new Array(T); s[0]=G;
       for(let i=1;i<T;i++) s[i]=s[i-1]+0.25*(G-s[i-1])+sig*gauss(r); return s; }
+    function trailingRun(s){ const dir=Math.sign(s[CUT]-s[CUT-1]); let run=1;
+      for(let i=CUT-1;i>0;i--){ if(dir!==0 && Math.sign(s[i]-s[i-1])===dir) run++; else break; } return {run,dir}; }
     function draw(){
       const {ctx,w,h}=setup(cv);
       const f=frame(w,h,{l:40,r:16,t:18,b:30});
       const s=sim();
-      const lo=Math.min(...s), hi=Math.max(...s), pad=(hi-lo)*0.12||1;
-      const ymin=lo-pad, ymax=hi+pad;
+      const lo=Math.min(...s), hi=Math.max(...s), pad=(hi-lo)*0.12||1, ymin=lo-pad, ymax=hi+pad;
+      const X=i=>f.l+f.W*(i/(T-1)), Y=v=>f.b-f.H*clamp((v-ymin)/(ymax-ymin),0,1);
       yGrid(ctx,f,ymin,ymax,'');
-      if(reveal){ const y=f.b-f.H*clamp((G-ymin)/(ymax-ymin),0,1);
-        ctx.strokeStyle='rgba(138,130,117,.85)'; ctx.setLineDash([6,4]); ctx.lineWidth=1.6;
-        ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke(); ctx.setLineDash([]);
-        ctx.fillStyle=C.faint; ctx.font='11px IBM Plex Mono'; ctx.textAlign='left';
-        ctx.fillText('flat — no trend', f.l+4, y-5); }
-      plotSeries(ctx,f,s,ymin,ymax,C.accent,2.4);
+      // "now" marker at CUT
+      const xc=X(CUT);
+      ctx.strokeStyle='rgba(138,130,117,.55)'; ctx.setLineDash([4,4]); ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(xc,f.t); ctx.lineTo(xc,f.b); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono'; ctx.textAlign='center'; ctx.fillText('now', xc, f.b-6);
+      // the part you've seen (0..CUT)
+      ctx.strokeStyle=C.accent; ctx.lineWidth=2.4; ctx.lineJoin='round'; ctx.beginPath();
+      for(let i=0;i<=CUT;i++){ const x=X(i),y=Y(s[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke();
+      ctx.fillStyle=C.accent; ctx.beginPath(); ctx.arc(xc,Y(s[CUT]),4,0,7); ctx.fill();
+      if(revealed){
+        ctx.strokeStyle='rgba(138,130,117,.95)'; ctx.lineWidth=2.0; ctx.beginPath();
+        for(let i=CUT;i<T;i++){ const x=X(i),y=Y(s[i]); i===CUT?ctx.moveTo(x,y):ctx.lineTo(x,y); } ctx.stroke();
+        ctx.fillStyle=C.faint; ctx.beginPath(); ctx.arc(X(T-1),Y(s[T-1]),4,0,7); ctx.fill();
+        const up=s[T-1]>=s[CUT], right=(bet==='up')===up;
+        ctx.fillStyle=right?C.green:C.red; ctx.font='600 12px IBM Plex Mono'; ctx.textAlign='center';
+        ctx.fillText((right?'✓ ':'✗ ')+'you said '+(bet==='up'?'HIGHER':'LOWER')+' — it ended '+(up?'higher':'lower'), (f.l+f.r)/2, f.t+13);
+      }
       ctx.textAlign='center'; ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
       ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
-      let maxrun=0,run=0,last=0; for(let i=1;i<T;i++){ const d=Math.sign(s[i]-s[i-1]);
-        if(d===last) run++; else run=1; last=d; if(run>maxrun)maxrun=run; }
-      elRun.textContent=maxrun+' steps';
-      const dr=s[T-1]-s[0]; elDr.textContent=(dr>=0?'+':'')+dr.toFixed(1);
+      const tr=trailingRun(s);
+      elRun.textContent = tr.dir>0 ? '+'+tr.run+' rising' : tr.dir<0 ? '−'+tr.run+' falling' : 'flat';
+      elScore.textContent=hits+' / '+total;
+      elRate.textContent= total? Math.round(100*hits/total)+'%' : '—';
     }
-    btnNew.onclick=()=>{ seed=(seed*1103515245+12345)>>>0; draw(); };
-    btnRev.onclick=()=>{ reveal=!reveal; btnRev.textContent=reveal?'Hide the truth':'Reveal the truth';
-      btnRev.classList.toggle('primary',reveal); draw(); };
-    document.getElementById('g1-sig').oninput=e=>{ sig=+e.target.value; elS.textContent=sig; draw(); };
+    function place(b){ if(revealed) return; bet=b;
+      const s=sim(); const up=s[T-1]>=s[CUT]; if((b==='up')===up) hits++; total++;
+      revealed=true; btnUp.disabled=true; btnDn.disabled=true; draw(); }
+    btnUp.onclick=()=>place('up');
+    btnDn.onclick=()=>place('down');
+    btnNew.onclick=()=>{ seed=(seed*1103515245+12345)>>>0; bet=null; revealed=false;
+      btnUp.disabled=false; btnDn.disabled=false; draw(); };
+    document.getElementById('g1-sig').oninput=e=>{ sig=+e.target.value; elS.textContent=sig; if(!revealed) draw(); };
     draw();
     window.addEventListener('resize',draw);
   })();

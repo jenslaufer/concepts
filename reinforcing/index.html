@@ -257,30 +257,37 @@
   <!-- ============================ ACT 1 ============================ -->
   <section class="act" id="act1">
     <div class="actnum">Game One <span class="dot">·</span> The snowball</div>
-    <h2>More makes more. Then it makes a lot more.</h2>
+    <h2>Don't watch it grow — <em>bet</em> against it.</h2>
 
-    <p>A <strong>reinforcing loop</strong> is the simplest engine in the world: the more there is, the faster it grows. Interest earns interest. A rumour reaches people who repeat it. A population of rabbits makes more rabbits who make more rabbits. The output of the loop is the input to the next turn — so growth doesn't add, it <em>multiplies</em>. And multiplication does something to our event-brain that it cannot handle: for a long time it looks like almost nothing is happening, and then, with no change in the rule, it runs away.</p>
+    <p>A <strong>reinforcing loop</strong> is the simplest engine in the world: the more there is, the faster it grows. Interest earns interest. A rumour reaches people who repeat it. A population of rabbits makes more rabbits who make more rabbits. The output of the loop is the input to the next turn — so growth doesn't add, it <em>multiplies</em>. And multiplication does something to our event-brain that it cannot handle: it crawls along looking like almost nothing for a long time, and then, with no change in the rule, it runs away.</p>
 
-    <p class="sub">Here is the trap, in one slider. Turn the growth per step down to something that feels trivial — a few percent — and watch the first stretch of the curve. It crawls. You would be forgiven for calling it flat. But the rule never changed, and the same gentle percent that did nothing for twenty steps is what launches it off the top of the chart by the end. The marks on the line are the <em>doublings</em> — and notice that they come at an even spacing in time but an explosive spacing in size.</p>
+    <p class="sub">So don't take my word for how far it runs — <strong>commit a guess and let it correct you</strong>. Pick a growth per step that feels trivial, a few percent. You're shown only the first stretch — the part that looks flat. Now drag your guess for where it ends up after all the steps, lock it in, and press reveal. Almost no one guesses high enough; the gap between your number and the truth is the whole lesson, and it is far bigger than your intuition will let you believe.</p>
 
     <div class="card wide">
       <div class="controls">
         <div class="ctrl">
-          <label>Growth per step <b id="g1-r-lab">5%</b></label>
-          <input type="range" id="g1-r" min="1" max="12" value="5" step="0.5">
+          <label>Growth per step <b id="g1-r-lab">6%</b></label>
+          <input type="range" id="g1-r" min="1" max="12" value="6" step="0.5">
+        </div>
+        <div class="ctrl">
+          <label>Your guess — where does it finish? <b id="g1-guess-lab">×10</b></label>
+          <input type="range" id="g1-guess" min="0" max="100" value="20" step="1">
         </div>
       </div>
+      <div class="btnrow">
+        <button class="act-btn primary" id="g1-reveal">Reveal where it really lands</button>
+      </div>
       <div class="readouts">
-        <div class="stat accent"><div class="k">Doubling time</div><div class="v" id="g1-dt">—</div></div>
-        <div class="stat amber"><div class="k">Final size (× the start)</div><div class="v" id="g1-mult">—</div></div>
-        <div class="stat"><div class="k">Steps to 100× the start</div><div class="v" id="g1-to100">—</div></div>
+        <div class="stat"><div class="k">Your guess</div><div class="v" id="g1-yourguess">—</div></div>
+        <div class="stat accent"><div class="k">Where it really lands</div><div class="v" id="g1-truth">hidden</div></div>
+        <div class="stat red"><div class="k">Your miss</div><div class="v" id="g1-miss" style="font-size:15px">—</div></div>
       </div>
       <div class="legend">
         <span style="color:var(--accent)"><i style="background:var(--accent)"></i> the stock, feeding on itself</span>
-        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> each doubling of the start</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> your guess for the finish</span>
       </div>
       <div class="canvas-box"><canvas id="g1" height="340"></canvas></div>
-      <div class="caption">One rule — multiply by the same factor every step. The doublings (faint lines) arrive at a steady rhythm, but each one is twice the jump of the last. That is why exponential growth always feels like a surprise: the rhythm is constant, the size is not.</div>
+      <div class="caption">You see only the first stretch — the part that looks like nothing. Set your guess line, then reveal: the curve runs to the end and almost always rockets clean past where you put it. The miss is the point — your gut reads a few percent as small, but a few percent, compounded, is enormous.</div>
     </div>
 
     <p>This is why “it's only a few percent” is the most underestimated sentence in finance, biology, and epidemics alike. A constant growth rate has no flat part — it only has a part you can't see yet. The honest reading of a reinforcing loop is not the level it is at today. It is the <em>rate</em>, and the patience to multiply it out.</p>
@@ -454,38 +461,61 @@
   }
 
   /* =====================================================================
-     GAME ONE — the snowball: a stock multiplying by (1+r) each step.
-     s[i] = s[i-1] * (1 + r).  Doubling time = ln2 / ln(1+r).
+     GAME ONE — guess where it lands (predict-then-reveal). The stock
+     multiplies by (1+r) each step: s[i]=s[i-1]*(1+r). You see only the
+     first KSHOW steps (the flat-looking part) and commit a guess for the
+     final multiple on a log slider. Reveal runs it to the end; the gap
+     between your guess and the truth — almost always a gross under-guess —
+     is the lesson, FELT, not read off a confirming curve.
      ===================================================================== */
   (function(){
     const cv=document.getElementById('g1'); if(!cv) return;
-    const T=72, START=10;
-    let r=0.05;
-    const elR=document.getElementById('g1-r-lab'), elDt=document.getElementById('g1-dt'),
-          elMult=document.getElementById('g1-mult'), el100=document.getElementById('g1-to100');
+    const T=72, START=10, KSHOW=16;
+    let r=0.06, gv=20, revealed=false;
+    const elR=document.getElementById('g1-r-lab'), elGl=document.getElementById('g1-guess-lab'),
+          elYg=document.getElementById('g1-yourguess'), elTruth=document.getElementById('g1-truth'),
+          elMiss=document.getElementById('g1-miss'), btn=document.getElementById('g1-reveal');
+    const guessMult=()=> 2*Math.pow(2500, gv/100);          // log slider: ×2 … ×5000
     function sim(){ const s=new Array(T); s[0]=START; for(let i=1;i<T;i++) s[i]=s[i-1]*(1+r); return s; }
+    function unreveal(){ if(revealed){ revealed=false; btn.textContent='Reveal where it really lands'; btn.classList.add('primary'); } }
     function draw(){
       const {ctx,w,h}=setup(cv);
       const f=frame(w,h,{l:44,r:16,t:18,b:30});
       const s=sim();
-      const ymax=Math.max(...s)*1.06;
-      yGrid(ctx,f,0,ymax,'');
-      // doubling guide lines (faint dashes at START*2^k)
-      ctx.setLineDash([4,4]); ctx.lineWidth=1; ctx.strokeStyle='rgba(138,130,117,.5)';
-      for(let k=1;k<22;k++){ const lev=START*Math.pow(2,k); if(lev>ymax) break;
-        const y=f.b-f.H*(lev/ymax); ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke(); }
-      ctx.setLineDash([]);
-      plotSeries(ctx,f,s,0,ymax,C.accent,2.8);
+      const truth=s[T-1]/START, g=guessMult();
+      const ymax=START*Math.max(truth,g)*1.08, ymin=0;
+      const X=i=>f.l+f.W*(i/(T-1)), Y=v=>f.b-f.H*clamp((v-ymin)/(ymax-ymin),0,1);
+      yGrid(ctx,f,ymin,ymax,'');
+      // your guess line
+      const gy=Y(START*g);
+      ctx.strokeStyle='rgba(138,130,117,.9)'; ctx.setLineDash([6,4]); ctx.lineWidth=1.6;
+      ctx.beginPath(); ctx.moveTo(f.l,gy); ctx.lineTo(f.r,gy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=C.faint; ctx.font='11px IBM Plex Mono'; ctx.textAlign='left';
+      ctx.fillText('your guess ×'+fmt(g), f.l+4, gy>f.t+16?gy-5:gy+14);
+      // the curve: first KSHOW steps before reveal, the whole run after
+      const n=revealed?T:KSHOW;
+      ctx.strokeStyle=C.accent; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+      for(let i=0;i<n;i++){ const x=X(i),y=Y(s[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke();
+      if(revealed){ ctx.fillStyle=C.accent; ctx.beginPath(); ctx.arc(X(T-1),Y(s[T-1]),4.5,0,7); ctx.fill(); }
       ctx.textAlign='center'; ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
-      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
+      ctx.fillText(revealed?'time →':'press reveal to run it to the end →', (f.l+f.r)/2, f.b+24);
       // readouts
-      const dt=Math.log(2)/Math.log(1+r);
-      elDt.textContent=dt.toFixed(1)+' steps';
-      elMult.textContent='×'+fmt(s[T-1]/START);
-      let to100=s.findIndex(v=>v>=100*START); el100.textContent= to100<0 ? '> '+T : to100+'';
+      elYg.textContent='×'+fmt(g);
+      if(revealed){
+        elTruth.textContent='×'+fmt(truth);
+        if(truth>=g){ const k=truth/g;
+          elMiss.textContent = k>=1.3 ? 'you guessed ×'+(k>=10?Math.round(k):k.toFixed(1))+' too low' : 'good eye — close';
+          elMiss.parentElement.className='stat '+(k>=1.3?'red':'green');
+        } else { const k=g/truth;
+          elMiss.textContent='you over-guessed ×'+(k>=10?Math.round(k):k.toFixed(1));
+          elMiss.parentElement.className='stat amber';
+        }
+      } else { elTruth.textContent='hidden'; elMiss.textContent='—'; elMiss.parentElement.className='stat red'; }
     }
-    document.getElementById('g1-r').oninput=e=>{ r=(+e.target.value)/100; elR.textContent=(+e.target.value)+'%'; draw(); };
-    draw();
+    document.getElementById('g1-r').oninput=e=>{ r=(+e.target.value)/100; elR.textContent=(+e.target.value)+'%'; unreveal(); draw(); };
+    document.getElementById('g1-guess').oninput=e=>{ gv=+e.target.value; elGl.textContent='×'+fmt(guessMult()); unreveal(); draw(); };
+    btn.onclick=()=>{ revealed=!revealed; btn.textContent=revealed?'↺ Guess again':'Reveal where it really lands'; btn.classList.toggle('primary',!revealed); draw(); };
+    elGl.textContent='×'+fmt(guessMult()); draw();
     window.addEventListener('resize',draw);
   })();
 
