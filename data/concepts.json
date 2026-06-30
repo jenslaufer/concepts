@@ -141,6 +141,50 @@
       "tags": ["systems", "feedback-loops", "stocks-flows", "overshoot", "tail-risk", "decision"]
     },
     {
+      "slug": "reinforcing",
+      "title": "It's Just More",
+      "concept": "Reinforcing loops",
+      "url": "/reinforcing/",
+      "status": "live",
+      "eyebrow": "An interactive note on reinforcing feedback",
+      "blurb": "Why a quantity that feeds on itself looks like nothing for years and then owns everything, why the very same loop run backward becomes a death spiral, and why a tiny early lead hardens into winner-take-all.",
+      "people": ["meadows"],
+      "tags": ["systems", "feedback-loops", "reinforcing", "growth-loops", "compounding", "decision"]
+    },
+    {
+      "slug": "balancing",
+      "title": "It's Just a Thermostat",
+      "concept": "Balancing loops",
+      "url": "/balancing/",
+      "status": "live",
+      "eyebrow": "An interactive note on balancing feedback",
+      "blurb": "Why a goal-seeking loop bends toward its target and settles, why too firm a correcting hand makes the same loop overshoot and shake, and why a system holding its own goal quietly defeats however hard you push against it.",
+      "people": ["meadows"],
+      "tags": ["systems", "feedback-loops", "balancing", "stability", "policy-resistance", "decision"]
+    },
+    {
+      "slug": "delay",
+      "title": "It's Just Late",
+      "concept": "Delays in feedback",
+      "url": "/delay/",
+      "status": "live",
+      "eyebrow": "An interactive note on delays in feedback",
+      "blurb": "Why a lag between acting and seeing makes a steady loop hunt and overshoot, why stacked delays whip a small wobble into a violent swing upstream, and why the only cure is to respect a limit before you can feel it.",
+      "people": ["meadows"],
+      "tags": ["systems", "feedback-loops", "delay", "oscillation", "overshoot", "decision"]
+    },
+    {
+      "slug": "loop-noise",
+      "title": "It's Just Noise",
+      "concept": "Randomness in loops",
+      "url": "/loop-noise/",
+      "status": "live",
+      "eyebrow": "An interactive note on randomness in feedback",
+      "blurb": "Why random shocks invent trends that were never there, why reacting to every wobble makes a steady system shakier not calmer, and why the same noise washes out of a balancing loop but is locked in forever by a reinforcing one.",
+      "people": ["meadows"],
+      "tags": ["systems", "feedback-loops", "randomness", "variability", "path-dependence", "decision"]
+    },
+    {
       "slug": "chance",
       "title": "It's Just Chance",
       "concept": "Probability & statistics",

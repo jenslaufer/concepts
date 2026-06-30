@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just Late — why a delay turns a steady loop into wild oscillation</title>
+<meta name="description" content="Three interactive games on delays in feedback: why a lag between acting and seeing makes a goal-seeking loop hunt and overshoot like a shower with slow pipes, why stacked delays amplify a small demand wobble into a violent swing upstream (the bullwhip), and why the cure is to respect a limit before you can feel it. After Donella Meadows." />
+<meta property="og:title" content="It's Just Late" />
+<meta property="og:description" content="An interactive note on delays in feedback loops — the shower, the bullwhip, and why you must act before you can feel the limit. After Donella Meadows, Thinking in Systems." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://concepts.jenslaufer.com/delay/" />
+<meta property="og:image" content="https://concepts.jenslaufer.com/share/delay.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="It's Just Late" />
+<meta name="twitter:description" content="An interactive note on delays in feedback loops — the shower, the bullwhip, and acting before you feel the limit. After Donella Meadows, Thinking in Systems." />
+<meta name="twitter:image" content="https://concepts.jenslaufer.com/share/delay.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --accent:#bd8324;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.accent .v{color:var(--accent)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl.hidden{display:none}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+  .segwrap{margin:2px 0 16px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+
+  /* concepts nav */
+  .topbar-r{display:flex;align-items:center;gap:18px}
+  .cnav{position:relative;display:inline-block}
+  .cnav>summary{list-style:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;-webkit-user-select:none;user-select:none}
+  .cnav>summary::-webkit-details-marker{display:none}
+  .cnav>summary::marker{content:""}
+  .cnav>summary:hover,.cnav[open]>summary{color:var(--accent,var(--ink))}
+  .cnav-ic{font-size:13px;line-height:1;transform:translateY(.5px)}
+  .cnav-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:60;background:var(--paper);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow,0 10px 34px rgba(0,0,0,.14));padding:6px;min-width:238px;max-height:min(72vh,440px);overflow:auto;display:flex;flex-direction:column;gap:1px}
+  .cnav-menu a,.cnav-menu .cnav-item{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 11px;border-radius:6px;text-decoration:none;font-family:var(--sans);font-size:13px;color:var(--ink);line-height:1.3}
+  .cnav-menu a>span,.cnav-menu .cnav-item>span{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .cnav-menu a:hover{background:rgba(128,128,128,.12)}
+  .cnav-menu a:hover,.cnav-menu a:hover>span{color:var(--accent,var(--ink))}
+  .cnav-home{font-family:var(--mono)!important;font-size:10.5px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)!important;justify-content:flex-start!important;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:3px}
+  .cnav-item.cur{background:rgba(128,128,128,.13);font-weight:600;cursor:default}
+  @media(max-width:640px){.cnav>summary .cnav-lbl{display:none}.topbar-r{gap:13px}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just Late</b><span class="sub"> &nbsp;·&nbsp; delays in feedback</span></a>
+    <div class="topbar-r">
+      <a class="sibling" href="/loop-noise/"><span class="lbl">Next in the loop&nbsp;·&nbsp;</span><b>It's Just Noise →</b></a>
+      <details class="cnav">
+      <summary><span class="cnav-ic" aria-hidden="true">▦</span><span class="cnav-lbl">Concepts</span></summary>
+      <nav class="cnav-menu" aria-label="All concepts">
+        <a class="cnav-home" href="/">All concepts &rarr;</a>
+        <a href="/convex/">It's Just Math<span>Convexity</span></a>
+        <a href="/tiny-experiments/">It's Just an Experiment<span>Action under uncertainty</span></a>
+        <a href="/serendipity/">It's Just Luck<span>Serendipity</span></a>
+        <a href="/uncertainty/">It's Just Unknown<span>Uncertainty</span></a>
+        <a href="/barbell/">It's Just a Barbell<span>Barbell strategy</span></a>
+        <a href="/lindy/">It's Just Old<span>The Lindy effect</span></a>
+        <a href="/systems/">It's Just a Loop<span>Systems thinking</span></a>
+        <a href="/reinforcing/">It's Just More<span>Reinforcing loops</span></a>
+        <a href="/balancing/">It's Just a Thermostat<span>Balancing loops</span></a>
+        <span class="cnav-item cur" aria-current="page">It's Just Late<span>Delays in feedback</span></span>
+        <a href="/loop-noise/">It's Just Noise<span>Randomness in loops</span></a>
+        <a href="/chance/">It's Just Chance<span>Probability &amp; statistics</span></a>
+        <a href="/antifragile/">It's Just Stress<span>Antifragility</span></a>
+        <a href="/via-negativa/">It's Just Subtraction<span>Via negativa</span></a>
+        <a href="/ergodicity/">It's Just Time<span>Ergodicity</span></a>
+        <a href="/compounding/">It's Just Patience<span>Compounding</span></a>
+        <a href="/sequence/">It's Just the Order<span>Sequence-of-returns risk</span></a>
+      </nav>
+    </details>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive note on delays in feedback</div>
+    <h1>It's Just Late</h1>
+    <p class="lede">Three games on the lag that turns calm systems wild — why a delay between <em>acting</em> and <em>seeing</em> makes a steady loop hunt and overshoot, why stacked delays amplify a small wobble into a <em>violent swing</em> upstream, and why the only cure is to respect a limit <em>before</em> you can feel it — after Donella Meadows.</p>
+    <div class="scrollhint">↓ &nbsp; play the first game</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> The shower</div>
+    <h2>A loop that acts on old news learns to oscillate.</h2>
+
+    <p>Take the calmest loop there is — a balancing loop chasing a goal — and add the one thing the real world never lacks: a <strong>delay</strong>. The loop no longer acts on where the stock <em>is</em>. It acts on where the stock <em>was</em>, a few steps ago, because that is all the information that has arrived. You have met this loop in the shower with slow pipes. You nudge the tap toward warm; nothing happens; you nudge again, harder; still cold, so harder still — and then all of your corrections arrive at once and scald you, so you yank it back, and a few seconds later you are freezing. Same goal, same hand. The pipe between you and the water is the whole problem.</p>
+
+    <p class="sub">Below, a thermostat seeking a target through a pipe of adjustable length. With <strong>no delay</strong> it glides in and rests — the well-behaved balancing loop. Stretch the <strong>delay</strong> out and the same loop begins to overshoot, correct too late, overshoot the other way: it <em>hunts</em>. Stretch it further, or grab harder with the <strong>reaction strength</strong>, and the hunting grows until the loop is out of control. Nothing changed but how stale the information is.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Delay in the pipe <b id="g1-d-lab">5</b></label>
+          <input type="range" id="g1-d" min="0" max="12" value="5" step="1">
+        </div>
+        <div class="ctrl">
+          <label>Your reaction strength <b id="g1-k-lab">0.50</b></label>
+          <input type="range" id="g1-k" min="15" max="100" value="50" step="5">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat accent"><div class="k">Behavior</div><div class="v" id="g1-regime" style="font-size:15px">—</div></div>
+        <div class="stat amber"><div class="k">Swing size (late run)</div><div class="v" id="g1-amp">—</div></div>
+        <div class="stat"><div class="k">Settles?</div><div class="v" id="g1-settle" style="font-size:16px">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--accent)"><i style="background:var(--accent)"></i> the water temperature</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the temperature you want</span>
+      </div>
+      <div class="canvas-box"><canvas id="g1" height="340"></canvas></div>
+      <div class="caption">At delay 0 the loop settles like any healthy thermostat. Add lag and the identical loop overshoots and rings; add more and it never settles. The instinct to react harder when nothing's happening is exactly what turns a delay into an explosion.</div>
+    </div>
+
+    <p>This is the single most common reason competent people lose control of good systems: they react to the gap they can see, not knowing it closed a while ago. Central banks raising rates into a slowdown that already ended. A manager hiring hard for a demand spike that has passed. The fix is rarely a stronger hand — that makes it worse. The fix is to react <em>gently enough to match the lag</em>, and to stop treating a delayed signal as if it were live.</p>
+
+    <blockquote>
+      <p>“A delay in a balancing feedback loop makes a system likely to oscillate.”</p>
+      <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
+    </blockquote>
+
+    <p class="sub">One delayed loop hunts. Now chain several of them in a row — each one ordering from the next, each one a little late — and the hunting doesn't just persist. It <em>amplifies</em> at every link. That's Game Two.</p>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> The bullwhip</div>
+    <h2>Stack delays in a chain and a wobble becomes a whip-crack.</h2>
+
+    <p>Picture a supply chain: a shop orders from a wholesaler, who orders from a distributor, who orders from a factory. Customers nudge their buying up a little and hold it there. Each link can only see the orders right below it, and each restock takes time to arrive — a delay at every stage. So each link, trying to refill its shelves <em>and</em> cover the new demand <em>and</em> not run dry during the lag, over-orders. The link above sees that swollen order as the new demand and over-orders on top of it. By the time the signal reaches the factory, a gentle shift in shoppers has become a violent swing in production. This is the <strong>bullwhip effect</strong>, and it is famous enough that companies play a board game (“the beer game”) to feel it.</p>
+
+    <p class="sub">Customer demand below takes one small step up and back down. Watch the four links: the same step grows fatter and later as it travels up the chain, the factory swinging hardest of all. Lengthen the <strong>delay</strong> and the whip cracks harder; the amplification at the top is the price of every stacked lag in between.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Delay per link <b id="g2-l-lab">3</b></label>
+          <input type="range" id="g2-l" min="1" max="7" value="3" step="1">
+        </div>
+        <div class="ctrl">
+          <label>Forecast smoothing <b id="g2-p-lab">3</b></label>
+          <input type="range" id="g2-p" min="1" max="6" value="3" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Factory swing vs demand</div><div class="v" id="g2-amp">—</div></div>
+        <div class="stat amber"><div class="k">Biggest factory order</div><div class="v" id="g2-peak">—</div></div>
+        <div class="stat"><div class="k">Customer demand swing</div><div class="v" id="g2-dem">—</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> customer demand</span>
+        <span style="color:var(--teal)"><i style="background:var(--teal)"></i> shop</span>
+        <span style="color:var(--blue)"><i style="background:var(--blue)"></i> wholesaler</span>
+        <span style="color:var(--amber)"><i style="background:var(--amber)"></i> distributor</span>
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> factory</span>
+      </div>
+      <div class="canvas-box"><canvas id="g2" height="360"></canvas></div>
+      <div class="caption">One modest step in real demand (grey). Each link upstream orders to cover its own lag and overshoots; the next link reads that as demand and overshoots again. The factory's swing is several times the original — manufactured entirely by the delays, not by the customers.</div>
+    </div>
+
+    <p>The bullwhip is why upstream industries — chips, steel, shipping, capital equipment — boom and bust far harder than the consumer demand they ultimately serve. No villain caused it; the structure did. And the levers that tame it are all about the delays and the information: shorten the lags, let every link see real end-demand instead of only the order below it, and resist the urge to over-order into uncertainty. Shorten the delay, share the signal, and the whip goes slack.</p>
+
+    <blockquote>
+      <p>“Because of feedback delays within complex systems, by the time a problem becomes apparent it may be unnecessarily difficult to solve.”</p>
+      <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
+    </blockquote>
+
+    <p class="sub">If reacting late is the disease, the cure can't be to react faster — the delay is fixed. The cure is to act on where the system is <em>going</em>, not where it appears to be. That's Game Three.</p>
+  </section>
+
+  <!-- ============================ ACT 3 ============================ -->
+  <section class="act" id="act3">
+    <div class="actnum">Game Three <span class="dot">·</span> Before you feel it</div>
+    <h2>If you wait until you can see the limit, you've already passed it.</h2>
+
+    <p>Here is a stock climbing with momentum toward a ceiling — a reservoir filling, a fishery being drawn down, a car closing on a wall, an economy running toward full capacity. You control the brake, but you only learn the level through a delay. There are two ways to drive. The <strong>reactive</strong> driver waits until the delayed reading says “close” and only then eases off — and by the time that stale signal arrives, the real stock has already sailed past the ceiling. The <strong>anticipatory</strong> driver does one extra thing: she takes the delayed reading and projects it <em>forward</em> by the length of the delay, steering for where the system will be, not where it last appeared to be. Same brake, same lag — one overshoots, one lands.</p>
+
+    <p class="sub">Below, both drivers approach the same ceiling with the same delay. The reactive path (red) overshoots and has to fall back; the anticipatory path (green) eases off early and settles just under the limit. Stretch the <strong>delay</strong> and watch the gap between them widen — the longer the lag, the more the future, not the present, is the only thing worth steering by.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Delay before you see the level <b id="g3-d-lab">12</b></label>
+          <input type="range" id="g3-d" min="4" max="18" value="12" step="1">
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Reactive — peak reached</div><div class="v" id="g3-react">—</div></div>
+        <div class="stat green"><div class="k">Anticipatory — peak reached</div><div class="v" id="g3-antic">—</div></div>
+        <div class="stat"><div class="k">The ceiling</div><div class="v" id="g3-ceil">100</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> reactive — acts on the delayed reading</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> anticipatory — projects the lag forward</span>
+        <span style="color:var(--ink-faint)"><i class="dash" style="color:var(--ink-faint)"></i> the limit</span>
+      </div>
+      <div class="canvas-box"><canvas id="g3" height="340"></canvas></div>
+      <div class="caption">Both face the identical wall through the identical fog of delay. The only difference is that one steers for the present and one steers for the future — and that single change is the difference between overshooting the limit and landing softly under it.</div>
+    </div>
+
+    <p>This is the discipline that delays demand and that almost no one practices in time: drain the aquifer slower than feels necessary, slow the boom before the data confirm it, lift off the gas before the wall looks close. By the moment a delayed system <em>looks</em> like it's in trouble, the trouble is already baked in and the momentum is spent. You cannot brake at the wall. You brake for where the wall will be.</p>
+
+    <blockquote>
+      <p>“A quantity growing exponentially toward a limit reaches that limit in a surprisingly short time.”</p>
+      <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
+    </blockquote>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>The delay, not the goal, decides the shape.</h2>
+    <p>A calm loop made to hunt by a lag; a chain of lags that whips a wobble into a crisis; and a limit you can only beat by steering for the future. The delay is the most underrated part of any system because it is invisible — it lives in the gap between acting and seeing, and our event-brain assumes that gap is zero. It almost never is. So when a system you understand keeps overshooting, oscillating, or blowing up at the top of every cycle, don't add force and don't assign blame. Find the delay, and then do the two things it asks: react gently enough to match it, and aim for where the system is going rather than where it appears to be. Part of the same family as the rest — a system that swings you around is one whose delays you didn't read.</p>
+    <blockquote>
+      <p>“Remember, always, that everything you know, and everything everyone knows, is only a model. Get your model out there where it can be viewed. Invite others to challenge your assumptions and add their own.”</p>
+      <cite><b>Donella Meadows</b> · Thinking in Systems</cite>
+    </blockquote>
+    <p class="credits">
+      <strong>Donella H. Meadows</strong> (1941–2001) was an environmental scientist and lead author of <em>The Limits to Growth</em> (1972); her primer <em>Thinking in Systems</em> (2008, ed. Diana Wright) is the source of every quotation here. The delayed-oscillation insight, the bullwhip, and the warning about acting too late are hers. The three games are deliberately simple toy models — a balancing loop acting on a pure-delayed perception of its stock, a four-stage order-up-to supply chain with a per-link lead time, and a stock with momentum braking toward a ceiling under reactive versus delay-projecting control. They are directionally honest illustrations of the archetype, not a forecast of any particular shower, supply chain, or reservoir. The staging, the prose, and the thread are my own. This is the delay chapter of a systems-thinking thread that begins with <a href="/systems/" rel="noopener">It's Just a Loop</a>, alongside <a href="/reinforcing/" rel="noopener">It's Just More</a> (reinforcing loops), <a href="/balancing/" rel="noopener">It's Just a Thermostat</a> (balancing loops), and <a href="/loop-noise/" rel="noopener">It's Just Noise</a> (randomness in loops). <a href="/" rel="noopener">See all concepts →</a>
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  const C = {
+    ink:'#1d1a16', inkSoft:'#544e44', faint:'#8a8275',
+    green:'#1f7a5a', red:'#b23a2e', amber:'#bd8324', teal:'#2f6d5b', blue:'#2f5d86', accent:'#bd8324',
+    grid:'rgba(29,26,22,.08)', line2:'#d4cab4', paper:'#faf7f1'
+  };
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  function setup(cv){
+    const dpr = window.devicePixelRatio||1;
+    const rect = cv.getBoundingClientRect();
+    const w = rect.width;
+    const hMax = cv.getAttribute('height')*1 || rect.height;
+    const h = Math.round(Math.max(200, Math.min(hMax, w*0.62)));
+    cv.width = w*dpr; cv.height = h*dpr; cv.style.height = h+'px';
+    const ctx = cv.getContext('2d');
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+    return {ctx,w,h};
+  }
+  function frame(w,h,pad){ return {l:pad.l,r:w-pad.r,t:pad.t,b:h-pad.b,
+    W:w-pad.l-pad.r, H:h-pad.t-pad.b}; }
+  function fmt(v){ if(Math.abs(v)>=1000) return Math.round(v/1000*10)/10+'k'; return Math.round(v).toString(); }
+  function plotSeries(ctx,f,arr,ymin,ymax,color,wd){
+    const n=arr.length;
+    const X=i=>f.l+f.W*(i/(n-1));
+    const Y=v=>f.b-f.H*clamp((v-ymin)/(ymax-ymin||1),0,1);
+    ctx.strokeStyle=color; ctx.lineWidth=wd; ctx.lineJoin='round'; ctx.beginPath();
+    for(let i=0;i<n;i++){ const x=X(i),y=Y(arr[i]); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }
+    ctx.stroke();
+  }
+  function yGrid(ctx,f,ymin,ymax,unit){
+    ctx.font='10px IBM Plex Mono'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    for(let g=0;g<=4;g++){ const v=ymin+(ymax-ymin)*g/4, y=f.b-f.H*g/4;
+      ctx.strokeStyle=C.grid; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
+      ctx.fillStyle=C.faint; ctx.fillText(fmt(v)+(unit||''), f.l-6, y); }
+    ctx.textBaseline='alphabetic';
+  }
+  function goalLine(ctx,f,goal,ymin,ymax,color,label){
+    const y=f.b-f.H*clamp((goal-ymin)/(ymax-ymin),0,1);
+    ctx.strokeStyle=color; ctx.setLineDash([5,4]); ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke(); ctx.setLineDash([]);
+    if(label){ ctx.fillStyle=color; ctx.font='11px IBM Plex Mono'; ctx.textAlign='left'; ctx.fillText(label, f.l+4, y-5); }
+  }
+
+  /* =====================================================================
+     GAME ONE — the shower: balancing loop on a PURE-delayed perception.
+     s[i] = s[i-1] + k*(goal - s[i-1-D]).  D=0 settles; larger D / k -> hunt.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g1'); if(!cv) return;
+    const T=120, START=20, G=38;
+    let D=5, k=0.50;
+    const elD=document.getElementById('g1-d-lab'), elK=document.getElementById('g1-k-lab'),
+          elReg=document.getElementById('g1-regime'), elAmp=document.getElementById('g1-amp'),
+          elSet=document.getElementById('g1-settle');
+    function sim(){ const s=new Array(T).fill(START);
+      for(let i=1;i<T;i++){ const perc=s[Math.max(0,i-1-D)]; s[i]=s[i-1]+k*(G-perc);
+        if(!isFinite(s[i])) s[i]=s[i-1]; s[i]=clamp(s[i],-1e4,1e4); } return s; }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:40,r:16,t:18,b:30});
+      const s=sim();
+      const lo=Math.min(START,...s), hi=Math.max(G*1.3,...s);
+      const ymax=hi+(hi-lo)*0.06, ymin=lo-(hi-lo)*0.06;
+      yGrid(ctx,f,ymin,ymax,'');
+      goalLine(ctx,f,G,ymin,ymax,'rgba(138,130,117,.8)','want');
+      plotSeries(ctx,f,s,ymin,ymax,C.accent,2.6);
+      ctx.textAlign='center'; ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
+      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
+      const tail=s.slice(70); const amp=Math.max(...tail)-Math.min(...tail);
+      const diverge=Math.abs(s[T-1]-G)>3*Math.abs(START-G);
+      let reg = amp<0.5 ? 'settles — calm' : diverge||amp>50 ? 'out of control' : 'hunts — oscillates';
+      elReg.textContent=reg;
+      elReg.parentElement.className='stat '+(reg==='settles — calm'?'green':reg==='hunts — oscillates'?'amber':'red');
+      elAmp.textContent=amp<0.5?'—':'±'+fmt(amp/2);
+      elSet.textContent= amp<0.5 ? 'yes' : 'no — keeps swinging';
+      elSet.parentElement.className='stat '+(amp<0.5?'green':'red');
+    }
+    document.getElementById('g1-d').oninput=e=>{ D=+e.target.value; elD.textContent=D; draw(); };
+    document.getElementById('g1-k').oninput=e=>{ k=(+e.target.value)/100; elK.textContent=k.toFixed(2); draw(); };
+    draw();
+    window.addEventListener('resize',draw);
+  })();
+
+  /* =====================================================================
+     GAME TWO — the bullwhip: 4-stage order-up-to chain, lead time L,
+     exponential demand forecast (smoothing p). Step demand 8->14->8.
+     Each stage's orders become the next stage's demand -> amplification.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g2'); if(!cv) return;
+    const T=120, N=4;
+    let L=3, p=3;
+    const elL=document.getElementById('g2-l-lab'), elP=document.getElementById('g2-p-lab'),
+          elAmp=document.getElementById('g2-amp'), elPk=document.getElementById('g2-peak'),
+          elDem=document.getElementById('g2-dem');
+    const COLS=[C.teal, C.blue, C.amber, C.red];
+    function sim(){
+      const dem=new Array(T); for(let t=0;t<T;t++) dem[t]= (t>=20&&t<60)?14:8;
+      let down=dem.slice(); const series=[]; const swings=[];
+      for(let st=0;st<N;st++){
+        const orders=new Array(T); let F=down[0], Sprev=F*(L+1);
+        for(let t=0;t<T;t++){
+          const d=down[t]; F=F+(d-F)/p; const S=F*(L+1);
+          let O=d+(S-Sprev); Sprev=S; O=Math.max(0,O); orders[t]=O;
+        }
+        series.push(orders); swings.push(Math.max(...orders)-Math.min(...orders)); down=orders;
+      }
+      const demSwing=Math.max(...dem)-Math.min(...dem);
+      return {dem, series, swings, demSwing};
+    }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:40,r:16,t:18,b:30});
+      const {dem, series, swings, demSwing}=sim();
+      let hi=Math.max(...dem); for(const s of series) hi=Math.max(hi, ...s);
+      const ymax=hi*1.08, ymin=0;
+      yGrid(ctx,f,ymin,ymax,'');
+      // demand (faint dashed)
+      const X=i=>f.l+f.W*(i/(T-1)), Y=v=>f.b-f.H*clamp((v-ymin)/(ymax-ymin),0,1);
+      ctx.strokeStyle='rgba(138,130,117,.75)'; ctx.setLineDash([4,3]); ctx.lineWidth=1.5; ctx.beginPath();
+      for(let t=0;t<T;t++){ const x=X(t),y=Y(dem[t]); t?ctx.lineTo(x,y):ctx.moveTo(x,y); } ctx.stroke(); ctx.setLineDash([]);
+      for(let st=0;st<N;st++) plotSeries(ctx,f,series[st],ymin,ymax,COLS[st], st===N-1?2.8:1.7);
+      ctx.textAlign='center'; ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
+      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
+      elAmp.textContent='×'+(swings[N-1]/demSwing).toFixed(1);
+      elPk.textContent=fmt(Math.max(...series[N-1]));
+      elDem.textContent='±'+fmt(demSwing/2);
+    }
+    document.getElementById('g2-l').oninput=e=>{ L=+e.target.value; elL.textContent=L; draw(); };
+    document.getElementById('g2-p').oninput=e=>{ p=+e.target.value; elP.textContent=p; draw(); };
+    draw();
+    window.addEventListener('resize',draw);
+  })();
+
+  /* =====================================================================
+     GAME THREE — before you feel it: stock with momentum braking toward a
+     ceiling, seen through delay D. Reactive acts on the delayed reading;
+     anticipatory projects the reading forward by D. Reactive overshoots.
+     ===================================================================== */
+  (function(){
+    const cv=document.getElementById('g3'); if(!cv) return;
+    const T=140, CEIL=100;
+    let D=12;
+    const elD=document.getElementById('g3-d-lab'), elR=document.getElementById('g3-react'),
+          elA=document.getElementById('g3-antic');
+    function run(anticipate){ let x=10, v=2.2; const xs=new Array(T);
+      for(let i=0;i<T;i++){ xs[i]=x;
+        const perc=xs[Math.max(0,i-D)];
+        const slope = i>D ? (xs[i-1]-xs[Math.max(0,i-1-D)])/D : 0;
+        const projected = anticipate ? perc+slope*D : perc;
+        const brake=clamp(0.06*(CEIL-projected),-1.2,1.2);
+        v=clamp(v*0.96+brake*0.5,-0.5,2.5); x=Math.max(0,x+v);
+      } return xs; }
+    function draw(){
+      const {ctx,w,h}=setup(cv);
+      const f=frame(w,h,{l:40,r:16,t:18,b:30});
+      const react=run(false), antic=run(true);
+      const hi=Math.max(CEIL*1.25, ...react, ...antic);
+      const ymax=hi*1.04, ymin=0;
+      yGrid(ctx,f,ymin,ymax,'');
+      goalLine(ctx,f,CEIL,ymin,ymax,'rgba(138,130,117,.85)','limit');
+      plotSeries(ctx,f,react,ymin,ymax,C.red,2.6);
+      plotSeries(ctx,f,antic,ymin,ymax,C.green,2.6);
+      ctx.textAlign='center'; ctx.fillStyle=C.faint; ctx.font='10px IBM Plex Mono';
+      ctx.fillText('time →', (f.l+f.r)/2, f.b+24);
+      elR.textContent=fmt(Math.max(...react)); elA.textContent=fmt(Math.max(...antic));
+    }
+    document.getElementById('g3-d').oninput=e=>{ D=+e.target.value; elD.textContent=D; draw(); };
+    draw();
+    window.addEventListener('resize',draw);
+  })();
+
+  /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+<script>/* concepts nav: close on outside-click / Escape */
+document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
+</script>
+<script src="/share/embed.js" defer></script>
+<script src="/share/plot-share.js" defer></script>
+</body>
+</html>
