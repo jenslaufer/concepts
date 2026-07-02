@@ -188,6 +188,19 @@
   .cnav-home{font-family:var(--mono)!important;font-size:10.5px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)!important;justify-content:flex-start!important;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:3px}
   .cnav-item.cur{background:rgba(128,128,128,.13);font-weight:600;cursor:default}
   @media(max-width:640px){.cnav>summary .cnav-lbl{display:none}.topbar-r{gap:13px}}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
 </style>
 </head>
 <body>
@@ -392,6 +405,19 @@
   </section>
 </main>
 
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
 <footer>
   <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
 </footer>
@@ -635,6 +661,25 @@
     window.addEventListener('resize',run);
   })();
 
+})();
+</script>
+<script>
+/* email capture — wired to Launch Kit public lead-capture (concepts / waitlist) */
+(function(){
+  const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+  const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+  if(!form) return;
+  form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const email=form.email.value.trim(); if(!email) return;
+    const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+    try{
+      const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      form.reset(); note.textContent='You’re on the list — talk soon.';
+    }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+  });
 })();
 </script>
 <script>/* concepts nav: close on outside-click / Escape */

@@ -256,51 +256,56 @@
   <!-- ============================ ACT 1 ============================ -->
   <section class="act" id="act1">
     <div class="actnum">Game One <span class="dot">·</span> The coin that lies</div>
-    <h2>A great average, and almost everyone broke</h2>
+    <h2>A coin pays +5% a flip. Where do <em>you</em> land?</h2>
 
-    <p>Here is an offer that any expected-value calculation will tell you to take. Bet your whole pile on a fair coin. Heads, it grows by a lot. Tails, it shrinks by less. The <em>average</em> of the two outcomes is more than you started with — so the expected value is positive, and a thousand people taking the bet will, between them, end up richer. The textbook says yes.</p>
+    <p>Here is an offer any expected-value calculation tells you to take. You have <strong>€1,000</strong>, and you bet the whole pile on a fair coin — one hundred times in a row. <strong>Heads, your money grows by 50%. Tails, it shrinks by 40%.</strong> Average those two and every single flip is worth <strong>+5%</strong>: a positive expected value, a hundred times over. The textbook screams yes.</p>
 
-    <p class="sub">And yet. The number the textbook computes is the <strong>ensemble average</strong> — what you'd get by lining up many parallel players and averaging across them at one instant. It is <em>not</em> what happens to <strong>you</strong>, playing the same coin over and over through <strong>time</strong>. Below, a crowd of players each bets their whole wealth, round after round. Watch the two lines split: the <strong>average wealth of the crowd</strong> climbs, while the <strong>player in the middle</strong> sinks toward zero.</p>
+    <p class="sub">So before you read another word, <strong>commit</strong>. Drag the marker to where you think <em>your</em> €1,000 ends up after 100 flips — then lock it in. Don't peek at the answer first; the whole point is to catch your own intuition in the act.</p>
 
     <div class="card wide">
       <div class="controls">
         <div class="ctrl">
-          <label>Heads: wealth grows by <b id="eg1-up-lab">+50%</b></label>
-          <input type="range" id="eg1-up" min="20" max="90" value="50" step="5">
-        </div>
-        <div class="ctrl">
-          <label>Tails: wealth shrinks by <b id="eg1-dn-lab">−40%</b></label>
-          <input type="range" id="eg1-dn" min="10" max="80" value="40" step="5">
+          <label>Your guess — after 100 flips you have <b id="eg1-guess-lab">€1,000</b></label>
+          <input type="range" id="eg1-guess" min="0" max="1000" value="429" step="1">
         </div>
       </div>
-      <div class="readouts">
-        <div class="stat red"><div class="k">Ensemble average / round</div><div class="v" id="eg1-ev">—</div></div>
-        <div class="stat green"><div class="k">What you live / round</div><div class="v" id="eg1-time">—</div></div>
-        <div class="stat amber"><div class="k">Players poorer than the start</div><div class="v" id="eg1-broke">—</div></div>
+      <div class="btnrow">
+        <button class="act-btn primary" id="eg1-lock">Lock in my guess &amp; play it out</button>
+        <button class="act-btn" id="eg1-replay" style="display:none">Guess again</button>
       </div>
-      <div class="legend">
+      <div class="readouts" id="eg1-readouts" style="display:none">
+        <div class="stat red"><div class="k">The crowd's average ends at</div><div class="v" id="eg1-mean">—</div></div>
+        <div class="stat green"><div class="k">The typical player ends at</div><div class="v" id="eg1-time">—</div></div>
+        <div class="stat amber"><div class="k">You guessed</div><div class="v" id="eg1-yourguess">—</div></div>
+      </div>
+      <div class="legend" id="eg1-legend" style="display:none">
         <span style="color:var(--red)"><i style="background:var(--red)"></i> average wealth of the whole crowd</span>
-        <span style="color:var(--green)"><i style="background:var(--green)"></i> the median player (the typical path)</span>
+        <span style="color:var(--green)"><i style="background:var(--green)"></i> the path you actually live (the typical player)</span>
         <span style="color:var(--ink-faint)"><i style="background:var(--ink-faint);opacity:.5"></i> individual players</span>
+        <span style="color:var(--amber)"><i class="dash" style="color:var(--amber)"></i> your guess</span>
       </div>
       <div class="canvas-box"><canvas id="eg1" height="360"></canvas></div>
-      <div class="caption">Wealth (vertical, <em>log scale</em>: each gridline is ×10) over 40 rounds, for 1,500 players betting their whole stake on the same coin. The red crowd-average rises — dragged up by a vanishing few who keep hitting heads. The green median falls: round by round, the typical path multiplies by less than one and decays toward ruin. Positive expected value, near-certain personal ruin — and both are true at once.</div>
+      <div class="caption" id="eg1-cap">Drag your guess onto the wealth scale, then lock it in. Vertical is what your €1,000 becomes, on a <em>log scale</em> (each gridline ×10); horizontal is 100 flips of the same coin.</div>
     </div>
 
-    <p>The two numbers above are not opinions; they are two different averages of the very same coin. The red one multiplies the outcomes (½·grow + ½·shrink) — the crowd's arithmetic mean. The green one multiplies them <em>geometrically</em> — what compounds along a single timeline, where a −40% never quite undoes a +50%, because after a loss you have less to grow. A system where these two agree is called <strong>ergodic</strong>. Multiplicative wealth is <strong>not</strong> — and the whole drama is in that gap.</p>
+    <div class="eg1-reveal" style="display:none">
+      <p id="eg1-verdict" class="note" style="border-left-color:var(--amber);font-style:normal"></p>
 
-    <div class="formula">
-      ensemble average / round &nbsp;=&nbsp; <span class="c">½·(1+up) + ½·(1−down) − 1</span> &nbsp; <span class="muted">(average across the crowd)</span><br>
-      what you live / round &nbsp;=&nbsp; <span class="g">√[ (1+up)·(1−down) ] − 1</span> &nbsp; <span class="muted">(the geometric / time-average growth)</span><br>
-      <span class="muted"># +50% / −40% &nbsp;→&nbsp; ensemble = +5.0% a round, but time-average = √(1.5·0.6) − 1 = −5.1% a round.</span>
+      <p>Those two numbers are not opinions; they are two different averages of the very same coin. The red one <em>adds</em> the outcomes (½·grow + ½·shrink) — the crowd's <strong>arithmetic</strong> mean, and it really does climb to about <strong>€131,000</strong>. The green one multiplies them <em>geometrically</em> — what compounds along a single timeline, where a −40% never quite undoes a +50%, because after a loss you have less left to grow. It sinks to about <strong>€5</strong>. A system where these two agree is called <strong>ergodic</strong>. Multiplicative wealth is <strong>not</strong> — and the whole drama is in that gap.</p>
+
+      <div class="formula">
+        the crowd's average / flip &nbsp;=&nbsp; <span class="c">½·(1+up) + ½·(1−down) − 1 = +5.0%</span> &nbsp; <span class="muted">→ ×131 over 100 flips</span><br>
+        what <em>you</em> live / flip &nbsp;=&nbsp; <span class="g">√[ (1+up)·(1−down) ] − 1 = −5.1%</span> &nbsp; <span class="muted">→ ×0.005 over 100 flips</span><br>
+        <span class="muted"># same coin, same flips — one number is an average over people, the other is what one person lives through time.</span>
+      </div>
+
+      <blockquote>
+        <p>“Don't cross a river if it is <em>on average</em> four feet deep.”</p>
+        <cite><b>Nassim Nicholas Taleb</b> · Skin in the Game</cite>
+      </blockquote>
+
+      <p class="sub">So the average lied — not by being wrong, but by answering a question you never asked. Game Two looks at <em>where</em> that average actually lives.</p>
     </div>
-
-    <blockquote>
-      <p>“Don't cross a river if it is <em>on average</em> four feet deep.”</p>
-      <cite><b>Nassim Nicholas Taleb</b> · Skin in the Game</cite>
-    </blockquote>
-
-    <p class="sub">So the average lied — not by being wrong, but by answering a question you never asked. Game Two looks at <em>where</em> that average actually lives.</p>
   </section>
 
   <!-- ============================ ACT 2 ============================ -->
@@ -454,94 +459,125 @@
   }
 
   /* =====================================================================
-     GAME ONE — the multiplicative coin. 1500 players bet their WHOLE stake
-       each round: heads -> *(1+up), tails -> *(1-down), p=0.5.
-       Ensemble average / round = 0.5*(1+up)+0.5*(1-down) - 1   (arithmetic)
-       Time-average  / round    = sqrt((1+up)*(1-down)) - 1     (geometric)
-     We Monte-Carlo the crowd (fixed seed -> stable), tracking the mean and
-     the median wealth at every round plus a few sample paths, and plot on a
-     log axis. Mean climbs, median sinks: ergodicity-breaking, made visible.
+     GAME ONE — predict-then-reveal. The coin is fixed (+50% / −40%, p=0.5),
+     whole stake, 100 flips, starting from €1,000. The user COMMITS a guess
+     for their own final wealth (a log slider), locks it in, and only THEN is
+     the truth drawn against the guess. We show two ANALYTIC curves — exact
+     and reproducible — plus fixed-seed sample paths for texture:
+       crowd average (arithmetic / ensemble) = 1.05^t                (soars → ×131)
+       typical path  (geometric / time-avg)  = exp(g·t),  g = ½ln1.5+½ln0.6  (sinks → ×0.005)
+     Sample means of a heavy tail are unstable at t=100, so the headline
+     numbers use the closed forms, not a jumpy Monte-Carlo mean.
      ===================================================================== */
   (function(){
     const cv=document.getElementById('eg1'); if(!cv) return;
-    const N=1500, T=40, NPATH=22;
-    let up=0.50, dn=0.40;
-    const elUp=document.getElementById('eg1-up-lab'), elDn=document.getElementById('eg1-dn-lab'),
-          elEv=document.getElementById('eg1-ev'), elTime=document.getElementById('eg1-time'),
-          elBroke=document.getElementById('eg1-broke');
-    let meanArr=[], medArr=[], paths=[], broke=0;
+    const T=100, NPATH=18, START=1000;
+    const up=0.50, dn=0.40, gU=1+up, gD=1-dn;
+    const YLO=-3, YHI=4;                              // log10 of the multiple: ×0.001 .. ×10000
+    const meanMul = t => Math.pow(1.05, t);           // ensemble average of the multiple
+    const glog    = 0.5*Math.log(gU) + 0.5*Math.log(gD);
+    const typMul  = t => Math.exp(glog*t);            // typical / median path multiple
+    const clampY  = v => clamp(v, YLO, YHI);
 
-    function run(){
-      const rng=mulberry32(20260626);
-      const w=new Float64Array(N).fill(1);
-      const gU=1+up, gD=1-dn;
-      meanArr=new Array(T+1); medArr=new Array(T+1);
-      paths=[]; for(let j=0;j<NPATH;j++) paths.push(new Array(T+1));
-      const rec=(t)=>{
-        let s=0; for(let i=0;i<N;i++) s+=w[i];
-        meanArr[t]=s/N;
-        const c=Float64Array.from(w).sort(); medArr[t]=median(c);
-        for(let j=0;j<NPATH;j++) paths[j][t]=w[j];
-      };
-      rec(0);
-      for(let t=1;t<=T;t++){
-        for(let i=0;i<N;i++) w[i]*= (rng()<0.5? gU : gD);
-        rec(t);
-      }
-      let b=0; for(let i=0;i<N;i++) if(w[i]<1) b++;
-      broke=b/N;
+    const sEl=document.getElementById('eg1-guess'), guessLab=document.getElementById('eg1-guess-lab'),
+          lockBtn=document.getElementById('eg1-lock'), replayBtn=document.getElementById('eg1-replay'),
+          reveal=document.querySelector('.eg1-reveal'),
+          readouts=document.getElementById('eg1-readouts'), legend=document.getElementById('eg1-legend'),
+          elMean=document.getElementById('eg1-mean'), elTime=document.getElementById('eg1-time'),
+          elYour=document.getElementById('eg1-yourguess'), verdict=document.getElementById('eg1-verdict'),
+          cap=document.getElementById('eg1-cap');
+    let locked=false, paths=[];
+
+    function buildPaths(){
+      const rng=mulberry32(20260702); paths=[];
+      for(let j=0;j<NPATH;j++){ const arr=new Array(T+1); arr[0]=1; let x=1;
+        for(let t=1;t<=T;t++){ x*= (rng()<0.5?gU:gD); arr[t]=x; } paths.push(arr); }
+    }
+    const guessMul = () => Math.pow(10, YLO + (YHI-YLO)*((+sEl.value)/1000));
+    function eur(v){
+      if(v>=1000) return '€'+Math.round(v).toLocaleString('en-US');
+      if(v>=1)    return '€'+v.toFixed(0);
+      if(v>=0.01) return '€'+v.toFixed(2);
+      return '€0';
+    }
+    function eurAxis(v){
+      if(v>=1e6) return '€'+(v/1e6)+'M';
+      if(v>=1e3) return '€'+(v/1e3)+'k';
+      return '€'+v;
     }
     function draw(){
       const {ctx,w,h}=setup(cv);
       const f=frame(w,h,{l:46,r:14,t:16,b:30});
-      // y-range over everything shown, in log10
-      let lo=0, hi=0;
-      for(let t=0;t<=T;t++){ lo=Math.min(lo,L10(medArr[t])); hi=Math.max(hi,L10(meanArr[t])); }
-      for(let j=0;j<NPATH;j++) for(let t=0;t<=T;t++){ const v=L10(paths[j][t]); if(v<lo)lo=v; if(v>hi)hi=v; }
-      lo=Math.floor(lo-0.15); hi=Math.ceil(hi+0.15);
       const X=t=>f.l+f.W*(t/T);
-      const Y=v=>f.b-f.H*((v-lo)/(hi-lo));
-      // gridlines at integer powers of 10
+      const Y=v=>f.b-f.H*((v-YLO)/(YHI-YLO));         // v = log10 multiple
+      // gridlines at integer powers of 10, labelled in € of the €1,000 stake
       ctx.font='10px IBM Plex Mono'; ctx.textAlign='right';
-      for(let p=lo;p<=hi;p++){ const y=Y(p);
+      for(let p=YLO;p<=YHI;p++){ const y=Y(p);
         ctx.strokeStyle = p===0 ? 'rgba(29,26,22,.20)' : C.grid; ctx.lineWidth=1;
         ctx.beginPath(); ctx.moveTo(f.l,y); ctx.lineTo(f.r,y); ctx.stroke();
-        ctx.fillStyle=C.faint; ctx.fillText(powLabel(p), f.l-6, y+3); }
+        ctx.fillStyle=C.faint; ctx.fillText(eurAxis(START*Math.pow(10,p)), f.l-6, y+3); }
       ctx.textAlign='center'; ctx.fillStyle=C.faint;
-      [0,10,20,30,40].forEach(t=>{ if(t<=T) ctx.fillText(t, X(t), f.b+15); });
-      ctx.fillText('rounds played →', (f.l+f.r)/2, f.b+26);
-      // sample paths (faint)
-      ctx.lineWidth=1; ctx.strokeStyle='rgba(138,130,117,.28)';
-      for(let j=0;j<NPATH;j++){ ctx.beginPath();
-        for(let t=0;t<=T;t++){ const px=X(t),py=Y(L10(paths[j][t])); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
-        ctx.stroke(); }
-      // crowd mean (red)
-      ctx.strokeStyle=C.red; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
-      for(let t=0;t<=T;t++){ const px=X(t),py=Y(L10(meanArr[t])); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
-      ctx.stroke();
-      // median (green)
-      ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.beginPath();
-      for(let t=0;t<=T;t++){ const px=X(t),py=Y(L10(medArr[t])); t?ctx.lineTo(px,py):ctx.moveTo(px,py); }
-      ctx.stroke();
-      // end dots
-      [[meanArr[T],C.red],[medArr[T],C.green]].forEach(([v,c])=>{
-        const y=Y(L10(v)); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(X(T),y,4.4,0,6.283); ctx.fill();
-        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke(); });
+      [0,25,50,75,100].forEach(t=>ctx.fillText(t, X(t), f.b+15));
+      ctx.fillText('flips →', (f.l+f.r)/2, f.b+26);
+
+      const gy=Y(clampY(L10(guessMul())));
+      if(locked){
+        // sample paths (faint), clamped to the axis
+        ctx.lineWidth=1; ctx.strokeStyle='rgba(138,130,117,.30)';
+        for(let j=0;j<NPATH;j++){ ctx.beginPath();
+          for(let t=0;t<=T;t++){ const py=Y(clampY(L10(paths[j][t]))); t?ctx.lineTo(X(t),py):ctx.moveTo(X(t),py); }
+          ctx.stroke(); }
+        // crowd average (red)
+        ctx.strokeStyle=C.red; ctx.lineWidth=2.8; ctx.lineJoin='round'; ctx.beginPath();
+        for(let t=0;t<=T;t++){ const py=Y(clampY(L10(meanMul(t)))); t?ctx.lineTo(X(t),py):ctx.moveTo(X(t),py); }
+        ctx.stroke();
+        // typical path (green)
+        ctx.strokeStyle=C.green; ctx.lineWidth=2.8; ctx.beginPath();
+        for(let t=0;t<=T;t++){ const py=Y(clampY(L10(typMul(t)))); t?ctx.lineTo(X(t),py):ctx.moveTo(X(t),py); }
+        ctx.stroke();
+        // end dots
+        [[meanMul(T),C.red],[typMul(T),C.green]].forEach(([v,c])=>{
+          const y=Y(clampY(L10(v))); ctx.fillStyle=c; ctx.beginPath(); ctx.arc(X(T),y,4.6,0,6.283); ctx.fill();
+          ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke(); });
+      } else {
+        // start marker at ×1
+        ctx.fillStyle=C.ink; ctx.beginPath(); ctx.arc(X(0),Y(0),4,0,6.283); ctx.fill();
+        ctx.strokeStyle='#fffdf8'; ctx.lineWidth=1.6; ctx.stroke();
+      }
+      // guess line (amber, dashed) — always visible
+      ctx.strokeStyle=C.amber; ctx.setLineDash([5,4]); ctx.lineWidth=1.8;
+      ctx.beginPath(); ctx.moveTo(f.l,gy); ctx.lineTo(f.r,gy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle=C.amber; ctx.font='600 11px Inter'; ctx.textAlign='left';
+      ctx.fillText('your guess', f.l+6, gy>f.t+16 ? gy-6 : gy+14);
     }
-    function render(){
-      elUp.textContent='+'+Math.round(up*100)+'%';
-      elDn.textContent='−'+Math.round(dn*100)+'%';
-      const ev = 0.5*(1+up)+0.5*(1-dn) - 1;
-      const tg = Math.sqrt((1+up)*(1-dn)) - 1;
-      elEv.textContent   = (ev>=0?'+':'−')+Math.abs(ev*100).toFixed(1)+'%';
-      elTime.textContent = (tg>=0?'+':'−')+Math.abs(tg*100).toFixed(1)+'%';
-      elBroke.textContent= Math.round(broke*100)+'%';
+    function verdictText(guess, mean, typ){
+      const M=eur(mean), Tp=eur(typ), G=eur(guess);
+      if(guess>=START)
+        return 'You put your €1,000 at <b>'+G+'</b> — you bet the +5% edge would carry you. And it does carry the <em>crowd</em>: their average really climbed to <b>'+M+'</b>. But you don’t get the average. You get one path through time, and the typical one fell to <b>'+Tp+'</b>. A positive-expectation bet that quietly ruined almost everyone who took it.';
+      if(guess>50)
+        return 'You guessed <b>'+G+'</b> — you sensed it would fall, good instinct. It falls harder: the path you actually live lands near <b>'+Tp+'</b>. Here’s the half most people miss — the crowd’s <em>average</em> still soared to <b>'+M+'</b>. Same coin, both true at once.';
+      return 'You guessed <b>'+G+'</b> — near-ruin, and you were right: the typical path craters to about <b>'+Tp+'</b>. The lesson isn’t that you were wrong; it’s the other half — the crowd’s <em>average</em> still ended at <b>'+M+'</b>, held up by a lucky few. The average is real. Almost nobody lives it.';
+    }
+    function render(){ guessLab.textContent=eur(START*guessMul()); draw(); }
+    function lock(){
+      if(locked) return; locked=true; buildPaths();
+      const meanEnd=START*meanMul(T), typEnd=START*typMul(T), guessEnd=START*guessMul();
+      elMean.textContent=eur(meanEnd); elTime.textContent=eur(typEnd); elYour.textContent=eur(guessEnd);
+      verdict.innerHTML=verdictText(guessEnd, meanEnd, typEnd);
+      sEl.disabled=true; lockBtn.style.display='none'; replayBtn.style.display='';
+      readouts.style.display=''; legend.style.display=''; reveal.style.display='';
+      cap.innerHTML='The red crowd-average soars to about <b>€131,000</b> — dragged up by a vanishing few who kept hitting heads. The green typical path, the one <em>you</em> live, decays to about <b>€5</b>. Positive expected value, near-certain personal ruin — both true at once. Your guess is the amber line.';
       draw();
     }
-    function rerun(){ run(); render(); }
-    document.getElementById('eg1-up').oninput=e=>{ up=(+e.target.value)/100; rerun(); };
-    document.getElementById('eg1-dn').oninput=e=>{ dn=(+e.target.value)/100; rerun(); };
-    rerun();
+    function replay(){
+      locked=false; sEl.disabled=false; lockBtn.style.display=''; replayBtn.style.display='none';
+      readouts.style.display='none'; legend.style.display='none'; reveal.style.display='none';
+      cap.innerHTML='Drag your guess onto the wealth scale, then lock it in. Vertical is what your €1,000 becomes, on a <em>log scale</em> (each gridline ×10); horizontal is 100 flips of the same coin.';
+      render();
+    }
+    sEl.oninput=()=>{ if(!locked) render(); };
+    lockBtn.onclick=lock; replayBtn.onclick=replay;
+    render();
     window.addEventListener('resize',()=>draw());
   })();
 
