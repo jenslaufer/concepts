@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>It's Just the Crowd — why markets crash out of their own mix of strategies</title>
+<meta name="description" content="Two interactive games on market ecology: turn the share of trend followers against value investors and watch calm prices grow fat tails, wild clusters and bubbles. After Doyne Farmer." />
+<meta property="og:title" content="It's Just the Crowd" />
+<meta property="og:description" content="An interactive market ecology — the mix of strategies, not the news, makes a market calm or wild. After Doyne Farmer." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://concepts.jenslaufer.com/market-ecology/" />
+<meta property="og:image" content="https://concepts.jenslaufer.com/share/market-ecology.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="It's Just the Crowd" />
+<meta name="twitter:description" content="An interactive market ecology — the mix of strategies, not the news, makes a market calm or wild. After Doyne Farmer." />
+<meta name="twitter:image" content="https://concepts.jenslaufer.com/share/market-ecology.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opt,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400;1,8..60,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#faf7f1;
+    --paper-2:#f3eee4;
+    --ink:#1d1a16;
+    --ink-soft:#544e44;
+    --ink-faint:#8a8275;
+    --line:#e2dac9;
+    --line-2:#d4cab4;
+    --green:#1f7a5a;
+    --green-soft:#e4efe7;
+    --red:#b23a2e;
+    --red-soft:#f4e3df;
+    --amber:#bd8324;
+    --teal:#2f6d5b;
+    --blue:#2f5d86;
+    --violet:#7d4a9c;
+    --accent:#2f5d86;
+    --shadow:0 1px 2px rgba(29,26,22,.04),0 8px 30px rgba(29,26,22,.06);
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Inter",-apple-system,system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--serif);font-size:19px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:780px;margin:0 auto;padding:0 24px}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(250,247,241,.86);backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    height:60px;max-width:980px}
+  .brand{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-faint);white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;
+    text-decoration:none}
+  .brand:hover b{color:var(--accent)}
+  .brand b{color:var(--ink);font-weight:600}
+  .sibling{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);text-decoration:none;white-space:nowrap;flex:none}
+  .sibling:hover{color:var(--accent)}
+  .sibling b{color:var(--ink-soft);font-weight:600}
+  @media(max-width:640px){ .sibling .lbl{display:none} .brand .sub{display:none} }
+
+  /* ---------- hero ---------- */
+  header.hero{padding:72px 0 30px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:22px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(42px,8.4vw,80px);line-height:.99;
+    letter-spacing:-.02em;margin:0 0 22px}
+  .lede{font-size:21px;color:var(--ink-soft);max-width:626px;margin:0 auto;font-weight:400}
+  .lede em{font-style:italic;color:var(--ink)}
+  .scrollhint{margin-top:46px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+
+  /* ---------- sections ---------- */
+  section.act{padding:54px 0 18px;border-top:1px solid var(--line);margin-top:46px}
+  .actnum{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:10px}
+  .actnum .dot{color:var(--accent)}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,42px);line-height:1.04;
+    letter-spacing:-.015em;margin:0 0 20px}
+  p{margin:0 0 18px}
+  p.sub{color:var(--ink-soft)}
+  strong{font-weight:600}
+  .formula{font-family:var(--mono);font-size:15px;background:var(--paper-2);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;margin:0 0 18px;line-height:1.7;color:var(--ink);overflow-x:auto}
+  .formula .c{color:var(--red)} .formula .g{color:var(--green)} .formula .muted{color:var(--ink-faint)}
+  .note{font-size:16px;color:var(--ink-soft);border-left:2px solid var(--line-2);padding-left:16px;
+    margin:0 0 18px;font-style:italic}
+
+  /* pull quote */
+  blockquote{margin:34px 0;padding:0;border:0;text-align:center}
+  blockquote p{font-family:var(--serif);font-style:italic;font-size:26px;line-height:1.35;
+    color:var(--ink);max-width:620px;margin:0 auto 14px;letter-spacing:-.01em}
+  blockquote cite{font-family:var(--mono);font-style:normal;font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  blockquote cite b{color:var(--ink-soft);font-weight:600}
+
+  /* ---------- interactive card ---------- */
+  .card{background:#fffdf8;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+    padding:22px 22px 8px;margin:26px 0 30px}
+  .card.wide{max-width:980px;margin-left:auto;margin-right:auto}
+  .canvas-box{position:relative;width:100%}
+  canvas{width:100%;display:block}
+
+  .readouts{display:flex;flex-wrap:wrap;gap:10px;margin:4px 0 16px}
+  .stat{flex:1 1 120px;background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:11px 13px}
+  .stat .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:4px}
+  .stat .v{font-family:var(--mono);font-size:23px;font-weight:600;color:var(--ink);line-height:1}
+  .stat.green .v{color:var(--green)} .stat.red .v{color:var(--red)}
+  .stat.amber .v{color:var(--amber)} .stat.teal .v{color:var(--teal)} .stat.blue .v{color:var(--blue)}
+  .stat.violet .v{color:var(--violet)}
+
+  .controls{display:flex;flex-direction:column;gap:14px;margin:6px 0 14px}
+  .ctrl{display:flex;align-items:center;gap:14px}
+  .ctrl label{font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink-soft);
+    flex:0 0 176px}
+  .ctrl label b{color:var(--ink);font-family:var(--mono);font-weight:600}
+  input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:4px;border-radius:4px;
+    background:var(--line-2);outline:none;cursor:pointer}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--ink);border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--ink);
+    border:3px solid #fffdf8;box-shadow:0 1px 4px rgba(0,0,0,.25);cursor:pointer}
+
+  .btnrow{display:flex;flex-wrap:wrap;gap:9px;margin:2px 0 16px}
+  button.act-btn{font-family:var(--sans);font-size:14px;font-weight:500;cursor:pointer;
+    border:1px solid var(--line-2);background:var(--paper);color:var(--ink);
+    padding:9px 16px;border-radius:9px;transition:all .15s ease}
+  button.act-btn:hover{background:var(--paper-2);border-color:var(--ink-faint)}
+  button.act-btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  button.act-btn.primary:hover{background:#000}
+
+  /* toggle pill group */
+  .seg{display:inline-flex;background:var(--paper-2);border:1px solid var(--line-2);
+    border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap}
+  .seg button{font-family:var(--sans);font-size:13px;font-weight:500;border:0;background:transparent;
+    color:var(--ink-soft);cursor:pointer;padding:6px 15px;border-radius:999px;transition:all .15s ease}
+  .seg button:hover{color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);box-shadow:var(--shadow)}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-family:var(--sans);font-size:12.5px;
+    color:var(--ink-soft);margin:0 0 14px;padding-left:2px}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .legend i{width:16px;height:3px;border-radius:2px;display:inline-block}
+  .legend i.dash{background:repeating-linear-gradient(90deg,currentColor 0 5px,transparent 5px 9px);height:2px}
+  .legend i.dot{width:9px;height:9px;border-radius:50%}
+
+  .caption{font-family:var(--sans);font-size:13px;color:var(--ink-faint);text-align:center;
+    margin:0 0 14px;padding:0 8px}
+
+  /* ---------- email capture ---------- */
+  .capture{border-top:1px solid var(--line);margin-top:50px;padding:54px 0;text-align:center;background:var(--paper-2)}
+  .capture h2{font-family:var(--serif);font-weight:600;font-size:clamp(26px,4vw,34px);
+    letter-spacing:-.015em;margin:0 0 12px}
+  .capture p{color:var(--ink-soft);max-width:480px;margin:0 auto 22px}
+  .capture form{display:flex;gap:8px;max-width:430px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .capture input[type=email]{flex:1 1 220px;font-family:var(--sans);font-size:15px;padding:12px 15px;
+    border:1px solid var(--line-2);border-radius:10px;background:#fffdf8;color:var(--ink)}
+  .capture button{font-family:var(--sans);font-size:15px;font-weight:600;cursor:pointer;
+    padding:12px 22px;border-radius:10px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+  .capture small{display:block;margin-top:14px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.08em;color:var(--ink-faint)}
+
+  /* ---------- closing / footer ---------- */
+  .closing{padding:56px 0 20px;border-top:1px solid var(--line);margin-top:46px}
+  .credits{font-size:15.5px;color:var(--ink-soft)}
+  .credits a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .credits a:hover{border-color:var(--ink)}
+  footer{padding:34px 0 70px;text-align:center}
+  .sig{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;color:var(--ink-faint)}
+  .sig a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+  .sig a:hover{border-color:var(--ink)}
+
+  @media(max-width:560px){
+    body{font-size:17.5px}
+    .ctrl{flex-direction:column;align-items:stretch;gap:7px}
+    .ctrl label{flex:none}
+    .stat .v{font-size:20px}
+  }
+
+  /* concepts nav */
+  .topbar-r{display:flex;align-items:center;gap:18px}
+  .cnav{position:relative;display:inline-block}
+  .cnav>summary{list-style:none;cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);display:inline-flex;align-items:center;gap:7px;white-space:nowrap;-webkit-user-select:none;user-select:none}
+  .cnav>summary::-webkit-details-marker{display:none}
+  .cnav>summary::marker{content:""}
+  .cnav>summary:hover,.cnav[open]>summary{color:var(--accent,var(--ink))}
+  .cnav-ic{font-size:13px;line-height:1;transform:translateY(.5px)}
+  .cnav-menu{position:absolute;right:0;top:calc(100% + 9px);z-index:60;background:var(--paper);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow,0 10px 34px rgba(0,0,0,.14));padding:6px;min-width:238px;max-height:min(72vh,440px);overflow:auto;display:flex;flex-direction:column;gap:1px}
+  .cnav-menu a,.cnav-menu .cnav-item{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 11px;border-radius:6px;text-decoration:none;font-family:var(--sans);font-size:13px;color:var(--ink);line-height:1.3}
+  .cnav-menu a>span,.cnav-menu .cnav-item>span{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);white-space:nowrap}
+  .cnav-menu a:hover{background:rgba(128,128,128,.12)}
+  .cnav-menu a:hover,.cnav-menu a:hover>span{color:var(--accent,var(--ink))}
+  .cnav-home{font-family:var(--mono)!important;font-size:10.5px!important;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)!important;justify-content:flex-start!important;border-bottom:1px solid var(--line);border-radius:6px 6px 0 0;margin-bottom:3px}
+  .cnav-item.cur{background:rgba(128,128,128,.13);font-weight:600;cursor:default}
+  @media(max-width:640px){.cnav>summary .cnav-lbl{display:none}.topbar-r{gap:13px}}
+  .guess{display:flex;flex-wrap:wrap;gap:9px;margin:0 0 14px}
+  .reveal{font-family:var(--sans);font-size:14.5px;color:var(--ink);background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:0 0 16px;display:none}
+  .stat .ref{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-top:5px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/"><b>It's Just the Crowd</b><span class="sub"> &nbsp;·&nbsp; market ecology</span></a>
+    <div class="topbar-r">
+      <div class="topbar-r">
+        <a class="sibling" href="/reinforcing/"><span class="lbl">Sibling essay&nbsp;·&nbsp;</span><b>It's Just More →</b></a>
+        <details class="cnav">
+      <summary><span class="cnav-ic" aria-hidden="true">▦</span><span class="cnav-lbl">Concepts</span></summary>
+      <nav class="cnav-menu" aria-label="All concepts">
+        <a class="cnav-home" href="/">All concepts &rarr;</a>
+        <a href="/convex/">It's Just Math<span>Convexity</span></a>
+        <a href="/tiny-experiments/">It's Just an Experiment<span>Action under uncertainty</span></a>
+        <a href="/serendipity/">It's Just Luck<span>Serendipity</span></a>
+        <a href="/uncertainty/">It's Just Unknown<span>Uncertainty</span></a>
+        <a href="/barbell/">It's Just a Barbell<span>Barbell strategy</span></a>
+        <a href="/lindy/">It's Just Old<span>The Lindy effect</span></a>
+        <a href="/systems/">It's Just a Loop<span>Systems thinking</span></a>
+        <a href="/reinforcing/">It's Just More<span>Reinforcing loops</span></a>
+        <a href="/balancing/">It's Just a Thermostat<span>Balancing loops</span></a>
+        <a href="/delay/">It's Just Late<span>Delays in feedback</span></a>
+        <a href="/loop-noise/">It's Just Noise<span>Randomness in loops</span></a>
+        <a href="/chance/">It's Just Chance<span>Probability &amp; statistics</span></a>
+        <a href="/antifragile/">It's Just Stress<span>Antifragility</span></a>
+        <a href="/via-negativa/">It's Just Subtraction<span>Via negativa</span></a>
+        <a href="/ergodicity/">It's Just Time<span>Ergodicity</span></a>
+        <a href="/compounding/">It's Just Patience<span>Compounding</span></a>
+        <a href="/sequence/">It's Just the Order<span>Sequence-of-returns risk</span></a>
+        <span class="cnav-item cur" aria-current="page">It's Just the Crowd<span>Market ecology</span></span>
+      </nav>
+    </details>
+      </div>
+    </div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">An interactive market ecology</div>
+    <h1>It's Just the Crowd</h1>
+    <p class="lede">Two games on the idea that a market is an <em>ecosystem</em> of strategies — that nobody needs bad news for prices to crash, because the mix of who is trading is enough. Turn the share of trend followers and watch a calm market grow fat tails, wild clusters and bubbles — after Doyne Farmer.</p>
+    <div class="scrollhint">↓ &nbsp; guess first, then turn the dial</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============================ ACT 1 ============================ -->
+  <section class="act" id="act1">
+    <div class="actnum">Game One <span class="dot">·</span> The dial</div>
+    <h2>Two kinds of traders, one price</h2>
+
+    <p>One stock, two kinds of traders. <strong>Value investors</strong> have a rough idea of what the stock is worth; they buy when the price is well below it and sell when it is well above. <strong>Trend followers</strong> ignore value; they buy when the price has risen over the last few days and sell when it has fallen. Each trader has a personal threshold and a personal look-back. Their orders, added up, move the price. Nothing else does — apart from a little noise and a slowly wandering true value.</p>
+
+    <p class="sub">There are always 100 value investors. Before you turn the dial: <strong>how many trend followers make this toy market look like the real S&amp;P 500</strong> — fat tails, calm and wild phases, and no easy way to predict tomorrow?</p>
+
+    <div class="card wide">
+      <div class="guess" id="g1">
+        <button class="act-btn" data-n="0">None</button>
+        <button class="act-btn" data-n="200">About as many as value investors</button>
+        <button class="act-btn" data-n="400">Four times as many</button>
+      </div>
+      <div class="reveal" id="g1-reveal"></div>
+      <div class="controls">
+        <div class="ctrl">
+          <label>Trend followers <b id="s1-n-lab">0</b></label>
+          <input type="range" id="s1-n" min="0" max="400" value="0" step="25">
+        </div>
+        <div class="ctrl">
+          <label>Run</label>
+          <div class="btnrow" style="margin:0"><button class="act-btn" id="s1-seed">Another market, same mix</button></div>
+        </div>
+      </div>
+      <div class="readouts">
+        <div class="stat red"><div class="k">Fat tails · excess kurtosis</div><div class="v" id="s1-k">—</div><div class="ref">S&amp;P 25 · DAX 7 · bell curve 0</div></div>
+        <div class="stat amber"><div class="k">Wild phases cluster</div><div class="v" id="s1-c">—</div><div class="ref">S&amp;P 0.25 · DAX 0.21</div></div>
+        <div class="stat blue"><div class="k">Tomorrow predictable</div><div class="v" id="s1-p">—</div><div class="ref">S&amp;P 0.00 · DAX 0.01</div></div>
+      </div>
+      <div class="legend">
+        <span style="color:var(--ink)"><i style="background:var(--ink)"></i> price</span>
+        <span style="color:var(--green)"><i class="dash" style="color:var(--green)"></i> true value</span>
+        <span style="color:var(--red)"><i style="background:var(--red)"></i> daily return</span>
+      </div>
+      <div class="canvas-box"><canvas id="s1" height="420"></canvas></div>
+      <div class="caption">Top: the log price over 4,000 trading days against the true value the value investors estimate. Bottom: the daily returns. Fat tails = more extreme days than a bell curve allows. Clustering = wild days follow wild days (autocorrelation of the size of returns). Predictable = how strongly today's return foretells tomorrow's (absolute autocorrelation, lag 1).</div>
+    </div>
+
+    <p>With no trend followers the market is too well-behaved: value investors pull the price back toward value, returns are close to a bell curve, and one quiet day looks like the next. Real markets are not like that. Add trend followers and the price starts to overshoot: a rise draws in buyers, which makes the rise bigger, until the gap to value is large enough for the value investors to lean against it. Those tug-of-wars are the fat tails and the wild clusters. Nobody had to bring bad news.</p>
+
+    <blockquote>
+      <p>“Markets are ecologies. The strategies of the traders are the species, and the price dynamics come from how they interact.”</p>
+      <cite><b>Market ecology</b> · after J. Doyne Farmer</cite>
+    </blockquote>
+  </section>
+
+  <!-- ============================ ACT 2 ============================ -->
+  <section class="act" id="act2">
+    <div class="actnum">Game Two <span class="dot">·</span> The sweep</div>
+    <h2>Where the real market sits</h2>
+
+    <p>One market is one roll of the dice; the same mix can look tame in one run and wild in the next — try the button above. So here every mix runs several times and the dots show the spread. The shaded band is where the S&amp;P 500 and the DAX sit, measured on their real daily returns.</p>
+
+    <div class="card wide">
+      <div class="controls">
+        <div class="ctrl">
+          <label>Show</label>
+          <div class="seg" role="group" aria-label="Measure">
+            <button id="s2-k" aria-pressed="true">Fat tails</button>
+            <button id="s2-c" aria-pressed="false">Wild phases cluster</button>
+            <button id="s2-p" aria-pressed="false">Tomorrow predictable</button>
+          </div>
+        </div>
+      </div>
+      <div class="readouts"><div class="stat"><div class="k">Markets simulated</div><div class="v" id="s2-done">0</div></div></div>
+      <div class="canvas-box"><canvas id="s2" height="340"></canvas></div>
+      <div class="caption">Horizontal: number of trend followers next to 100 value investors. Each dot is one simulated market of 20,000 trading days; the line is the median per mix. Band: S&amp;P 500 (since 1950) and DAX (since 1988).</div>
+    </div>
+
+    <p>Read the three pictures together. Fat tails and clustering appear as soon as trend followers join. But a crowd of trend followers also makes returns <em>predictable</em> — bubbles build day by day — and a predictable market is money on the table. In a real market someone takes it: the value investors earn from every bubble, grow, and push the mix back. Farmer's point is that the mix is not fixed. It drifts, and the market's character drifts with it.</p>
+  </section>
+
+  <!-- ============================ CLOSING ============================ -->
+  <section class="closing">
+    <div class="actnum">In one line</div>
+    <h2>A market's wildness comes from its mix of strategies, not only from news.</h2>
+    <p class="credits">
+      The model follows <a href="https://en.wikipedia.org/wiki/J._Doyne_Farmer" rel="noopener">J. Doyne Farmer</a> and Shareen Joshi, “The price dynamics of common trading strategies” (2002), and Farmer's book <em>Making Sense of Chaos</em> (2024). Value investors and trend followers trade with personal entry and exit thresholds; value investors carry a personal error on the true value, trend followers a personal look-back of 1–99 days. Net orders move the log price linearly, plus Gaussian noise; the true value is a random walk. Everything is computed live in your browser with a seeded random generator. The model is not fitted to any index and forecasts nothing; it shows which mixes of strategies produce the patterns real markets have. Index figures from daily closes via Yahoo Finance. Not financial advice. Part of a family with <a href="/reinforcing/" rel="noopener">It's Just More</a> (reinforcing loops — what the trend followers are), <a href="/balancing/" rel="noopener">It's Just a Thermostat</a> (balancing loops — what the value investors are) and <a href="/uncertainty/" rel="noopener">It's Just Unknown</a> (fat tails). <a href="/" rel="noopener">See all concepts →</a>
+    </p>
+  </section>
+</main>
+
+<section class="capture">
+  <div class="wrap">
+    <h2>Get the next simulator</h2>
+    <p>One email when a new concept goes playable — plus the model behind it. No noise.</p>
+    <form id="captureForm" onsubmit="return false">
+      <input type="email" name="email" placeholder="you@example.com" aria-label="Email" required>
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit">Send it to me</button>
+    </form>
+    <small id="captureNote">No spam, unsubscribe any time.</small>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">Built by <a href="https://jenslaufer.com" rel="noopener">Jens Laufer</a> · a solo builder who works with FastAPI, Vue, and AI agents</div>
+</footer>
+
+<script>
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(rng){let u=0,v=0;while(u===0)u=rng();while(v===0)v=rng();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+// Farmer & Joshi (2002) market ecology — port of wealth_sim/market_ecology.py
+function simulate(nTrend, opt){
+  opt=opt||{}; const nValue=opt.nValue??100, steps=opt.steps??20000, seed=opt.seed??1;
+  const noise=0.0035, fvol=0.001, size=0.0025, maxLag=100;
+  const rng=mulberry32(seed*7919+nTrend);
+  const U=(a,b)=>a+(b-a)*rng();
+  const eV=[],xV=[],bV=[],eT=[],xT=[],lag=[];
+  for(let i=0;i<nValue;i++){eV.push(U(.02,.1));xV.push(U(-.02,0));bV.push(.02*gauss(rng));}
+  for(let i=0;i<nTrend;i++){eT.push(U(.02,.1));xT.push(U(-.02,0));lag.push(1+Math.floor(rng()*(maxLag-1)));}
+  const posV=new Float64Array(nValue), posT=new Float64Array(nTrend);
+  const p=new Float64Array(steps), val=new Float64Array(steps); let v=0;
+  function step(pos,i,s,enter,exit_){
+    const x=pos[i];
+    if(x===0){ return s>enter?size:(-s>enter?-size:0); }
+    return (x*s/size<exit_)?0:x;
+  }
+  for(let t=maxLag;t<steps-1;t++){
+    v+=fvol*gauss(rng); val[t]=v;
+    let orders=0;
+    for(let i=0;i<nValue;i++){const n=step(posV,i,v+bV[i]-p[t],eV[i],xV[i]);orders+=n-posV[i];posV[i]=n;}
+    for(let i=0;i<nTrend;i++){const n=step(posT,i,p[t]-p[t-lag[i]],eT[i],xT[i]);orders+=n-posT[i];posT[i]=n;}
+    p[t+1]=p[t]+orders+noise*gauss(rng);
+  }
+  const b=2*maxLag, r=new Float64Array(steps-b-1);
+  for(let i=0;i<r.length;i++) r[i]=p[b+i+1]-p[b+i];
+  return {returns:r, price:p.slice(b), value:val.slice(b)};
+}
+function ac(x,lag){let m=0;for(const a of x)m+=a;m/=x.length;let num=0,den=0;for(let i=0;i<x.length;i++){const d=x[i]-m;den+=d*d;if(i+lag<x.length)num+=d*(x[i+lag]-m);}return num/den;}
+function kurt(x){let m=0;for(const a of x)m+=a;m/=x.length;let s2=0,s4=0;for(const a of x){const d=(a-m)*(a-m);s2+=d;s4+=d*d;}s2/=x.length;s4/=x.length;return s4/(s2*s2)-3;}
+function facts(r){const a=Array.from(r,Math.abs);return {kurt:kurt(r),pred:ac(r,1),clust:(ac(a,1)+ac(a,5)+ac(a,20))/3};}
+(function(){
+  "use strict";
+  const C={ink:'#1d1a16',faint:'#8a8275',green:'#1f7a5a',red:'#b23a2e',amber:'#bd8324',blue:'#2f5d86',grid:'rgba(29,26,22,.08)',band:'rgba(47,93,134,.12)'};
+  const REF={k:[7,25],c:[0.21,0.25],p:[0,0.01]};
+  function setup(cv){
+    const dpr=window.devicePixelRatio||1, w=cv.getBoundingClientRect().width;
+    const h=Math.round(Math.max(220,Math.min(cv.getAttribute('height')*1,w*0.7)));
+    cv.width=w*dpr; cv.height=h*dpr; cv.style.height=h+'px';
+    const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h);
+    ctx.font='11px "IBM Plex Mono",monospace'; return {ctx,w,h};
+  }
+  function line(ctx,xs,ys,col,lw,dash){ctx.strokeStyle=col;ctx.lineWidth=lw;ctx.setLineDash(dash||[]);ctx.beginPath();
+    for(let i=0;i<xs.length;i++){i?ctx.lineTo(xs[i],ys[i]):ctx.moveTo(xs[i],ys[i]);}ctx.stroke();ctx.setLineDash([]);}
+  const fmt=(f)=>({k:f.kurt.toFixed(0),c:f.clust.toFixed(2),p:Math.abs(f.pred).toFixed(2)});
+
+  /* ===== GAME ONE — the dial ===== */
+  (function(){
+    const cv=document.getElementById('s1'), sl=document.getElementById('s1-n'), lab=document.getElementById('s1-n-lab');
+    let seed=1, res=null;
+    function run(){ res=simulate(+sl.value,{seed}); const f=fmt(facts(res.returns));
+      lab.textContent=sl.value; ['k','c','p'].forEach(k=>document.getElementById('s1-'+k).textContent=f[k]); draw(); }
+    function draw(){
+      if(!res) return; const {ctx,w,h}=setup(cv); const N=4000, off=res.price.length-N-1;
+      const P=res.price.slice(off,off+N), V=res.value.slice(off,off+N), R=res.returns.slice(off,off+N);
+      const top=h*0.62, l=8, r=w-8;
+      let lo=Infinity,hi=-Infinity; for(let i=0;i<N;i++){lo=Math.min(lo,P[i],V[i]);hi=Math.max(hi,P[i],V[i]);}
+      const pad=(hi-lo)*0.08||0.01; lo-=pad; hi+=pad;
+      const X=i=>l+(r-l)*i/(N-1), Yp=v=>8+(top-16)*(hi-v)/(hi-lo);
+      const xs=Array.from({length:N},(_,i)=>X(i));
+      line(ctx,xs,Array.from(V,Yp),C.green,1.2,[5,4]); line(ctx,xs,Array.from(P,Yp),C.ink,1.4);
+      let m=0; for(const x of R) m=Math.max(m,Math.abs(x)); m=Math.max(m,0.02);
+      const mid=top+(h-top)/2, half=(h-top)/2-6;
+      ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(l,mid); ctx.lineTo(r,mid); ctx.stroke();
+      ctx.strokeStyle=C.red; ctx.lineWidth=1; ctx.beginPath();
+      for(let i=0;i<N;i++){ctx.moveTo(xs[i],mid); ctx.lineTo(xs[i],mid-half*R[i]/m);} ctx.stroke();
+    }
+    sl.addEventListener('input',()=>{lab.textContent=sl.value;}); sl.addEventListener('change',run);
+    document.getElementById('s1-seed').addEventListener('click',()=>{seed++;run();});
+    document.querySelectorAll('#g1 button').forEach(b=>b.addEventListener('click',()=>{
+      const n=+b.dataset.n, rv=document.getElementById('g1-reveal'); rv.style.display='block';
+      rv.innerHTML=(n===0?'Not quite. With none the market is a near-perfect bell curve — calm, no clusters. ':n===400?'Too many. Four times as many trend followers build bubbles you can see coming — tomorrow becomes predictable. ':'Closest. Around as many trend followers as value investors, the toy market gets fat tails and wild phases like the real one — though in some runs tomorrow already turns guessable. ')+'Below is what you picked — then turn the dial yourself.';
+      sl.value=n; run();
+    }));
+    run(); window.addEventListener('resize',draw);
+  })();
+
+  /* ===== GAME TWO — the sweep ===== */
+  (function(){
+    const cv=document.getElementById('s2'), done=document.getElementById('s2-done');
+    const NS=[0,25,50,75,100,125,150,175,200,250,300,350,400], SEEDS=[11,12,13];
+    const pts=[]; let metric='k', jobs=[];
+    NS.forEach(n=>SEEDS.forEach(s=>jobs.push([n,s])));
+    function step(){ const j=jobs.shift(); if(!j) return; const f=facts(simulate(j[0],{seed:j[1]}).returns);
+      pts.push({n:j[0],k:f.kurt,c:f.clust,p:Math.abs(f.pred)}); done.textContent=pts.length; draw(); setTimeout(step,0); }
+    function draw(){
+      const {ctx,w,h}=setup(cv); const l=44,r=w-12,t=12,b=h-28;
+      const vals=pts.map(p=>p[metric]).concat(REF[metric]); let hi=Math.max(...vals)*1.08||1;
+      if(metric==='k') hi=Math.min(hi,100);
+      const X=n=>l+(r-l)*n/400, Y=v=>b-(b-t)*Math.min(v,hi)/hi;
+      ctx.fillStyle=C.band; ctx.fillRect(l,Y(REF[metric][1])-3,r-l,Y(REF[metric][0])-Y(REF[metric][1])+6);
+      ctx.fillStyle=C.faint; ctx.textAlign='right';
+      for(let i=0;i<=4;i++){const v=hi*i/4; ctx.fillText(metric==='k'?v.toFixed(0):v.toFixed(2),l-6,Y(v)+4);
+        ctx.strokeStyle=C.grid; ctx.beginPath(); ctx.moveTo(l,Y(v)); ctx.lineTo(r,Y(v)); ctx.stroke();}
+      ctx.textAlign='center'; NS.filter(n=>n%100===0).forEach(n=>ctx.fillText(n,X(n),h-10));
+      ctx.textAlign='left'; ctx.fillStyle=C.blue; ctx.fillText('S&P 500 · DAX',l+6,Y(REF[metric][1])-7);
+      const col={k:C.red,c:C.amber,p:C.blue}[metric];
+      ctx.fillStyle=col; ctx.globalAlpha=.45; pts.forEach(p=>{ctx.beginPath();ctx.arc(X(p.n),Y(p[metric]),3.5,0,7);ctx.fill();}); ctx.globalAlpha=1;
+      const med=NS.map(n=>{const v=pts.filter(p=>p.n===n).map(p=>p[metric]).sort((a,b)=>a-b);return v.length?[X(n),Y(v[v.length>>1])]:null;}).filter(Boolean);
+      line(ctx,med.map(m=>m[0]),med.map(m=>m[1]),col,2);
+    }
+    ['k','c','p'].forEach(k=>document.getElementById('s2-'+k).addEventListener('click',e=>{
+      metric=k; document.querySelectorAll('#act2 .seg button').forEach(x=>x.setAttribute('aria-pressed',x===e.target)); draw();}));
+    new IntersectionObserver((en,o)=>{if(en[0].isIntersecting){o.disconnect();step();}}).observe(cv);
+    draw(); window.addEventListener('resize',draw);
+  })();
+    /* ---------- email capture — wired to Launch Kit public lead-capture ---------- */
+  (function(){
+    const CAPTURE_URL='https://auth.solytics.de/t/concepts/marketing/public/lead-capture';
+    const form=document.getElementById('captureForm'), note=document.getElementById('captureNote');
+    if(!form) return;
+    form.addEventListener('submit', async e=>{
+      e.preventDefault();
+      const email=form.email.value.trim(); if(!email) return;
+      const btn=form.querySelector('button'); btn.disabled=true; note.textContent='Sending…';
+      try{
+        const res=await fetch(CAPTURE_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,name:'',segment:'waitlist',hp:form.hp.value})});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        form.reset(); note.textContent='You’re on the list — talk soon.';
+      }catch(err){ btn.disabled=false; note.textContent='Something went wrong — please try again.'; }
+    });
+  })();
+
+})();
+</script>
+<script>/* concepts nav: close on outside-click / Escape */
+document.addEventListener('click',function(e){document.querySelectorAll('details.cnav[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('details.cnav[open]').forEach(function(d){d.removeAttribute('open');});});
+</script>
+<script src="/share/embed.js" defer></script>
+<script src="/share/plot-share.js" defer></script>
+</body>
+</html>

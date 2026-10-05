@@ -60,6 +60,11 @@
       "name": "William Bengen",
       "note": "The 4% rule — the historical-data study that named sequence-of-returns risk: once you withdraw, the order of returns decides whether the money lasts.",
       "url": "https://en.wikipedia.org/wiki/William_Bengen"
+    },
+    "farmer": {
+      "name": "J. Doyne Farmer",
+      "note": "Markets as ecologies of trading strategies — agent-based models that grow crashes from the mix of who trades.",
+      "url": "https://en.wikipedia.org/wiki/J._Doyne_Farmer"
     }
   },
   "concepts": [
@@ -71,8 +76,17 @@
       "status": "live",
       "eyebrow": "An interactive note on convexity",
       "blurb": "Why avoiding the big loss compounds better than chasing the average gain — and why the number that describes the crowd is not the number you will live.",
-      "people": ["dredge", "taleb"],
-      "tags": ["optionality", "convexity", "compounding", "tail-risk", "ergodicity"]
+      "people": [
+        "dredge",
+        "taleb"
+      ],
+      "tags": [
+        "optionality",
+        "convexity",
+        "compounding",
+        "tail-risk",
+        "ergodicity"
+      ]
     },
     {
       "slug": "tiny-experiments",
@@ -82,8 +96,16 @@
       "status": "live",
       "eyebrow": "An interactive note on tiny experiments",
       "blurb": "Why a drifting world rewards loops over ladders, why a small repeatable promise is almost impossible to fail, and why many tiny reversible bets quietly beat one big plan.",
-      "people": ["lecunff", "taleb"],
-      "tags": ["optionality", "experiments", "reversibility", "growth-loops"]
+      "people": [
+        "lecunff",
+        "taleb"
+      ],
+      "tags": [
+        "optionality",
+        "experiments",
+        "reversibility",
+        "growth-loops"
+      ]
     },
     {
       "slug": "serendipity",
@@ -93,8 +115,16 @@
       "status": "live",
       "eyebrow": "An interactive note on manufacturing luck",
       "blurb": "Why good luck scales with how much of the world you touch, why an unexpected find is worthless until it meets a question you already carry, and why many small leads beat one big break.",
-      "people": ["busch", "taleb"],
-      "tags": ["optionality", "serendipity", "surface-area", "prepared-mind"]
+      "people": [
+        "busch",
+        "taleb"
+      ],
+      "tags": [
+        "optionality",
+        "serendipity",
+        "surface-area",
+        "prepared-mind"
+      ]
     },
     {
       "slug": "uncertainty",
@@ -104,8 +134,16 @@
       "status": "live",
       "eyebrow": "An interactive note on true uncertainty",
       "blurb": "Measurable risk vs. genuine uncertainty — how you act when the odds themselves are unknown, and why a known die is the easy case.",
-      "people": ["taleb", "knight"],
-      "tags": ["optionality", "uncertainty", "risk", "decision"]
+      "people": [
+        "taleb",
+        "knight"
+      ],
+      "tags": [
+        "optionality",
+        "uncertainty",
+        "risk",
+        "decision"
+      ]
     },
     {
       "slug": "barbell",
@@ -115,8 +153,16 @@
       "status": "live",
       "eyebrow": "An interactive note on the barbell",
       "blurb": "Why 90% maximally safe plus 10% convex beats 100% \"medium\" — combining a hard floor with uncapped upside.",
-      "people": ["taleb"],
-      "tags": ["optionality", "barbell", "convexity", "tail-risk", "decision"]
+      "people": [
+        "taleb"
+      ],
+      "tags": [
+        "optionality",
+        "barbell",
+        "convexity",
+        "tail-risk",
+        "decision"
+      ]
     },
     {
       "slug": "lindy",
@@ -126,8 +172,17 @@
       "status": "live",
       "eyebrow": "An interactive note on the Lindy effect",
       "blurb": "Why people age forward and ideas age in reverse — for the non-perishable, every year survived buys more expected future, not less. The oldest bet is the safest bet.",
-      "people": ["mandelbrot", "taleb"],
-      "tags": ["optionality", "lindy", "survival", "tail-risk", "decision"]
+      "people": [
+        "mandelbrot",
+        "taleb"
+      ],
+      "tags": [
+        "optionality",
+        "lindy",
+        "survival",
+        "tail-risk",
+        "decision"
+      ]
     },
     {
       "slug": "systems",
@@ -137,8 +192,17 @@
       "status": "live",
       "eyebrow": "An interactive note on systems thinking",
       "blurb": "Why a system's behavior comes from its structure, not its parts — how a stock hides what its flows are doing, how a delay turns a steady loop into wild oscillation, and why growth into a limit so often overshoots and collapses.",
-      "people": ["meadows"],
-      "tags": ["systems", "feedback-loops", "stocks-flows", "overshoot", "tail-risk", "decision"]
+      "people": [
+        "meadows"
+      ],
+      "tags": [
+        "systems",
+        "feedback-loops",
+        "stocks-flows",
+        "overshoot",
+        "tail-risk",
+        "decision"
+      ]
     },
     {
       "slug": "reinforcing",
@@ -148,8 +212,17 @@
       "status": "live",
       "eyebrow": "An interactive note on reinforcing feedback",
       "blurb": "Why a quantity that feeds on itself looks like nothing for years and then owns everything, why the very same loop run backward becomes a death spiral, and why a tiny early lead hardens into winner-take-all.",
-      "people": ["meadows"],
-      "tags": ["systems", "feedback-loops", "reinforcing", "growth-loops", "compounding", "decision"]
+      "people": [
+        "meadows"
+      ],
+      "tags": [
+        "systems",
+        "feedback-loops",
+        "reinforcing",
+        "growth-loops",
+        "compounding",
+        "decision"
+      ]
     },
     {
       "slug": "balancing",
@@ -159,8 +232,17 @@
       "status": "live",
       "eyebrow": "An interactive note on balancing feedback",
       "blurb": "Why a goal-seeking loop bends toward its target and settles, why too firm a correcting hand makes the same loop overshoot and shake, and why a system holding its own goal quietly defeats however hard you push against it.",
-      "people": ["meadows"],
-      "tags": ["systems", "feedback-loops", "balancing", "stability", "policy-resistance", "decision"]
+      "people": [
+        "meadows"
+      ],
+      "tags": [
+        "systems",
+        "feedback-loops",
+        "balancing",
+        "stability",
+        "policy-resistance",
+        "decision"
+      ]
     },
     {
       "slug": "delay",
@@ -170,8 +252,17 @@
       "status": "live",
       "eyebrow": "An interactive note on delays in feedback",
       "blurb": "Why a lag between acting and seeing makes a steady loop hunt and overshoot, why stacked delays whip a small wobble into a violent swing upstream, and why the only cure is to respect a limit before you can feel it.",
-      "people": ["meadows"],
-      "tags": ["systems", "feedback-loops", "delay", "oscillation", "overshoot", "decision"]
+      "people": [
+        "meadows"
+      ],
+      "tags": [
+        "systems",
+        "feedback-loops",
+        "delay",
+        "oscillation",
+        "overshoot",
+        "decision"
+      ]
     },
     {
       "slug": "loop-noise",
@@ -181,8 +272,17 @@
       "status": "live",
       "eyebrow": "An interactive note on randomness in feedback",
       "blurb": "Why random shocks invent trends that were never there, why reacting to every wobble makes a steady system shakier not calmer, and why the same noise washes out of a balancing loop but is locked in forever by a reinforcing one.",
-      "people": ["meadows"],
-      "tags": ["systems", "feedback-loops", "randomness", "variability", "path-dependence", "decision"]
+      "people": [
+        "meadows"
+      ],
+      "tags": [
+        "systems",
+        "feedback-loops",
+        "randomness",
+        "variability",
+        "path-dependence",
+        "decision"
+      ]
     },
     {
       "slug": "chance",
@@ -192,8 +292,16 @@
       "status": "live",
       "eyebrow": "An interactive note on seeing probability",
       "blurb": "Why one coin flip is unknowable but a thousand flips are a law, why the means of any distribution pile into the same bell, and why a positive test for a rare disease usually means you're fine — three classic results you watch happen instead of derive.",
-      "people": ["kunin"],
-      "tags": ["probability", "statistics", "bayes", "intuition", "randomness"]
+      "people": [
+        "kunin"
+      ],
+      "tags": [
+        "probability",
+        "statistics",
+        "bayes",
+        "intuition",
+        "randomness"
+      ]
     },
     {
       "slug": "antifragile",
@@ -203,8 +311,17 @@
       "status": "live",
       "eyebrow": "An interactive note on antifragility",
       "blurb": "Why a curved response turns volatility into a gift, why the same total shock is far worse concentrated than spread thin, and the exact dose of stress where pressure plus recovery leaves you stronger — not just unbroken.",
-      "people": ["taleb"],
-      "tags": ["optionality", "antifragility", "convexity", "hormesis", "tail-risk", "decision"]
+      "people": [
+        "taleb"
+      ],
+      "tags": [
+        "optionality",
+        "antifragility",
+        "convexity",
+        "hormesis",
+        "tail-risk",
+        "decision"
+      ]
     },
     {
       "slug": "via-negativa",
@@ -214,8 +331,17 @@
       "status": "live",
       "eyebrow": "An interactive note on via negativa",
       "blurb": "Why removing the few worst exposures collapses your risk faster than trimming the average, why a doctor who treats every wobble does more harm than one who waits, and why fixing the single weakest link beats upgrading everything — robustness comes from removal, not addition.",
-      "people": ["taleb"],
-      "tags": ["optionality", "via-negativa", "subtraction", "iatrogenics", "tail-risk", "decision"]
+      "people": [
+        "taleb"
+      ],
+      "tags": [
+        "optionality",
+        "via-negativa",
+        "subtraction",
+        "iatrogenics",
+        "tail-risk",
+        "decision"
+      ]
     },
     {
       "slug": "ergodicity",
@@ -225,8 +351,18 @@
       "status": "live",
       "eyebrow": "An interactive note on ergodicity",
       "blurb": "Why a coin with a positive expected value still wipes out almost everyone who plays it, why the 'average' outcome is one that nobody actually lives, and why the cure is not better odds but smaller bets — the gap between the crowd and the person, over time.",
-      "people": ["peters", "taleb"],
-      "tags": ["optionality", "ergodicity", "tail-risk", "ruin", "compounding", "decision"]
+      "people": [
+        "peters",
+        "taleb"
+      ],
+      "tags": [
+        "optionality",
+        "ergodicity",
+        "tail-risk",
+        "ruin",
+        "compounding",
+        "decision"
+      ]
     },
     {
       "slug": "compounding",
@@ -236,8 +372,16 @@
       "status": "live",
       "eyebrow": "An interactive note on compounding",
       "blurb": "Why an exponential curve looks like nothing for years and then runs away — why when you start beats how much you save, and why a fee of “just 1%” quietly eats a third of everything.",
-      "people": ["housel"],
-      "tags": ["compounding", "time", "patience", "growth-loops", "decision"]
+      "people": [
+        "housel"
+      ],
+      "tags": [
+        "compounding",
+        "time",
+        "patience",
+        "growth-loops",
+        "decision"
+      ]
     },
     {
       "slug": "sequence",
@@ -247,8 +391,37 @@
       "status": "live",
       "eyebrow": "An interactive note on sequence risk",
       "blurb": "Why two retirees with the identical set of returns can end up one broke and one rich — the order only starts to matter the day you stop adding and start spending — and why spending a little less in the lean years removes most of the danger.",
-      "people": ["bengen", "taleb"],
-      "tags": ["sequence-risk", "path-dependence", "decumulation", "ruin", "ergodicity", "decision"]
+      "people": [
+        "bengen",
+        "taleb"
+      ],
+      "tags": [
+        "sequence-risk",
+        "path-dependence",
+        "decumulation",
+        "ruin",
+        "ergodicity",
+        "decision"
+      ]
+    },
+    {
+      "slug": "market-ecology",
+      "concept": "Market ecology",
+      "title": "It's Just the Crowd",
+      "eyebrow": "An interactive market ecology",
+      "blurb": "Why a market needs no bad news to crash — turn the share of trend followers against value investors and watch calm prices grow fat tails, wild clusters and bubbles.",
+      "people": [
+        "farmer"
+      ],
+      "tags": [
+        "agent-based-model",
+        "markets",
+        "fat-tails",
+        "feedback",
+        "decision"
+      ],
+      "status": "live",
+      "url": "/market-ecology/"
     }
   ]
 }
